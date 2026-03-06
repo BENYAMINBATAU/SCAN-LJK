@@ -1234,29 +1234,131 @@ function hapusRekap(){
 // EXCEL
 // ═══════════════════════════════════════════════════
 function unduhExcel(){
-  if(!listSiswa.length){toast('⚠️ Belum ada data!');return;}
-  const wb=XLSX.utils.book_new();
-  const mp=document.getElementById('mapel').value||'Ujian';
-  const aoa=[[`REKAP NILAI – ${mp} – Guru: ${guru.nama} – ${new Date().toLocaleString('id-ID')}`],
-    ['No','Nama','No Absen','Kelas','Mapel','Nilai','Benar','Salah','Kosong','Total','Predikat','Mode','Waktu']];
-  listSiswa.forEach((s,i)=>{
-    const pct=Math.round(s.benar/s.n*100),gr=pct>=90?'A':pct>=80?'B':pct>=70?'C':pct>=60?'D':'E';
-    aoa.push([i+1,s.nama,s.noA||'-',s.kls||'-',s.mapel||'-',s.skor,
-      s.benar,s.salah,s.kosong,s.n,gr,s.mode||'manual',s.ts]);
-  });
-  const ws=XLSX.utils.aoa_to_sheet(aoa);
-  ws['!cols']=[{wch:4},{wch:24},{wch:10},{wch:14},{wch:18},{wch:7},{wch:7},{wch:7},{wch:7},{wch:7},{wch:9},{wch:7},{wch:20}];
-  ws['!merges']=[{s:{r:0,c:0},e:{r:0,c:12}}];
-  XLSX.utils.book_append_sheet(wb,ws,'Rekap Nilai');
-  listSiswa.forEach((s,idx)=>{
-    const d=[[`DETAIL – ${s.nama}`],['Kelas',s.kls||'-','','No Absen',s.noA||'-'],
-      ['Mapel',s.mapel||'-','','Nilai',s.skor],[],['No','Jawaban','Kunci','Status']];
-    s.detail.forEach(r=>d.push([r.no,r.jwb,r.kunci,r.status==='b'?'Benar':r.status==='s'?'Salah':'Kosong']));
-    const w=XLSX.utils.aoa_to_sheet(d);
-    XLSX.utils.book_append_sheet(wb,w,`${idx+1}.${s.nama}`.substring(0,28).replace(/[:\\\/\?\*\[\]]/g,'_'));
-  });
-  XLSX.writeFile(wb,`LJK_${mp.replace(/\s+/g,'_')}_${guru.nama.replace(/\s+/g,'_')}.xlsx`);
-  toast('⬇️ Excel diunduh!');
+  if(!listSiswa.length){ toast('⚠️ Belum ada data di rekap!'); return; }
+
+  try {
+    const mp  = document.getElementById('mapel').value || 'Ujian';
+    const kls = document.getElementById('kelas').value || '';
+    const tgl = new Date().toLocaleString('id-ID');
+    const wb  = XLSX.utils.book_new();
+
+    /* ── SHEET 1 : REKAP UTAMA ── */
+    const aoa = [];
+
+    // Judul
+    aoa.push([`REKAP NILAI UJIAN`]);
+    aoa.push([`Mata Pelajaran: ${mp}   |   Kelas: ${kls}   |   Guru: ${guru.nama}`]);
+    aoa.push([`Dicetak: ${tgl}`]);
+    aoa.push([]); // baris kosong
+
+    // Header kolom
+    aoa.push(['No','Nama Siswa','No Absen','Kelas','Mata Pelajaran',
+               'Nilai','Benar','Salah','Kosong','Total Soal','Predikat','Mode','Waktu Scan']);
+
+    // Data siswa
+    listSiswa.forEach(function(s, i){
+      const pct = s.n > 0 ? Math.round(s.benar / s.n * 100) : 0;
+      const gr  = pct>=90?'A': pct>=80?'B': pct>=70?'C': pct>=60?'D':'E';
+      aoa.push([
+        i + 1,
+        s.nama   || '-',
+        s.noA    || '-',
+        s.kls    || '-',
+        s.mapel  || mp,
+        s.skor   || 0,
+        s.benar  || 0,
+        s.salah  || 0,
+        s.kosong || 0,
+        s.n      || 0,
+        gr,
+        s.mode   || 'scan',
+        s.ts     || tgl
+      ]);
+    });
+
+    // Baris statistik
+    aoa.push([]);
+    const totalSiswa = listSiswa.length;
+    const rataRata   = Math.round(listSiswa.reduce(function(a,s){ return a+(s.skor||0); },0) / totalSiswa * 10) / 10;
+    const tertinggi  = Math.max.apply(null, listSiswa.map(function(s){ return s.skor||0; }));
+    const terendah   = Math.min.apply(null, listSiswa.map(function(s){ return s.skor||0; }));
+    const lulus      = listSiswa.filter(function(s){ return (s.skor||0) >= 70; }).length;
+    aoa.push(['','','','','Total Siswa', totalSiswa]);
+    aoa.push(['','','','','Rata-rata',   rataRata]);
+    aoa.push(['','','','','Nilai Tertinggi', tertinggi]);
+    aoa.push(['','','','','Nilai Terendah',  terendah]);
+    aoa.push(['','','','','Lulus (≥70)',  lulus + ' siswa']);
+    aoa.push(['','','','','Tidak Lulus',  (totalSiswa - lulus) + ' siswa']);
+
+    const ws = XLSX.utils.aoa_to_sheet(aoa);
+    ws['!cols'] = [
+      {wch:4},{wch:26},{wch:10},{wch:16},{wch:22},
+      {wch:8},{wch:7},{wch:7},{wch:7},{wch:10},{wch:9},{wch:7},{wch:22}
+    ];
+    ws['!merges'] = [
+      {s:{r:0,c:0}, e:{r:0,c:12}},
+      {s:{r:1,c:0}, e:{r:1,c:12}},
+      {s:{r:2,c:0}, e:{r:2,c:12}},
+    ];
+    XLSX.utils.book_append_sheet(wb, ws, 'Rekap Nilai');
+
+    /* ── SHEET 2+ : DETAIL PER SISWA ── */
+    listSiswa.forEach(function(s, idx){
+      const det = Array.isArray(s.detail) ? s.detail : [];
+      const pct = s.n > 0 ? Math.round(s.benar / s.n * 100) : 0;
+      const gr  = pct>=90?'A': pct>=80?'B': pct>=70?'C': pct>=60?'D':'E';
+
+      const da = [];
+      da.push(['DETAIL JAWABAN - ' + (s.nama||'-')]);
+      da.push([]);
+      da.push(['Nama',        s.nama  ||'-',  '', 'No Absen',  s.noA   ||'-']);
+      da.push(['Kelas',       s.kls   ||'-',  '', 'Nilai',     s.skor  || 0]);
+      da.push(['Mapel',       s.mapel ||mp,   '', 'Predikat',  gr]);
+      da.push(['Total Soal',  s.n     || 0,   '', 'Benar',     s.benar || 0]);
+      da.push(['Salah',       s.salah || 0,   '', 'Kosong',    s.kosong|| 0]);
+      da.push(['Waktu Scan',  s.ts    ||tgl]);
+      da.push([]);
+      da.push(['No Soal','Jawaban Siswa','Kunci Jawaban','Status']);
+
+      det.forEach(function(r){
+        da.push([
+          r.no,
+          r.jwb   || '-',
+          r.kunci || '-',
+          r.status === 'b' ? 'Benar' : r.status === 's' ? 'Salah' : 'Kosong'
+        ]);
+      });
+
+      const wd = XLSX.utils.aoa_to_sheet(da);
+      wd['!cols'] = [{wch:9},{wch:16},{wch:16},{wch:10}];
+      wd['!merges'] = [{s:{r:0,c:0}, e:{r:0,c:5}}];
+
+      // Nama sheet maks 31 karakter, hapus karakter terlarang Excel
+      var sheetName = ((idx+1) + '.' + (s.nama||'Siswa'))
+        .substring(0, 31)
+        .replace(/[:\/?*[\]]/g, '_');
+      XLSX.utils.book_append_sheet(wb, wd, sheetName);
+    });
+
+    /* ── DOWNLOAD: tulis ke ArrayBuffer lalu Blob ── */
+    // Ini metode yang PASTI bekerja di semua browser
+    var wbArray = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    var blob    = new Blob([wbArray], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    var url     = URL.createObjectURL(blob);
+    var a       = document.createElement('a');
+    var fname   = 'LJK_' + mp.replace(/\s+/g,'_') + '_' + (guru.nama||'Guru').replace(/\s+/g,'_') + '.xlsx';
+    a.href      = url;
+    a.download  = fname;
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function(){ URL.revokeObjectURL(url); a.remove(); }, 2000);
+    toast('✅ Excel diunduh: ' + fname);
+
+  } catch(err) {
+    console.error('unduhExcel error:', err);
+    toast('❌ Gagal: ' + err.message);
+  }
 }
 
 // ═══════════════════════════════════════════════════
