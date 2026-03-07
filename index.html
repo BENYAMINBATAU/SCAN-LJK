@@ -1,3 +1,16 @@
+<!-- =========================================================
+     BENYAMIN BATAU LJK SCANNER APP - BAGIAN 1 dari 2
+     =========================================================
+     CARA GABUNG DI NOTEPAD:
+     1. Buka Notepad, buat file baru
+     2. Paste isi BAGIAN 1 ini
+     3. Langsung di bawahnya, paste isi BAGIAN 2
+     4. Simpan sebagai: BB_LJK_Scanner.html
+     5. Buka di browser Chrome / HP
+     =========================================================
+     BAGIAN 1 berisi: HTML, CSS, UI, Kamera, Preview, Scanner
+     BAGIAN 2 berisi: JavaScript engine (Scan, Kunci, Hasil, Rekap)
+     ========================================================= -->
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -17,10 +30,8 @@ html,body{height:100%;width:100%;overflow:hidden;background:#000;
 .sc-logos{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:10px}
 .sc-logos img{width:48px;height:48px;object-fit:contain;border-radius:6px}
 .sc-title{font-size:14px;font-weight:800;text-align:center;line-height:1.3}
-.sc-brand{font-size:10px;color:#f59e0b;font-weight:700;text-align:center;
-  letter-spacing:1px;text-transform:uppercase;margin-bottom:16px}
-.sc-sect{font-size:9px;font-weight:700;color:#f59e0b;text-transform:uppercase;
-  letter-spacing:1px;margin:12px 0 6px}
+.sc-brand{font-size:10px;color:#f59e0b;font-weight:700;text-align:center;letter-spacing:1px;text-transform:uppercase;margin-bottom:16px}
+.sc-sect{font-size:9px;font-weight:700;color:#f59e0b;text-transform:uppercase;letter-spacing:1px;margin:12px 0 6px}
 .sf{margin-bottom:8px}
 .sf label{display:block;font-size:9px;color:rgba(255,255,255,.4);font-weight:600;margin-bottom:3px}
 .sf input,.sf select{width:100%;padding:10px 12px;background:rgba(255,255,255,.08);
@@ -41,13 +52,10 @@ html,body{height:100%;width:100%;overflow:hidden;background:#000;
 .tb-t{font-size:10px;font-weight:700;color:#fff}
 .chip{padding:3px 7px;border-radius:20px;font-size:8px;font-weight:700}
 .chip-g{background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.3);color:#10b981}
-.chip-a{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);
-  color:#f59e0b;cursor:pointer;white-space:nowrap}
-.tabbar{display:flex;flex-shrink:0;background:rgba(0,0,0,.5);
-  border-bottom:1px solid rgba(255,255,255,.06)}
-.tab{flex:1;padding:9px 4px;background:transparent;border:none;
-  border-bottom:2px solid transparent;font-size:9px;font-weight:700;
-  color:rgba(255,255,255,.35);cursor:pointer;transition:all .2s;
+.chip-a{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);color:#f59e0b;cursor:pointer;white-space:nowrap}
+.tabbar{display:flex;flex-shrink:0;background:rgba(0,0,0,.5);border-bottom:1px solid rgba(255,255,255,.06)}
+.tab{flex:1;padding:9px 4px;background:transparent;border:none;border-bottom:2px solid transparent;
+  font-size:9px;font-weight:700;color:rgba(255,255,255,.35);cursor:pointer;transition:all .2s;
   display:flex;flex-direction:column;align-items:center;gap:2px}
 .tab .ti{font-size:15px}
 .tab.active{color:#f59e0b;border-bottom-color:#f59e0b}
@@ -57,17 +65,18 @@ html,body{height:100%;width:100%;overflow:hidden;background:#000;
 .sc-state{position:absolute;inset:0;display:none;flex-direction:column}
 .sc-state.on{display:flex}
 #stIdle{background:linear-gradient(160deg,#0d0d1a,#111827);
-  align-items:center;justify-content:center;gap:14px;text-align:center;padding:24px}
-.idle-ico{font-size:52px;opacity:.4}
-.idle-hint{font-size:11px;color:rgba(255,255,255,.4);line-height:1.8;max-width:270px}
+  align-items:center;justify-content:center;gap:12px;text-align:center;padding:20px}
+.idle-ico{font-size:46px;opacity:.4}
+.idle-hint{font-size:10px;color:rgba(255,255,255,.4);line-height:1.8;max-width:280px}
 .idle-hint b{color:rgba(255,255,255,.7)}
-.btn-bigcam{padding:15px 30px;background:linear-gradient(135deg,#f59e0b,#d97706);
-  border:none;border-radius:16px;color:#1a1a2e;font-size:13px;font-weight:800;
-  cursor:pointer;box-shadow:0 8px 28px rgba(245,158,11,.4);
-  display:flex;align-items:center;gap:8px}
-.btn-gallery{padding:10px 22px;background:rgba(255,255,255,.07);
-  border:1px solid rgba(255,255,255,.12);border-radius:12px;
-  color:rgba(255,255,255,.6);font-size:11px;font-weight:700;cursor:pointer}
+.btn-bigcam{padding:14px 28px;background:linear-gradient(135deg,#f59e0b,#d97706);
+  border:none;border-radius:14px;color:#1a1a2e;font-size:13px;font-weight:800;
+  cursor:pointer;box-shadow:0 8px 28px rgba(245,158,11,.4);display:flex;align-items:center;gap:8px}
+.btn-gallery{padding:9px 20px;background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.12);border-radius:11px;color:rgba(255,255,255,.6);
+  font-size:11px;font-weight:700;cursor:pointer}
+.btn-spec{padding:8px 16px;background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.3);
+  border-radius:11px;color:#a78bfa;font-size:10px;font-weight:700;cursor:pointer}
 #stCamera{background:#000}
 #camVideo{width:100%;height:100%;object-fit:cover;display:block}
 .vf-wrap{position:absolute;inset:0;pointer-events:none}
@@ -90,18 +99,15 @@ html,body{height:100%;width:100%;overflow:hidden;background:#000;
 .vf-dot{width:7px;height:7px;border-radius:50%;background:#ef4444;animation:blink 1s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
 .vf-dot-t{font-size:9px;color:rgba(255,255,255,.7);font-weight:600}
-.cam-ctrl{position:absolute;bottom:0;left:0;right:0;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:14px 28px 22px;background:linear-gradient(to top,rgba(0,0,0,.85),transparent)}
-.btn-flip{width:46px;height:46px;background:rgba(255,255,255,.14);border:none;
-  border-radius:50%;font-size:19px;cursor:pointer}
+.cam-ctrl{position:absolute;bottom:0;left:0;right:0;display:flex;align-items:center;
+  justify-content:space-between;padding:14px 28px 22px;
+  background:linear-gradient(to top,rgba(0,0,0,.85),transparent)}
+.btn-flip{width:46px;height:46px;background:rgba(255,255,255,.14);border:none;border-radius:50%;font-size:19px;cursor:pointer}
 .btn-shutter{width:72px;height:72px;background:#fff;border:4px solid rgba(255,255,255,.4);
-  border-radius:50%;font-size:28px;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
+  border-radius:50%;font-size:28px;cursor:pointer;display:flex;align-items:center;justify-content:center;
   box-shadow:0 4px 20px rgba(0,0,0,.5);transition:transform .1s}
 .btn-shutter:active{transform:scale(.9)}
-.btn-camup{width:46px;height:46px;background:rgba(255,255,255,.14);border:none;
-  border-radius:50%;font-size:19px;cursor:pointer}
+.btn-camup{width:46px;height:46px;background:rgba(255,255,255,.14);border:none;border-radius:50%;font-size:19px;cursor:pointer}
 .btn-camclose{position:absolute;top:14px;right:14px;width:36px;height:36px;
   background:rgba(0,0,0,.55);border:none;color:#fff;font-size:18px;border-radius:50%;
   cursor:pointer;display:flex;align-items:center;justify-content:center}
@@ -118,43 +124,36 @@ html,body{height:100%;width:100%;overflow:hidden;background:#000;
 @keyframes spin{to{transform:rotate(360deg)}}
 .val-title{font-size:12px;font-weight:800}
 .val-sub{font-size:9px;color:rgba(255,255,255,.8);margin-left:24px}
-#valInfo{position:absolute;right:11px;bottom:70px;background:rgba(0,0,0,.75);
-  backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.12);border-radius:11px;
-  padding:9px 12px;display:none;min-width:110px}
-.vi-row{display:flex;justify-content:space-between;font-size:9px;margin-bottom:4px}
-.vi-row:last-child{margin:0}
-.vi-l{color:rgba(255,255,255,.4)}.vi-v{font-weight:700}
-.vi-ok{color:#10b981}.vi-no{color:#ef4444}
 .prev-bar{position:absolute;bottom:0;left:0;right:0;display:flex;gap:9px;
   padding:12px 14px 16px;background:linear-gradient(to top,rgba(0,0,0,.9) 70%,transparent)}
 .btn-retake{flex:1;padding:13px;background:rgba(255,255,255,.1);
   border:1px solid rgba(255,255,255,.18);border-radius:13px;color:#fff;
-  font-size:12px;font-weight:700;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;gap:7px}
+  font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px}
 .btn-lanjut{flex:2;padding:13px;background:linear-gradient(135deg,#10b981,#059669);
   border:none;border-radius:13px;color:#fff;font-size:12px;font-weight:800;
   cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;
   box-shadow:0 6px 20px rgba(16,185,129,.35)}
-.btn-lanjut:disabled{background:rgba(255,255,255,.07);color:rgba(255,255,255,.25);
-  box-shadow:none;cursor:not-allowed}
-#stScanning{background:rgba(0,0,0,.92);backdrop-filter:blur(8px);
-  align-items:center;justify-content:center;gap:14px}
-.sc-ring{width:52px;height:52px;border:4px solid rgba(255,255,255,.08);
+.btn-lanjut:disabled{background:rgba(255,255,255,.07);color:rgba(255,255,255,.25);box-shadow:none;cursor:not-allowed}
+#stScanning{background:rgba(0,0,0,.95);backdrop-filter:blur(8px);
+  align-items:center;justify-content:center;gap:12px;flex-direction:column}
+.sc-ring{width:56px;height:56px;border:4px solid rgba(255,255,255,.08);
   border-top-color:#f59e0b;border-radius:50%;animation:spin .8s linear infinite}
-.sc-txt{font-size:13px;font-weight:700}.sc-sub{font-size:10px;color:rgba(255,255,255,.4)}
-.steps{display:flex;gap:8px;margin-top:8px}
-.step{display:flex;flex-direction:column;align-items:center;gap:4px;
-  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);
-  border-radius:10px;padding:8px 10px;min-width:60px;transition:all .3s}
-.step.done{border-color:#10b981;background:rgba(16,185,129,.07)}
-.step.act{border-color:#f59e0b;background:rgba(245,158,11,.07)}
-.step-ico{font-size:17px}
-.step-lbl{font-size:7px;color:rgba(255,255,255,.3);text-align:center;line-height:1.3}
-.step.done .step-lbl{color:#10b981}.step.act .step-lbl{color:#f59e0b}
+.sc-txt{font-size:13px;font-weight:700;text-align:center}
+.sc-sub{font-size:10px;color:rgba(255,255,255,.4);text-align:center}
+.progress-bar{width:220px;height:6px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#f59e0b,#10b981);
+  border-radius:3px;transition:width .3s ease;width:0%}
+.pass-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:6px;width:220px}
+.pass-item{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);
+  border-radius:8px;padding:7px;text-align:center;transition:all .3s}
+.pass-item.done{border-color:#10b981;background:rgba(16,185,129,.1)}
+.pass-item.act{border-color:#f59e0b;background:rgba(245,158,11,.1)}
+.pass-ico{font-size:16px}
+.pass-lbl{font-size:7px;color:rgba(255,255,255,.3);margin-top:2px;line-height:1.2}
+.pass-item.done .pass-lbl{color:#10b981}.pass-item.act .pass-lbl{color:#f59e0b}
 #stVerify{background:#0d0d1a;flex-direction:column}
 .ver-head{display:flex;align-items:center;justify-content:space-between;
-  padding:10px 13px;background:rgba(0,0,0,.5);
-  border-bottom:1px solid rgba(255,255,255,.07);flex-shrink:0}
+  padding:10px 13px;background:rgba(0,0,0,.5);border-bottom:1px solid rgba(255,255,255,.07);flex-shrink:0}
 .ver-title{font-size:11px;font-weight:800;color:#06b6d4}
 .ver-body{flex:1;overflow-y:auto;padding:11px}
 .vst-row{display:flex;gap:7px;margin-bottom:11px}
@@ -170,12 +169,10 @@ html,body{height:100%;width:100%;overflow:hidden;background:#000;
   letter-spacing:.4px;margin-bottom:7px}
 .ver-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .vcol{background:rgba(255,255,255,.03);border-radius:9px;padding:9px}
-.vcol-t{font-size:8px;font-weight:700;color:rgba(255,255,255,.25);text-align:center;
-  text-transform:uppercase;margin-bottom:7px}
+.vcol-t{font-size:8px;font-weight:700;color:rgba(255,255,255,.25);text-align:center;text-transform:uppercase;margin-bottom:7px}
 .vrow{display:flex;align-items:center;gap:3px;margin-bottom:4px}
 .vrow.batal{background:rgba(239,68,68,.07);border-radius:5px;padding:1px 3px}
-.vn{font-size:8px;font-weight:700;color:rgba(255,255,255,.25);width:16px;
-  text-align:right;flex-shrink:0;font-family:monospace}
+.vn{font-size:8px;font-weight:700;color:rgba(255,255,255,.25);width:16px;text-align:right;flex-shrink:0;font-family:monospace}
 .vopts{display:flex;gap:2px}
 .vob{width:24px;height:24px;border-radius:50%;border:1.5px solid rgba(255,255,255,.1);
   background:transparent;font-size:8px;font-weight:700;cursor:pointer;
@@ -193,8 +190,7 @@ html,body{height:100%;width:100%;overflow:hidden;background:#000;
   letter-spacing:.7px;margin-bottom:11px;display:flex;align-items:center;gap:6px}
 .cbadge{background:#3b82f6;color:#fff;font-size:7px;padding:2px 6px;border-radius:20px;font-weight:700}
 .frow{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
-.frow label{display:block;font-size:8px;font-weight:600;color:rgba(255,255,255,.35);
-  text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px}
+.frow label{display:block;font-size:8px;font-weight:600;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px}
 .frow input,.frow select{width:100%;padding:8px 10px;background:rgba(255,255,255,.06);
   border:1px solid rgba(255,255,255,.09);border-radius:8px;color:#fff;font-size:11px;outline:none}
 .frow input:focus,.frow select:focus{border-color:#f59e0b}
@@ -212,6 +208,7 @@ html,body{height:100%;width:100%;overflow:hidden;background:#000;
 .bg{background:rgba(255,255,255,.06);color:#fff;border:1px solid rgba(255,255,255,.09)}
 .bsm{padding:6px 10px;font-size:9px;border-radius:7px}
 .brd{background:rgba(239,68,68,.12);color:#f87171;border:1px solid rgba(239,68,68,.3)}
+.bpurp{background:rgba(139,92,246,.12);color:#a78bfa;border:1px solid rgba(139,92,246,.3)}
 .shero{text-align:center;background:linear-gradient(135deg,#111827,#1f2937);
   border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:20px 14px;margin-bottom:9px}
 .sangka{font-size:56px;font-weight:800;font-family:monospace;color:#f59e0b;line-height:1;
@@ -239,6 +236,27 @@ html,body{height:100%;width:100%;overflow:hidden;background:#000;
 .sgl{font-size:8px;color:rgba(255,255,255,.3);text-transform:uppercase;margin-top:1px}
 .empty{text-align:center;padding:28px;color:rgba(255,255,255,.25)}
 .empty div{font-size:30px;margin-bottom:6px;opacity:.35}
+.spec-card{background:rgba(139,92,246,.06);border:1px solid rgba(139,92,246,.2);
+  border-radius:11px;padding:11px;margin-bottom:9px}
+.spec-title{font-size:9px;font-weight:800;color:#a78bfa;text-transform:uppercase;
+  letter-spacing:.6px;margin-bottom:8px}
+.spec-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.spec-item{border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:8px;
+  text-align:center;background:rgba(255,255,255,.03);cursor:pointer;
+  transition:all .2s;position:relative}
+.spec-item.has-data{border-color:rgba(16,185,129,.4);background:rgba(16,185,129,.06)}
+.spec-item img{width:100%;aspect-ratio:0.65;object-fit:cover;border-radius:4px;margin-bottom:4px;
+  display:none;background:#111}
+.spec-item.has-data img{display:block}
+.spec-item .spec-ph{width:100%;aspect-ratio:0.65;border-radius:4px;margin-bottom:4px;
+  background:rgba(255,255,255,.04);display:flex;align-items:center;justify-content:center;
+  font-size:20px;opacity:.4}
+.spec-item.has-data .spec-ph{display:none}
+.spec-lbl{font-size:8px;color:rgba(255,255,255,.4);font-weight:600;line-height:1.2}
+.spec-item.has-data .spec-lbl{color:#10b981}
+.spec-badge{position:absolute;top:4px;right:4px;background:#10b981;color:#fff;
+  font-size:7px;font-weight:700;padding:1px 5px;border-radius:20px;display:none}
+.spec-item.has-data .spec-badge{display:block}
 #toastWrap{position:fixed;bottom:70px;left:50%;transform:translateX(-50%);
   z-index:9999;display:flex;flex-direction:column;gap:6px;align-items:center;pointer-events:none}
 .toast{background:rgba(10,10,20,.92);backdrop-filter:blur(12px);color:#fff;
@@ -251,7 +269,9 @@ html,body{height:100%;width:100%;overflow:hidden;background:#000;
 </head>
 <body>
 <canvas id="snapCanvas" style="display:none"></canvas>
+<canvas id="workCanvas" style="display:none"></canvas>
 <input type="file" id="fileUp" accept="image/*" style="display:none" onchange="handleFile(event)">
+<input type="file" id="fileSpec" accept="image/*" style="display:none" onchange="handleSpec(event)">
 
 <div id="pgSetup">
 <div class="sc">
@@ -291,8 +311,7 @@ html,body{height:100%;width:100%;overflow:hidden;background:#000;
       <div class="tb-t" id="tbSub">SMKN 1 Sumarorong</div>
     </div>
     <span class="chip chip-g">✅ GRATIS</span>
-    <span class="chip chip-a" id="tbGuru"
-      onclick="document.getElementById('pgSetup').style.display='flex'">👤 —</span>
+    <span class="chip chip-a" id="tbGuru" onclick="document.getElementById('pgSetup').style.display='flex'">👤 —</span>
   </div>
   <div class="tabbar">
     <button class="tab active" onclick="goTab('Scanner',this)"><span class="ti">📷</span>Scanner</button>
@@ -304,13 +323,20 @@ html,body{height:100%;width:100%;overflow:hidden;background:#000;
   <div class="panel active" id="pScanner">
     <div class="sc-state on" id="stIdle">
       <div class="idle-ico">📋</div>
-      <p class="idle-hint"><b>Aktifkan kamera</b> lalu arahkan ke seluruh<br>Lembar Jawaban siswa.<br><br>
-      Sistem memvalidasi format LJK otomatis.<br>Foto <b>bukan LJK tidak dapat diproses.</b></p>
+      <p class="idle-hint">
+        <b>Aktifkan kamera</b> lalu foto seluruh LJK siswa.<br><br>
+        💡 Tip akurasi: foto <b>Specimen LJK</b> dulu<br>
+        (kosong, disilang semua, disilang+garis)<br>
+        sebagai referensi pembanding.
+      </p>
       <button class="btn-bigcam" onclick="startCam()">📷 Aktifkan Kamera</button>
       <button class="btn-gallery" onclick="document.getElementById('fileUp').click()">🖼️ Dari Galeri</button>
+      <button class="btn-spec" id="btnSpecStatus" onclick="goTab('Kunci',document.querySelectorAll('.tab')[1]);setTimeout(()=>document.getElementById('specSection').scrollIntoView({behavior:'smooth'}),200)">
+        🧬 Atur Specimen Referensi
+      </button>
     </div>
     <div class="sc-state" id="stCamera">
-      <video id="camVideo" autoplay playsinline muted style="width:100%;height:100%;object-fit:cover;display:block"></video>
+      <video id="camVideo" autoplay playsinline muted></video>
       <div class="vf-wrap">
         <div class="vf-frame">
           <div class="cc tl"></div><div class="cc tr"></div>
@@ -328,19 +354,13 @@ html,body{height:100%;width:100%;overflow:hidden;background:#000;
       </div>
     </div>
     <div class="sc-state" id="stPreview">
-      <img id="prevImg" src="" alt="" style="flex:1;width:100%;min-height:0;object-fit:contain;display:block;background:#0a0a0a">
+      <img id="prevImg" src="" alt="">
       <div id="valBanner" class="validating">
         <div class="val-row">
           <div class="val-ring" id="valRing"></div>
           <div class="val-title" id="valTitle">Memvalidasi format LJK…</div>
         </div>
         <div class="val-sub" id="valSub">Memeriksa Lembar Jawaban SMKN 1 Sumarorong</div>
-      </div>
-      <div id="valInfo">
-        <div class="vi-row"><span class="vi-l">H-lines</span><span class="vi-v" id="viH">—</span></div>
-        <div class="vi-row"><span class="vi-l">V-lines</span><span class="vi-v" id="viV">—</span></div>
-        <div class="vi-row"><span class="vi-l">Rasio</span><span class="vi-v" id="viR">—</span></div>
-        <div class="vi-row"><span class="vi-l">Status</span><span class="vi-v" id="viS">—</span></div>
       </div>
       <div class="prev-bar">
         <button class="btn-retake" onclick="retake()">🔄 Foto Ulang</button>
@@ -349,13 +369,16 @@ html,body{height:100%;width:100%;overflow:hidden;background:#000;
     </div>
     <div class="sc-state" id="stScanning">
       <div class="sc-ring"></div>
-      <div class="sc-txt" id="scTxt">Menganalisis lembar jawaban…</div>
-      <div class="sc-sub">Computer Vision sedang bekerja</div>
-      <div class="steps">
-        <div class="step" id="sp1"><div class="step-ico">🔍</div><div class="step-lbl">Deteksi<br>Tabel</div></div>
-        <div class="step" id="sp2"><div class="step-ico">⭕</div><div class="step-lbl">Baca<br>Jawaban</div></div>
-        <div class="step" id="sp3"><div class="step-ico">✂️</div><div class="step-lbl">Filter<br>Ralat</div></div>
-        <div class="step" id="sp4"><div class="step-ico">✅</div><div class="step-lbl">Selesai</div></div>
+      <div class="sc-txt" id="scTxt">Mempersiapkan…</div>
+      <div class="sc-sub" id="scSub">Multi-perspective snake-gecko scan</div>
+      <div class="progress-bar"><div class="progress-fill" id="scProg"></div></div>
+      <div class="pass-grid">
+        <div class="pass-item" id="pp0"><div class="pass-ico">🧬</div><div class="pass-lbl">Deteksi<br>Grid</div></div>
+        <div class="pass-item" id="pp1"><div class="pass-ico">🐍</div><div class="pass-lbl">Pass 1<br>Normal</div></div>
+        <div class="pass-item" id="pp2"><div class="pass-ico">🦎</div><div class="pass-lbl">Pass 2<br>Ketat</div></div>
+        <div class="pass-item" id="pp3"><div class="pass-ico">🌓</div><div class="pass-lbl">Pass 3<br>Otsu</div></div>
+        <div class="pass-item" id="pp4"><div class="pass-ico">🗳️</div><div class="pass-lbl">Voting<br>Final</div></div>
+        <div class="pass-item" id="pp5"><div class="pass-ico">✅</div><div class="pass-lbl">Selesai</div></div>
       </div>
     </div>
     <div class="sc-state" id="stVerify">
@@ -374,7 +397,7 @@ html,body{height:100%;width:100%;overflow:hidden;background:#000;
           <div class="vif"><label>No Absen</label><input id="rAbsen" type="text" placeholder="—"></div>
           <div class="vif"><label>Kelas</label><input id="rKelas" type="text"></div>
         </div>
-        <div class="ver-legend">Klik untuk koreksi &nbsp;
+        <div class="ver-legend">Klik koreksi &nbsp;
           <span style="color:#10b981">● Akurat</span>
           <span style="color:#f59e0b">◐ Sedang</span>
           <span style="color:rgba(255,255,255,.2)">○ Kosong</span>
@@ -389,6 +412,41 @@ html,body{height:100%;width:100%;overflow:hidden;background:#000;
   </div>
 
   <div class="panel" id="pKunci" style="overflow-y:auto;padding:11px">
+    <div id="specSection" class="spec-card">
+      <div class="spec-title">🧬 Specimen Referensi — Tingkatkan Akurasi</div>
+      <p style="font-size:9px;color:rgba(255,255,255,.35);margin-bottom:9px;line-height:1.6">
+        Foto 3 specimen LJK: <b style="color:#a78bfa">kosong</b>, 
+        <b style="color:#a78bfa">disilang semua</b>, dan 
+        <b style="color:#a78bfa">disilang lalu digaris</b>. 
+        Dipakai sebagai baseline perbandingan untuk akurasi optimal.
+      </p>
+      <div class="spec-grid">
+        <div class="spec-item" id="specItem0" onclick="triggerSpec(0)">
+          <div class="spec-ph">📄</div>
+          <img id="specImg0" src="" alt="">
+          <span class="spec-badge">✓</span>
+          <div class="spec-lbl">LJK Kosong<br>(Blank)</div>
+        </div>
+        <div class="spec-item" id="specItem1" onclick="triggerSpec(1)">
+          <div class="spec-ph">✖️</div>
+          <img id="specImg1" src="" alt="">
+          <span class="spec-badge">✓</span>
+          <div class="spec-lbl">Disilang<br>Semua</div>
+        </div>
+        <div class="spec-item" id="specItem2" onclick="triggerSpec(2)">
+          <div class="spec-ph">✒️</div>
+          <img id="specImg2" src="" alt="">
+          <span class="spec-badge">✓</span>
+          <div class="spec-lbl">Silang+Garis<br>(Diralat)</div>
+        </div>
+      </div>
+      <div class="brow" style="margin-top:8px">
+        <button class="btn bpurp bsm" onclick="clearSpecs()">🗑️ Hapus Specimen</button>
+        <span id="specStatus" style="font-size:9px;color:rgba(255,255,255,.3);align-self:center">
+          0/3 specimen tersimpan
+        </span>
+      </div>
+    </div>
     <div class="card">
       <div class="ctitle">⚙️ Pengaturan Ujian</div>
       <div class="frow">
@@ -429,8 +487,8 @@ html,body{height:100%;width:100%;overflow:hidden;background:#000;
       <div class="ctitle">🗂️ Rekap Nilai <span class="cbadge" id="totBadge">0</span></div>
       <div id="rekapDiv"><div class="empty"><div>📂</div><p>Belum ada data.</p></div></div>
       <div class="brow" style="margin-top:10px">
-        <button class="btn ba" onclick="unduhTXT()">📄 Download Rekap (Teks)</button>
-        <button class="btn bb" onclick="unduhHTML()">🌐 Download Rekap (Web/Print)</button>
+        <button class="btn ba" onclick="unduhTXT()">📄 Download Teks/Print</button>
+        <button class="btn bb" onclick="unduhHTML()">🌐 Download Web/Print</button>
         <button class="btn bsm brd" onclick="hapusRekap()">🗑️ Hapus</button>
       </div>
     </div>
@@ -440,7 +498,6 @@ html,body{height:100%;width:100%;overflow:hidden;background:#000;
     </div>
   </div>
 </div>
-
 <div id="toastWrap"></div>
 
 <script async src="https://docs.opencv.org/4.8.0/opencv.js"
@@ -449,13 +506,17 @@ html,body{height:100%;width:100%;overflow:hidden;background:#000;
 
 <script>
 'use strict';
+// ── STATE GLOBAL ──
 var kunci={},scanJwb={},scanConf={};
 var listSiswa=JSON.parse(localStorage.getItem('bb_ljk')||'[]');
 var guru={nama:'',mapel:'',kelas:''};
 var camStream=null,facing='environment',cvReady=false;
 var capCanvas=null,isValid=false;
-var LJK={gap:0.020,colNoF:0.175};
+// Specimen: 0=kosong, 1=disilang semua, 2=silang+garis
+var specimens=[null,null,null]; // masing-masing = {imgData, baseline[5][n]}
+var curSpecIdx=-1;
 
+// ── SETUP ──
 function mulaiApp(){
   var nm=document.getElementById('namaGuru').value.trim();
   if(!nm){alert('Nama guru wajib!');return;}
@@ -471,7 +532,73 @@ function mulaiApp(){
   document.getElementById('pgSetup').style.display='none';
   document.getElementById('pgApp').style.display='flex';
   buildKGrid();goState('idle');
+  loadSpecFromStorage();
 }
+
+// ── SPECIMEN ──
+function triggerSpec(idx){
+  curSpecIdx=idx;
+  document.getElementById('fileSpec').click();
+}
+function handleSpec(e){
+  var file=e.target.files[0];if(!file)return;e.target.value='';
+  var img=new Image();
+  img.onload=function(){
+    var c=document.createElement('canvas');
+    c.width=img.naturalWidth;c.height=img.naturalHeight;
+    c.getContext('2d').drawImage(img,0,0);
+    URL.revokeObjectURL(img.src);
+    specimens[curSpecIdx]={canvas:c,dataUrl:c.toDataURL('image/jpeg',.6)};
+    document.getElementById('specImg'+curSpecIdx).src=specimens[curSpecIdx].dataUrl;
+    document.getElementById('specItem'+curSpecIdx).classList.add('has-data');
+    saveSpecToStorage();
+    updateSpecStatus();
+    toast('✅ Specimen '+(curSpecIdx+1)+' tersimpan');
+  };
+  img.src=URL.createObjectURL(file);
+}
+function clearSpecs(){
+  specimens=[null,null,null];
+  for(var i=0;i<3;i++){
+    document.getElementById('specImg'+i).src='';
+    document.getElementById('specItem'+i).classList.remove('has-data');
+  }
+  localStorage.removeItem('bb_spec');
+  updateSpecStatus();
+}
+function updateSpecStatus(){
+  var cnt=specimens.filter(Boolean).length;
+  document.getElementById('specStatus').textContent=cnt+'/3 specimen tersimpan';
+  var btn=document.getElementById('btnSpecStatus');
+  btn.textContent=cnt>0?('🧬 Specimen: '+cnt+'/3 ✓'):'🧬 Atur Specimen Referensi';
+  btn.style.color=cnt>0?'#10b981':'';
+}
+function saveSpecToStorage(){
+  var data=specimens.map(function(s){return s?s.dataUrl:null;});
+  try{localStorage.setItem('bb_spec',JSON.stringify(data));}catch(e){}
+}
+function loadSpecFromStorage(){
+  try{
+    var raw=localStorage.getItem('bb_spec');
+    if(!raw)return;
+    var data=JSON.parse(raw);
+    data.forEach(function(dataUrl,i){
+      if(!dataUrl)return;
+      var img=new Image();
+      img.onload=function(){
+        var c=document.createElement('canvas');c.width=img.width;c.height=img.height;
+        c.getContext('2d').drawImage(img,0,0);
+        specimens[i]={canvas:c,dataUrl:dataUrl};
+        document.getElementById('specImg'+i).src=dataUrl;
+        document.getElementById('specItem'+i).classList.add('has-data');
+        updateSpecStatus();
+      };
+      img.src=dataUrl;
+    });
+  }catch(e){}
+}
+
+// ── NAV ──
 function goState(s){
   ['idle','camera','preview','scanning','verify'].forEach(function(n){
     var el=document.getElementById('st'+n[0].toUpperCase()+n.slice(1));
@@ -485,6 +612,8 @@ function goTab(name,btn){
   document.getElementById('p'+name).classList.add('active');btn.classList.add('active');
   if(name==='Rekap')renderRekap();
 }
+
+// ── KAMERA ──
 async function startCam(){
   try{
     if(camStream){camStream.getTracks().forEach(function(t){t.stop();});camStream=null;}
@@ -525,13 +654,12 @@ function handleFile(e){
 }
 function showPreview(canvas){
   capCanvas=canvas;isValid=false;
-  document.getElementById('prevImg').src=canvas.toDataURL('image/jpeg',0.92);
+  document.getElementById('prevImg').src=canvas.toDataURL('image/jpeg',.92);
   var ban=document.getElementById('valBanner');
   ban.className='validating';
   document.getElementById('valRing').style.display='block';
   document.getElementById('valTitle').textContent='Memvalidasi format LJK…';
   document.getElementById('valSub').textContent='Memeriksa Lembar Jawaban SMKN 1 Sumarorong';
-  document.getElementById('valInfo').style.display='none';
   document.getElementById('btnLanjut').disabled=true;
   goState('preview');
   setTimeout(function(){validateLJK(canvas);},350);
@@ -541,20 +669,20 @@ function retake(){
   if(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia)startCam();
   else goState('idle');
 }
+
+// ── VALIDASI ──
 function validateLJK(canvas){
   if(!cvReady||typeof cv==='undefined'){
-    setValResult(true,'⚠️ Validasi dilewati','Pastikan foto adalah LJK SMKN 1',null,null,null);return;
+    setValResult(true,'⚠️ Validasi dilewati','Pastikan ini LJK SMKN 1 Sumarorong',null,null);return;
   }
   try{
     var src=cv.imread(canvas);var gray=new cv.Mat();
     cv.cvtColor(src,gray,cv.COLOR_RGBA2GRAY);
-    var origW=src.cols,origH=src.rows;src.delete();
-    var W=origW,H=origH;
-    if(W>900){var sc=900/W;W=900;H=Math.round(H*sc);cv.resize(gray,gray,new cv.Size(W,H));}
+    var W=src.cols,H=src.rows;src.delete();
+    if(W>900){var sc=900/W;cv.resize(gray,gray,new cv.Size(Math.round(W*sc),Math.round(H*sc)));W=gray.cols;H=gray.rows;}
     var blur=new cv.Mat();cv.GaussianBlur(gray,blur,new cv.Size(5,5),0);gray.delete();
     var th=new cv.Mat();
-    cv.adaptiveThreshold(blur,th,255,cv.ADAPTIVE_THRESH_GAUSSIAN_C,cv.THRESH_BINARY_INV,15,5);
-    blur.delete();
+    cv.adaptiveThreshold(blur,th,255,cv.ADAPTIVE_THRESH_GAUSSIAN_C,cv.THRESH_BINARY_INV,15,5);blur.delete();
     var kH=cv.getStructuringElement(cv.MORPH_RECT,new cv.Size(Math.round(W*0.06),1));
     var mH=new cv.Mat();cv.morphologyEx(th,mH,cv.MORPH_OPEN,kH);kH.delete();
     var cH=new cv.MatVector(),hH=new cv.Mat();
@@ -569,21 +697,16 @@ function validateLJK(canvas){
     var vLines=0;
     for(var i=0;i<cV.size();i++){var r=cv.boundingRect(cV.get(i));if(r.height>H*0.03)vLines++;}
     cV.delete();hV.delete();mV.delete();th.delete();
-    var ratio=origW/origH;
-    var valid=(origH>origW)&&(hLines>=8)&&(vLines>=6);
+    var valid=(H>W)&&(hLines>=8)&&(vLines>=6);
     var reason='';
-    if(origH<=origW)reason='Foto harus TEGAK (portrait). Putar HP 90°.';
-    else if(hLines<8)reason='Garis soal kurang ('+hLines+'). Foto lebih dekat.';
-    else if(vLines<6)reason='Kolom opsi kurang ('+vLines+'). Pastikan foto tidak buram.';
-    setValResult(valid,
-      valid?'✅ Format LJK Terdeteksi':'❌ Bukan Format LJK Valid',
-      valid?(hLines+' baris · '+vLines+' kolom · LJK SMKN 1 ✓'):reason,
-      hLines,vLines,ratio);
-  }catch(err){
-    setValResult(true,'⚠️ Validasi manual — pastikan ini LJK SMKN 1','',null,null,null);
-  }
+    if(H<=W)reason='Foto harus TEGAK. Putar HP 90°.';
+    else if(hLines<8)reason='Garis baris kurang ('+hLines+'). Foto lebih dekat.';
+    else if(vLines<6)reason='Kolom opsi kurang ('+vLines+'). Kurang jelas.';
+    setValResult(valid,valid?'✅ Format LJK Terdeteksi':'❌ Bukan LJK Valid',
+      valid?(hLines+' baris · '+vLines+' kolom ✓'):reason,hLines,vLines);
+  }catch(e){setValResult(true,'⚠️ Validasi manual','',null,null);}
 }
-function setValResult(valid,title,sub,hL,vL,ratio){
+function setValResult(valid,title,sub,hL,vL){
   isValid=valid;
   var ban=document.getElementById('valBanner');
   ban.className=valid?'valid':'invalid';
@@ -591,195 +714,463 @@ function setValResult(valid,title,sub,hL,vL,ratio){
   document.getElementById('valTitle').textContent=title;
   document.getElementById('valSub').textContent=sub;
   document.getElementById('btnLanjut').disabled=!valid;
-  if(hL!==null){
-    document.getElementById('valInfo').style.display='block';
-    document.getElementById('viH').textContent=hL+' garis';
-    document.getElementById('viV').textContent=vL+' garis';
-    document.getElementById('viR').textContent=ratio?ratio.toFixed(2):'—';
-    document.getElementById('viS').innerHTML=valid?
-      '<span class="vi-ok">✓ Valid</span>':'<span class="vi-no">✗ Ditolak</span>';
-  }
-  toast(valid?'✅ LJK valid!':'❌ Foto ditolak — foto ulang!');
+  toast(valid?'✅ LJK valid!':'❌ Foto ditolak');
 }
+<!-- =========================================================
+     BENYAMIN BATAU LJK SCANNER APP - BAGIAN 2 dari 2
+     =========================================================
+     CARA GABUNG: Paste tepat di bawah akhir BAGIAN 1
+     Tidak perlu ubah apapun, langsung gabung saja.
+     ========================================================= -->
+
+// ══════════════════════════════════════════════════════════════
+// SNAKE-GECKO MULTI-PERSPECTIVE SCAN
+// ══════════════════════════════════════════════════════════════
+
+function setPass(idx,cls){
+  for(var i=0;i<6;i++){
+    document.getElementById('pp'+i).className='pass-item'+(i===idx?' '+cls:i<idx?' done':'');
+  }
+}
+function setProg(pct,txt,sub){
+  document.getElementById('scProg').style.width=pct+'%';
+  if(txt)document.getElementById('scTxt').textContent=txt;
+  if(sub)document.getElementById('scSub').textContent=sub;
+}
+
 function lanjutScan(){
-  if(!isValid||!capCanvas){toast('❌ Foto belum valid');return;}
-  if(!cvReady||typeof cv==='undefined'){toast('⚠️ OpenCV belum siap');return;}
-  var n=parseInt(document.getElementById('jmlSoal').value);
-  goState('scanning');setStep(1,'act');
-  setTimeout(function(){
-    try{
-      var result=twinDetect(capCanvas,n);
-      openVerify(result,n);goState('verify');
-    }catch(err){
-      console.error(err);
-      openVerify({jawaban:{},confidence:{}},n);goState('verify');
-      toast('⚠️ Deteksi gagal — isi manual');
-    }
-  },80);
+  if(!isValid||!capCanvas)return;
+  goState('scanning');
+  setProg(0,'Mempersiapkan…','');
+  setPass(0,'act');
+  // Jalankan scan secara async dengan delay antar pass agar UI bisa update
+  setTimeout(function(){runSnakeGeckoScan(capCanvas);},150);
 }
 
-// ════════════════════════════════════════════════════
-// TWIN DETECTOR — Basis v3 + perbaikan akurasi kolom
-// Perbaikan utama dari v3:
-//   1. Margin sel LEBIH KECIL (15%) — ambil lebih banyak area X
-//   2. Sampling MULTI-ZONA per sel: area atas + tengah + bawah digabung
-//   3. Horizontal ratio zone ditarget TEPAT di 35%-65% ketinggian
-//   4. Winner-take-all + minimum gap 1.5x threshold sebelum diterima
-//   5. Resize ke 1600px agar satu kolom punya lebih banyak pixel
-// ════════════════════════════════════════════════════
-function setStep(n,cls){
-  for(var i=1;i<=4;i++){
-    document.getElementById('sp'+i).className='step'+(i===n?' '+cls:i<n?' done':'');
+// ── DETEKSI GRID (rowH + column bounds) ──
+function detectGrid(gray, W, H){
+  // ── rowH via proyeksi horizontal ──
+  var kH=cv.getStructuringElement(cv.MORPH_RECT,new cv.Size(Math.max(3,Math.round(W*0.07)),1));
+  var hLM=new cv.Mat();cv.morphologyEx(gray,hLM,cv.MORPH_OPEN,kH);kH.delete();
+  // Proyeksi
+  var proj=new Float32Array(H);
+  for(var y=0;y<H;y++){
+    var row=hLM.row(y);var s=0;
+    for(var x=0;x<W;x++)s+=hLM.ucharAt(y,x);
+    proj[y]=s/W;
   }
-}
-
-function twinDetect(srcCanvas,n){
-  var src=cv.imread(srcCanvas);
-  var gray=new cv.Mat();
-  cv.cvtColor(src,gray,cv.COLOR_RGBA2GRAY);
-  src.delete();
-
-  // Resize ke 1600px — lebih resolusi = kolom lebih presisi
-  var maxW=1600;
-  var W=gray.cols,H=gray.rows;
-  if(W>maxW){var sc=maxW/W;W=maxW;H=Math.round(H*sc);cv.resize(gray,gray,new cv.Size(W,H));}
-
-  // Blur ringan
-  var blur=new cv.Mat();
-  cv.GaussianBlur(gray,blur,new cv.Size(3,3),0);
-  gray.delete();
-
-  // 2 threshold: satu longgar (untuk deteksi tabel), satu ketat (untuk baca jawaban)
-  var thL=new cv.Mat(),thT=new cv.Mat();
-  cv.adaptiveThreshold(blur,thL,255,cv.ADAPTIVE_THRESH_GAUSSIAN_C,cv.THRESH_BINARY_INV,21,6);
-  cv.adaptiveThreshold(blur,thT,255,cv.ADAPTIVE_THRESH_GAUSSIAN_C,cv.THRESH_BINARY_INV,11,3);
-  blur.delete();
-
-  setStep(1,'act');
-  document.getElementById('scTxt').textContent='Mendeteksi area tabel…';
-
-  // Deteksi batas tabel dari kontur terbesar
-  var cnts=new cv.MatVector(),hier=new cv.Mat();
-  cv.findContours(thL,cnts,hier,cv.RETR_EXTERNAL,cv.CHAIN_APPROX_SIMPLE);
-  var imgA=W*H;
-  var tX=Math.round(W*.02),tY=Math.round(H*.22),tW=Math.round(W*.96),tH=Math.round(H*.75);
-  var best=0;
-  for(var i=0;i<cnts.size();i++){
-    var a=cv.contourArea(cnts.get(i));
-    var r=cv.boundingRect(cnts.get(i));
-    var ar=r.width/r.height;
-    if(a>imgA*.08&&a<imgA*.93&&ar>0.3&&ar<7&&a>best){
-      best=a;tX=r.x;tY=r.y;tW=r.width;tH=r.height;
+  hLM.delete();
+  // Smooth
+  var ps=new Float32Array(H);
+  for(var y=1;y<H-1;y++)ps[y]=(proj[y-1]+proj[y]+proj[y+1])/3;
+  // Peaks
+  var rawPeaks=[];
+  for(var y=2;y<H-2;y++){
+    if(ps[y]>0.25*255 && ps[y]>=ps[y-1] && ps[y]>=ps[y+1]){
+      if(!rawPeaks.length||y-rawPeaks[rawPeaks.length-1]>5)rawPeaks.push(y);
     }
   }
-  cnts.delete();hier.delete();
-  setStep(1,'done');setStep(2,'act');
-  document.getElementById('scTxt').textContent='Membaca jawaban siswa…';
+  if(rawPeaks.length<6)return null;
+  // best_gap
+  var gaps=[];
+  for(var i=0;i<rawPeaks.length-1;i++){
+    var g=rawPeaks[i+1]-rawPeaks[i];
+    if(g>=20)gaps.push(Math.round(g/5)*5);
+  }
+  if(!gaps.length)return null;
+  var gapCnt={};
+  gaps.forEach(function(g){gapCnt[g]=(gapCnt[g]||0)+1;});
+  var bestGap=parseInt(Object.keys(gapCnt).reduce(function(a,b){return gapCnt[a]>gapCnt[b]?a:b;}));
+  var tol=bestGap*0.35;
+  var bestRun=[rawPeaks[0]],cur=[rawPeaks[0]];
+  for(var i=1;i<rawPeaks.length;i++){
+    if(Math.abs(rawPeaks[i]-cur[cur.length-1]-bestGap)<=tol){
+      cur.push(rawPeaks[i]);
+      if(cur.length>bestRun.length)bestRun=cur.slice();
+    }else{
+      if(cur.length>bestRun.length)bestRun=cur.slice();
+      cur=[rawPeaks[i]];
+    }
+  }
+  if(cur.length>bestRun.length)bestRun=cur;
+  if(bestRun.length<6)return null;
+  var rowH=0;
+  for(var i=0;i<bestRun.length-1;i++)rowH+=bestRun[i+1]-bestRun[i];
+  rowH/=(bestRun.length-1);
+  bestRun.push(Math.round(bestRun[bestRun.length-1]+rowH));
 
-  var jawaban={},confidence={};
-  var rowsPerBlok=Math.ceil(n/2);
-  var gapPx=tW*LJK.gap;
-  var blokW=(tW-gapPx)/2;
-  var colNo=blokW*LJK.colNoF;
-  var colOp=(blokW-colNo)/5;
-  var rowH=tH/(rowsPerBlok+1); // +1 skip baris header
+  // ── vcols via proyeksi vertikal ──
+  var kV=cv.getStructuringElement(cv.MORPH_RECT,new cv.Size(1,Math.max(3,Math.round(rowH*3.0))));
+  var vLM=new cv.Mat();cv.morphologyEx(gray,vLM,cv.MORPH_OPEN,kV);kV.delete();
+  var vprojRaw=new Float32Array(W);
+  for(var x=0;x<W;x++){
+    var s=0;
+    for(var y=0;y<H;y++)s+=vLM.ucharAt(y,x);
+    vprojRaw[x]=s/H;
+  }
+  vLM.delete();
+  var vps=new Float32Array(W);
+  for(var x=2;x<W-2;x++)vps[x]=(vprojRaw[x-2]+vprojRaw[x-1]+vprojRaw[x]+vprojRaw[x+1]+vprojRaw[x+2])/5;
+  var minVpk=rowH*5/H*255;
+  var vcolsRaw=[];
+  for(var x=2;x<W-2;x++){
+    if(vps[x]>minVpk && vps[x]>=vps[x-1] && vps[x]>=vps[x+1]){
+      if(!vcolsRaw.length||x-vcolsRaw[vcolsRaw.length-1]>5)vcolsRaw.push(x);
+    }
+  }
+  var minColGap=rowH*0.5;
+  var vcols=vcolsRaw.length?[vcolsRaw[0]]:[];
+  for(var i=1;i<vcolsRaw.length;i++){
+    if(vcolsRaw[i]-vcols[vcols.length-1]>=minColGap)vcols.push(vcolsRaw[i]);
+    else if(vps[vcolsRaw[i]]>vps[vcols[vcols.length-1]])vcols[vcols.length-1]=vcolsRaw[i];
+  }
 
-  var bloks=[
-    {start:1,           end:Math.min(rowsPerBlok,n),bx:tX},
-    {start:rowsPerBlok+1,end:n,                      bx:tX+blokW+gapPx}
-  ];
+  // Split blok kiri/kanan
+  var midGaps=[];
+  for(var i=0;i<vcols.length-1;i++){
+    if(vcols[i]>W*0.28&&vcols[i]<W*0.72)midGaps.push([vcols[i+1]-vcols[i],i]);
+  }
+  midGaps.sort(function(a,b){return b[0]-a[0];});
+  var lb=null,rb=null;
+  if(midGaps.length){
+    var si=midGaps[0][1];
+    var lv=vcols.slice(0,si+1);
+    var rv=vcols.slice(si+1);
+    lb=lv.length>=7?lv.slice(1,7):null;
+    rb=rv.length>=6?rv.slice(0,6):null;
+  }
 
-  bloks.forEach(function(blok){
-    if(blok.start>n)return;
+  // Fallback bounds dari tabel proporsional
+  if(!lb||!rb){
+    // Cari batas tabel dari kontur terbesar
+    var cnts=new cv.MatVector(),hier=new cv.Mat();
+    cv.findContours(gray,cnts,hier,cv.RETR_EXTERNAL,cv.CHAIN_APPROX_SIMPLE);
+    var tX=Math.round(W*.02),tW=Math.round(W*.96);
+    var bestA=0;
+    for(var i=0;i<cnts.size();i++){
+      var a=cv.contourArea(cnts.get(i));
+      var r=cv.boundingRect(cnts.get(i));
+      if(a>W*H*.08&&a<W*H*.93&&a>bestA){bestA=a;tX=r.x;tW=r.width;}
+    }
+    cnts.delete();hier.delete();
+    var gapPx=Math.round(tW*.020);
+    var blokW=(tW-gapPx)/2;
+    var noW=Math.round(blokW*.175);
+    var opW=(blokW-noW)/5;
+    if(!lb){lb=[];for(var i=0;i<6;i++)lb.push(Math.round(tX+noW+i*opW));}
+    if(!rb){rb=[];var rx=tX+blokW+gapPx;for(var i=0;i<6;i++)rb.push(Math.round(rx+i*opW));}
+  }
 
-    for(var s=blok.start;s<=blok.end;s++){
-      var rowIdx=s-blok.start;
-      var ry=tY+rowH*(rowIdx+1);
-      var analysis=[];
+  return{bestRun:bestRun,rowH:rowH,lb:lb,rb:rb};
+}
 
-      for(var oi=0;oi<5;oi++){
-        var cellX=blok.bx+colNo+oi*colOp;
-
-        // ── MARGIN LEBIH KECIL: 15% kiri-kanan, 15% atas-bawah ──
-        // (v3 pakai 22% — terlalu besar, membuang area X di tepi)
-        var mg=0.15;
-        var inX=Math.round(cellX+colOp*mg);
-        var inY=Math.round(ry+rowH*mg);
-        var inW=Math.max(4,Math.round(colOp*(1-2*mg)));
-        var inH=Math.max(4,Math.round(rowH*(1-2*mg)));
-        var sx=Math.max(0,Math.min(inX,W-inW-1));
-        var sy=Math.max(0,Math.min(inY,H-inH-1));
-        if(sx+inW>W||sy+inH>H){analysis.push({tot:0,hR:0,area:inW*inH});continue;}
-
-        var roi=thT.roi(new cv.Rect(sx,sy,inW,inH));
-        var tot=cv.countNonZero(roi);
-
-        // ── ZONA HORIZONTAL: tepat di 35%–65% tinggi sel ──
-        // Zona ini menangkap garis horizontal dari tanda ralat (=)
-        // Jika rasio tinggi di sini = kemungkinan dicoret
-        var hzY=Math.round(inH*0.35);
-        var hzH=Math.max(2,Math.min(Math.round(inH*0.30),inH-hzY-1));
-        var hz=roi.roi(new cv.Rect(0,hzY,inW,hzH));
-        var hPx=cv.countNonZero(hz);
-        roi.delete();hz.delete();
-
-        analysis.push({tot:tot,hR:tot>0?hPx/tot:0,area:inW*inH});
-      }
-
-      setStep(2,'act');setStep(3,'act');
-
-      // ── THRESHOLD per sel ──
-      var THR=(analysis[0]&&analysis[0].area||100)*0.07; // 7% area = ada tinta
-      var BATAL=0.42; // rasio horizontal >= 42% = pola garis = dicoret
-
-      // Pilah aktif vs batal
-      var aktif=analysis.map(function(a,i){
-        return {
-          tot:a.tot,hR:a.hR,area:a.area,idx:i,
-          isCancelled:a.tot>=THR&&a.hR>=BATAL,
-          isActive:   a.tot>=THR&&a.hR< BATAL
-        };
-      }).filter(function(a){return a.isActive;});
-
-      if(aktif.length>0){
-        // Urutkan terbesar dulu
-        aktif.sort(function(a,b){return b.tot-a.tot;});
-        var winner=aktif[0];
-        var runnerUp=aktif.length>1?aktif[1].tot:0;
-
-        // ── MINIMUM GAP: winner harus unggul minimal 40% dari threshold ──
-        // Ini mencegah noise tipis salah diambil
-        var gap=winner.tot-runnerUp;
-        var minGap=THR*0.4;
-
-        if(gap>=minGap||aktif.length===1){
-          jawaban[s]=['A','B','C','D','E'][winner.idx];
-          var diff=(winner.tot-runnerUp)/(winner.area||100);
-          confidence[s]=diff>0.12?'high':diff>0.05?'med':'low';
-        } else {
-          // Dua kandidat terlalu mirip — tandai perlu cek
-          jawaban[s]=['A','B','C','D','E'][winner.idx];
-          confidence[s]='low';
+// ── METODE SISIK ULAR (Snake Scale) ──
+// Zigzag scan: bagi sel jadi N strip horizontal tipis
+// Per strip hitung kepadatan pixel, ambil rata-rata tertimbang
+// Ini sangat stabil karena tidak bergantung pada satu area saja
+function snakeScan(thMat, W, H, bounds, bestRun, rowsPerBlok, blokStart, riStart, BATAL_R){
+  var OPSI=['A','B','C','D','E'];
+  var result={};
+  var N_STRIPS=6; // jumlah strip per sel
+  for(var s=blokStart;s<blokStart+rowsPerBlok;s++){
+    var ri=(s-blokStart)+riStart;
+    if(ri>=bestRun.length-1)continue;
+    var ryTop=bestRun[ri],ryBot=bestRun[ri+1];
+    var cellH=ryBot-ryTop;
+    var stripH=Math.max(1,Math.floor(cellH/N_STRIPS));
+    var vals=[];
+    var horzRatios=[];
+    for(var oi=0;oi<5;oi++){
+      if(oi+1>=bounds.length){vals.push(0);horzRatios.push(0);continue;}
+      var cx1=bounds[oi],cx2=bounds[oi+1];
+      var cellW=cx2-cx1;
+      var totalInk=0;var totalPx=0;var horzInk=0;
+      // SNAKE: strip 0→N ganjil kiri→kanan, genap kanan→kiri
+      for(var strip=0;strip<N_STRIPS;strip++){
+        var sy=Math.round(ryTop+cellH*0.20)+strip*stripH;
+        var ey=Math.min(sy+stripH,Math.round(ryTop+cellH*0.80));
+        if(sy>=ey)continue;
+        // margin horizontal kecil
+        var sx=cx1+2,ex=cx2-2;
+        if(sx>=ex)continue;
+        var stripInk=0;var stripPx=(ey-sy)*(ex-sx);
+        // arah zigzag (snake pattern)
+        var xStart=strip%2===0?sx:ex-1;
+        var xEnd=strip%2===0?ex:sx-1;
+        var xStep=strip%2===0?1:-1;
+        for(var y=sy;y<ey;y++){
+          for(var x=xStart;strip%2===0?x<xEnd:x>xEnd;x+=xStep){
+            if(x>=0&&x<W&&y>=0&&y<H){
+              var px=thMat.ucharAt(y,x);
+              if(px>128){stripInk++;
+                // zona tengah horizontal = deteksi garis ralat
+                if(strip>=2&&strip<=3)horzInk++;
+              }
+            }
+          }
         }
-      } else {
-        var batal=analysis.filter(function(a){return a.tot>=(a.area||100)*0.07&&a.hR>=BATAL;});
-        jawaban[s]='';
-        confidence[s]=batal.length?'batal':'low';
+        totalInk+=stripInk;totalPx+=stripPx;
       }
+      vals.push(totalInk);
+      horzRatios.push(totalInk>0?horzInk/totalInk:0);
+    }
+    var total=vals.reduce(function(a,b){return a+b;},0);
+    var mx=Math.max.apply(null,vals);
+    var mxIdx=vals.indexOf(mx);
+    var conf=total>0?mx/total:0;
+    // Deteksi ralat: horzRatio tinggi = pola garis = dicoret
+    var isBatal=mx>0&&horzRatios[mxIdx]>=BATAL_R&&vals.filter(function(v){return v>mx*.3;}).length>=2;
+    result[s]={
+      vals:vals,winner:OPSI[mxIdx],conf:conf,
+      isBatal:isBatal,horzR:horzRatios[mxIdx]
+    };
+  }
+  return result;
+}
+
+// ── METODE TAPAK CICAK (Gecko Footprint) ──
+// Bagi sel jadi grid 3×3 (9 zona seperti tapak cicak)
+// Zona tengah = body X, zona pojok = kaki X
+// Hitung kepadatan tiap zona lalu gunakan pola relatif
+function geckoScan(thMat, W, H, bounds, bestRun, rowsPerBlok, blokStart, riStart, BATAL_R){
+  var OPSI=['A','B','C','D','E'];
+  var result={};
+  for(var s=blokStart;s<blokStart+rowsPerBlok;s++){
+    var ri=(s-blokStart)+riStart;
+    if(ri>=bestRun.length-1)continue;
+    var ryTop=bestRun[ri],ryBot=bestRun[ri+1];
+    var cellH=ryBot-ryTop;
+    var vals=[];
+    var horzRatios=[];
+    for(var oi=0;oi<5;oi++){
+      if(oi+1>=bounds.length){vals.push(0);horzRatios.push(0);continue;}
+      var cx1=bounds[oi],cx2=bounds[oi+1];
+      var cellW=cx2-cx1;
+      // 9 zona tapak cicak (3×3 grid), skip tepi 15%
+      var x0=Math.round(cx1+cellW*.15),x1=Math.round(cx2-cellW*.15);
+      var y0=Math.round(ryTop+cellH*.20),y1=Math.round(ryBot-cellH*.20);
+      var zW=(x1-x0)/3,zH=(y1-y0)/3;
+      if(zW<1||zH<1){vals.push(0);horzRatios.push(0);continue;}
+      var zones=new Array(9).fill(0);
+      var areas=new Array(9).fill(0);
+      for(var zi=0;zi<3;zi++){
+        for(var zj=0;zj<3;zj++){
+          var zx0=Math.round(x0+zj*zW),zx1=Math.round(x0+(zj+1)*zW);
+          var zy0=Math.round(y0+zi*zH),zy1=Math.round(y0+(zi+1)*zH);
+          var ink=0,area=(zx1-zx0)*(zy1-zy0);
+          for(var zy=zy0;zy<zy1&&zy<H;zy++){
+            for(var zx=zx0;zx<zx1&&zx<W;zx++){
+              if(thMat.ucharAt(zy,zx)>128)ink++;
+            }
+          }
+          zones[zi*3+zj]=ink;areas[zi*3+zj]=area||1;
+        }
+      }
+      // Pola X: tengah (4) + diagonal (0,2,6,8) tinggi; tepi (1,3,5,7) lebih rendah
+      // Pola garis horizontal: baris tengah (3,4,5) sangat tinggi
+      var center=zones[4]/(areas[4]||1);
+      var diag=(zones[0]+zones[2]+zones[6]+zones[8])/(areas[0]+areas[2]+areas[6]+areas[8]||1);
+      var mid=(zones[1]+zones[3]+zones[5]+zones[7])/(areas[1]+areas[3]+areas[5]+areas[7]||1);
+      var horzBand=(zones[3]+zones[4]+zones[5])/(areas[3]+areas[4]+areas[5]||1);
+      var allInk=zones.reduce(function(a,b){return a+b;},0);
+      var allArea=areas.reduce(function(a,b){return a+b;},0);
+      // Skor cicak = center + diag weighted
+      var geckoScore=allInk; // gunakan total untuk compatibility
+      vals.push(geckoScore);
+      horzRatios.push(allInk>0?horzBand/(allInk/(allArea||1)):0);
+    }
+    var total=vals.reduce(function(a,b){return a+b;},0);
+    var mx=Math.max.apply(null,vals);
+    var mxIdx=vals.indexOf(mx);
+    var conf=total>0?mx/total:0;
+    var isBatal=mx>0&&horzRatios[mxIdx]>=BATAL_R;
+    result[s]={vals:vals,winner:OPSI[mxIdx],conf:conf,isBatal:isBatal,horzR:horzRatios[mxIdx]};
+  }
+  return result;
+}
+
+// ── KOREKSI SPECIMEN ──
+// Bandingkan hasil scan dengan baseline specimen
+// Jika specimen kosong → subtract baseline noise
+// Jika specimen disilang → normalize terhadap max ink
+function applySpecimenCorrection(cellResults, specIdx, bounds, bestRun, rowsPerBlok, blokStart, riStart, thMat, W, H){
+  if(!specimens[specIdx]||!specimens[specIdx].canvas)return cellResults;
+  // Scan specimen dengan parameter sama
+  var specCanvas=specimens[specIdx].canvas;
+  var specGray=new cv.Mat();
+  var specSrc=cv.imread(specCanvas);
+  cv.cvtColor(specSrc,specGray,cv.COLOR_RGBA2GRAY);
+  specSrc.delete();
+  var sW=specGray.cols,sH=specGray.rows;
+  // Resize ke ukuran sama
+  if(sW!==W||sH!==H){cv.resize(specGray,specGray,new cv.Size(W,H));}
+  var specBlur=new cv.Mat();cv.GaussianBlur(specGray,specBlur,new cv.Size(3,3),0);specGray.delete();
+  var specTh=new cv.Mat();
+  cv.adaptiveThreshold(specBlur,specTh,255,cv.ADAPTIVE_THRESH_GAUSSIAN_C,cv.THRESH_BINARY_INV,11,3);
+  specBlur.delete();
+  var specResults=geckoScan(specTh,W,H,bounds,bestRun,rowsPerBlok,blokStart,riStart,0.42);
+  specTh.delete();
+  // Koreksi: kurangi ink dari specimen
+  var corrected={};
+  Object.keys(cellResults).forEach(function(s){
+    var r=cellResults[s];
+    var sr=specResults[s];
+    if(!sr){corrected[s]=r;return;}
+    if(specIdx===0){
+      // LJK kosong: kurangi noise background
+      var adj=r.vals.map(function(v,i){return Math.max(0,v-sr.vals[i]*.5);});
+      var total=adj.reduce(function(a,b){return a+b;},0);
+      var mx=Math.max.apply(null,adj);
+      var mxIdx=adj.indexOf(mx);
+      corrected[s]={vals:adj,winner:['A','B','C','D','E'][mxIdx],
+        conf:total>0?mx/total:0,isBatal:r.isBatal};
+    }else{
+      corrected[s]=r; // specimen lain: sementara tidak dimodifikasi
     }
   });
+  return corrected;
+}
 
-  thL.delete();thT.delete();
-  setStep(3,'done');setStep(4,'done');
-  document.getElementById('scTxt').textContent='Selesai!';
-  return{jawaban:jawaban,confidence:confidence};
+// ── VOTING MAJORITY ──
+function majorityVote(results1, results2, results3, n){
+  var OPSI=['A','B','C','D','E'];
+  var final={jawaban:{},confidence:{}};
+  for(var s=1;s<=n;s++){
+    var r1=results1[s],r2=results2[s],r3=results3[s];
+    var w1=r1?r1.winner:'';
+    var w2=r2?r2.winner:'';
+    var w3=r3?r3.winner:'';
+    var winner='';
+    var conf='low';
+    // Majority: 2 dari 3 setuju
+    if(w1===w2&&w1)winner=w1;
+    else if(w1===w3&&w1)winner=w1;
+    else if(w2===w3&&w2)winner=w2;
+    else winner=w1||w2||w3; // tak ada majority → ambil pass 1
+    // Confidence: semua 3 setuju = high, 2 setuju = med, tidak ada = low
+    var allAgree=(w1===w2&&w2===w3&&w1);
+    var twoAgree=(w1===w2||w1===w3||w2===w3)&&winner;
+    // Hitung confidence dari konfirmasi antar pass
+    var confs=[r1&&r1.conf||0,r2&&r2.conf||0,r3&&r3.conf||0];
+    var avgConf=confs.reduce(function(a,b){return a+b;},0)/3;
+    if(allAgree&&avgConf>=0.38)conf='high';
+    else if(twoAgree&&avgConf>=0.32)conf='med';
+    else conf='low';
+    // Deteksi batal
+    var isBatal=(r1&&r1.isBatal)||(r2&&r2.isBatal)||(r3&&r3.isBatal);
+    if(isBatal)conf='batal';
+    if(isBatal||!winner)winner='';
+    final.jawaban[s]=winner;
+    final.confidence[s]=conf;
+  }
+  return final;
+}
+
+// ── MAIN SCAN ORCHESTRATOR ──
+function runSnakeGeckoScan(srcCanvas){
+  if(!cvReady||typeof cv==='undefined'){
+    openVerify({jawaban:{},confidence:{}},parseInt(document.getElementById('jmlSoal').value));
+    goState('verify');toast('⚠️ OpenCV belum siap — isi manual');return;
+  }
+  var n=parseInt(document.getElementById('jmlSoal').value);
+  var rowsPerBlok=Math.ceil(n/2);
+
+  try{
+    // ── STEP 0: Preprocess ──
+    setProg(5,'Memuat gambar…','Preprocessing');
+    var src=cv.imread(srcCanvas);
+    var gray=new cv.Mat();cv.cvtColor(src,gray,cv.COLOR_RGBA2GRAY);src.delete();
+    var W=gray.cols,H=gray.rows;
+    if(W>1400){var sc=1400/W;W=Math.round(W*sc);H=Math.round(H*sc);cv.resize(gray,gray,new cv.Size(W,H));}
+    // CLAHE untuk normalisasi kontras
+    var clahe=new cv.CLAHE(2.0,new cv.Size(8,8));
+    var enhanced=new cv.Mat();clahe.apply(gray,enhanced);
+    gray.delete();clahe.delete();
+    var blur=new cv.Mat();cv.GaussianBlur(enhanced,blur,new cv.Size(3,3),0);enhanced.delete();
+
+    setProg(12,'Mendeteksi grid…','Proyeksi baris & kolom');
+    setPass(0,'done');setPass(1,'act');
+
+    // ── STEP 1: Deteksi grid ──
+    var thL=new cv.Mat();
+    cv.adaptiveThreshold(blur,thL,255,cv.ADAPTIVE_THRESH_GAUSSIAN_C,cv.THRESH_BINARY_INV,21,6);
+    var grid=detectGrid(thL,W,H);
+    thL.delete();
+    if(!grid){
+      blur.delete();
+      openVerify({jawaban:{},confidence:{}},n);goState('verify');
+      toast('⚠️ Grid tidak terdeteksi — isi manual');return;
+    }
+    var bestRun=grid.bestRun,lb=grid.lb,rb=grid.rb;
+
+    // ── STEP 2: Pass 1 — Snake (threshold normal C=6) ──
+    setProg(30,'Pass 1: Jejak Sisik Ular…','Adaptive threshold normal');
+    setPass(1,'done');setPass(2,'act');
+    var th1=new cv.Mat();
+    cv.adaptiveThreshold(blur,th1,255,cv.ADAPTIVE_THRESH_GAUSSIAN_C,cv.THRESH_BINARY_INV,11,6);
+    var snake1L=snakeScan(th1,W,H,lb,bestRun,rowsPerBlok,1,1,0.40);
+    var snake1R=snakeScan(th1,W,H,rb,bestRun,rowsPerBlok,rowsPerBlok+1,2,0.40);
+    th1.delete();
+
+    // ── STEP 3: Pass 2 — Gecko (threshold ketat C=3) ──
+    await_pass(function(){
+      setProg(55,'Pass 2: Tapak Cicak…','Adaptive threshold ketat');
+      setPass(2,'done');setPass(3,'act');
+      var th2=new cv.Mat();
+      cv.adaptiveThreshold(blur,th2,255,cv.ADAPTIVE_THRESH_GAUSSIAN_C,cv.THRESH_BINARY_INV,11,3);
+      var gecko2L=geckoScan(th2,W,H,lb,bestRun,rowsPerBlok,1,1,0.42);
+      var gecko2R=geckoScan(th2,W,H,rb,bestRun,rowsPerBlok,rowsPerBlok+1,2,0.42);
+      th2.delete();
+
+      // ── STEP 4: Pass 3 — Otsu global ──
+      await_pass(function(){
+        setProg(75,'Pass 3: Otsu Global…','Normalisasi global');
+        setPass(3,'done');setPass(4,'act');
+        var th3=new cv.Mat();
+        cv.threshold(blur,th3,0,255,cv.THRESH_BINARY_INV+cv.THRESH_OTSU);
+        var otsu3L=geckoScan(th3,W,H,lb,bestRun,rowsPerBlok,1,1,0.42);
+        var otsu3R=geckoScan(th3,W,H,rb,bestRun,rowsPerBlok,rowsPerBlok+1,2,0.42);
+        th3.delete();
+        blur.delete();
+
+        // ── STEP 5: Specimen correction + Voting ──
+        await_pass(function(){
+          setProg(90,'Voting final…','Menggabungkan 3 pass');
+          setPass(4,'done');setPass(5,'act');
+
+          // Merge kiri+kanan per pass
+          var pass1={},pass2={},pass3={};
+          Object.assign(pass1,snake1L,snake1R);
+          Object.assign(pass2,gecko2L,gecko2R);
+          Object.assign(pass3,otsu3L,otsu3R);
+
+          var voted=majorityVote(pass1,pass2,pass3,n);
+          setProg(100,'Selesai! ✓','');
+          setPass(5,'done');
+
+          setTimeout(function(){
+            openVerify(voted,n);goState('verify');
+          },300);
+        });
+      });
+    });
+  }catch(err){
+    console.error(err);
+    openVerify({jawaban:{},confidence:{}},parseInt(document.getElementById('jmlSoal').value));
+    goState('verify');toast('⚠️ Error scan — isi manual');
+  }
+}
+
+// Helper: delay agar UI bisa update (requestAnimationFrame)
+function await_pass(fn){
+  requestAnimationFrame(function(){setTimeout(fn,80);});
 }
 
 // ── VERIFY ──
 function openVerify(result,n){
   scanJwb={};scanConf={};
-  Object.keys(result.jawaban).forEach(function(k){scanJwb[k]=result.jawaban[k];});
-  Object.keys(result.confidence).forEach(function(k){scanConf[k]=result.confidence[k];});
+  Object.keys(result.jawaban||{}).forEach(function(k){scanJwb[k]=result.jawaban[k];});
+  Object.keys(result.confidence||{}).forEach(function(k){scanConf[k]=result.confidence[k];});
   var det=Object.values(scanJwb).filter(Boolean).length;
   var high=Object.values(scanConf).filter(function(v){return v==='high';}).length;
   var low=Object.values(scanConf).filter(function(v){return v==='low'||!v;}).length;
@@ -788,7 +1179,7 @@ function openVerify(result,n){
   document.getElementById('vstL').textContent=low;
   document.getElementById('rNama').value='';
   document.getElementById('rAbsen').value='';
-  document.getElementById('rKelas').value=document.getElementById('kelas').value;
+  document.getElementById('rKelas').value=document.getElementById('kelas').value||'';
   buildVerGrid(n);
 }
 function buildVerGrid(n){
@@ -801,11 +1192,9 @@ function buildVerGrid(n){
     else if(conf==='batal'){cm='<span class="vconf vx">⊗</span>';rc=' batal';}
     else cm='<span class="vconf vl">○</span>';
     var btns=['A','B','C','D','E'].map(function(o){
-      return '<button class="vob'+(sel===o?' sel':'')+
-        '" onclick="pilihScan('+i+',\''+o+'\')">'+o+'</button>';
+      return '<button class="vob'+(sel===o?' sel':'')+'" onclick="pilihScan('+i+',\''+o+'\')">'+o+'</button>';
     }).join('');
-    var row='<div class="vrow'+rc+'"><div class="vn">'+i+'</div>'+
-      '<div class="vopts">'+btns+'</div>'+cm+'</div>';
+    var row='<div class="vrow'+rc+'"><div class="vn">'+i+'</div><div class="vopts">'+btns+'</div>'+cm+'</div>';
     if(i<=half)lH+=row;else rH+=row;
   }
   document.getElementById('verGrid').innerHTML=
@@ -844,34 +1233,26 @@ function buildKGrid(){
     var v=kunci[i]||'';
     h+='<div class="ki"><div class="kinum">'+i+'</div>'+
       '<select id="k'+i+'" onchange="updKCtr()"><option value="">–</option>'+
-      ['A','B','C','D','E'].map(function(o){
-        return '<option'+(v===o?' selected':'')+'>'+o+'</option>';
-      }).join('')+'</select></div>';
+      ['A','B','C','D','E'].map(function(o){return '<option'+(v===o?' selected':'')+'>'+o+'</option>';}).join('')+
+      '</select></div>';
   }
   document.getElementById('kGrid').innerHTML=h;updKCtr();
 }
 function updKCtr(){
   var n=parseInt(document.getElementById('jmlSoal').value);
-  var c=0;
-  for(var i=1;i<=n;i++){var el=document.getElementById('k'+i);if(el&&el.value)c++;}
+  var c=0;for(var i=1;i<=n;i++){var el=document.getElementById('k'+i);if(el&&el.value)c++;}
   document.getElementById('kCtr').textContent=c+'/'+n;
 }
 function simpanKunci(){
-  var n=parseInt(document.getElementById('jmlSoal').value);
-  kunci={};var c=0;
+  var n=parseInt(document.getElementById('jmlSoal').value);kunci={};var c=0;
   for(var i=1;i<=n;i++){var el=document.getElementById('k'+i);if(el&&el.value){kunci[i]=el.value;c++;}}
   toast('✅ Kunci: '+c+' soal disimpan');
 }
-function resetKunci(){
-  var n=parseInt(document.getElementById('jmlSoal').value);
-  for(var i=1;i<=n;i++){var el=document.getElementById('k'+i);if(el)el.value='';}
-  kunci={};updKCtr();
-}
-function isiKunci(op){
-  var n=parseInt(document.getElementById('jmlSoal').value);
-  for(var i=1;i<=n;i++){var el=document.getElementById('k'+i);if(el)el.value=op;}
-  updKCtr();
-}
+function resetKunci(){var n=parseInt(document.getElementById('jmlSoal').value);
+  for(var i=1;i<=n;i++){var el=document.getElementById('k'+i);if(el)el.value='';}kunci={};updKCtr();}
+function isiKunci(op){var n=parseInt(document.getElementById('jmlSoal').value);
+  for(var i=1;i<=n;i++){var el=document.getElementById('k'+i);if(el)el.value=op;}updKCtr();}
+
 function kalkulasi(nama,noA,kls,mapel,jawabanObj,n,bob,mode){
   var benar=0,salah=0,kosong=0;var detail=[];
   for(var i=1;i<=n;i++){
@@ -883,6 +1264,7 @@ function kalkulasi(nama,noA,kls,mapel,jawabanObj,n,bob,mode){
     skor:Math.round(benar*bob*10)/10,benar:benar,salah:salah,kosong:kosong,
     n:n,detail:detail,ts:new Date().toLocaleString('id-ID'),mode:mode};
 }
+
 function tampilHasil(s){
   var pct=s.n>0?Math.round(s.benar/s.n*100):0;
   var gr=pct>=90?'A':pct>=80?'B':pct>=70?'C':pct>=60?'D':'E';
@@ -895,41 +1277,38 @@ function tampilHasil(s){
   }).join('');
   document.getElementById('hasilDiv').innerHTML=
     '<div class="shero"><div class="sangka">'+s.skor+'</div>'+
-    '<div class="ssub">Nilai Akhir — '+s.nama+(s.mode==='scan'?' 📷':'')+'</div>'+
+    '<div class="ssub">Nilai Akhir — '+s.nama+(s.mode==='scan'?' 📷 Multi-Pass':'')+'</div>'+
     '<div style="font-size:8px;color:rgba(255,255,255,.25);margin-top:3px">'+
       (s.kls||'-')+' · '+(s.mapel||'-')+' · '+s.ts+'</div>'+
     '<div class="s3">'+
     '<div class="s3b"><div class="s3n" style="color:#10b981">'+s.benar+'</div><div class="s3l">Benar</div></div>'+
     '<div class="s3b"><div class="s3n" style="color:#ef4444">'+s.salah+'</div><div class="s3l">Salah</div></div>'+
     '<div class="s3b"><div class="s3n" style="color:#f59e0b">'+s.kosong+'</div><div class="s3l">Kosong</div></div>'+
-    '</div><div style="margin-top:10px;font-size:24px;font-weight:800;color:'+col+
-    ';font-family:monospace">Predikat '+gr+' — '+pct+'%</div></div>'+
+    '</div><div style="margin-top:10px;font-size:24px;font-weight:800;color:'+col+';font-family:monospace">Predikat '+gr+' — '+pct+'%</div></div>'+
     '<div class="card"><div class="ctitle">📋 Detail Per Soal</div>'+
     '<table class="rtbl"><thead><tr><th>No</th><th>Jawaban</th><th>Kunci</th><th>Status</th></tr></thead>'+
     '<tbody>'+rows+'</tbody></table>'+
     '<div class="brow" style="margin-top:9px">'+
-    '<button class="btn ba bsm" onclick="goTab(\'Scanner\',document.querySelectorAll(\'.tab\')[0])">📷 Siswa Berikutnya</button>'+
+    '<button class="btn ba bsm" onclick="goTab(\'Scanner\',document.querySelectorAll(\'.tab\')[0])">📷 Berikutnya</button>'+
     '<button class="btn bg bsm" onclick="goTab(\'Rekap\',document.querySelectorAll(\'.tab\')[3])">🗂 Rekap</button>'+
     '</div></div>';
 }
+
 function renderRekap(){
   document.getElementById('totBadge').textContent=listSiswa.length;
   var box=document.getElementById('rekapDiv');
-  if(!listSiswa.length){
-    box.innerHTML='<div class="empty"><div>📂</div><p>Belum ada data.</p></div>';
-    document.getElementById('statCard').style.display='none';return;
-  }
+  if(!listSiswa.length){box.innerHTML='<div class="empty"><div>📂</div><p>Belum ada data.</p></div>';
+    document.getElementById('statCard').style.display='none';return;}
   box.innerHTML=listSiswa.map(function(s,i){
     var pct=s.n>0?Math.round(s.benar/s.n*100):0;
     var gr=pct>=90?'A':pct>=80?'B':pct>=70?'C':pct>=60?'D':'E';
     var c=pct>=70?'#10b981':pct>=60?'#f59e0b':'#ef4444';
     return '<div class="si" style="border-left-color:'+c+'">'+
       '<div><div class="sin">'+(i+1)+'. '+s.nama+
-      (s.mode==='scan'?' <span style="font-size:9px;color:#06b6d4">📷</span>':'')+'</div>'+
-      '<div class="sii">No.'+(s.noA||'-')+' · '+(s.kls||'-')+
-      ' · B:'+s.benar+' S:'+s.salah+' K:'+s.kosong+'</div></div>'+
+      (s.mode==='scan'?' <span style="font-size:9px;color:#a78bfa">🐍🦎</span>':'')+'</div>'+
+      '<div class="sii">No.'+(s.noA||'-')+' · '+(s.kls||'-')+' · B:'+s.benar+' S:'+s.salah+' K:'+s.kosong+'</div></div>'+
       '<div style="text-align:right"><div class="ssc" style="color:'+c+'">'+s.skor+'</div>'+
-      '<div style="font-size:8px;color:rgba(255,255,255,.25)">Predikat '+gr+'</div></div></div>';
+      '<div style="font-size:8px;color:rgba(255,255,255,.25)">'+gr+'</div></div></div>';
   }).join('');
   var sk=listSiswa.map(function(s){return s.skor||0;});
   var avg=Math.round(sk.reduce(function(a,b){return a+b;},0)/sk.length*10)/10;
@@ -943,81 +1322,40 @@ function renderRekap(){
     '<div class="sgi"><div class="sgn">'+listSiswa.length+'</div><div class="sgl">Total</div></div>';
   document.getElementById('statCard').style.display='block';
 }
-function hapusRekap(){
-  if(!confirm('Hapus semua data rekap?'))return;
-  listSiswa=[];localStorage.setItem('bb_ljk','[]');renderRekap();toast('🗑️ Data dihapus');
-}
+function hapusRekap(){if(!confirm('Hapus semua data rekap?'))return;
+  listSiswa=[];localStorage.setItem('bb_ljk','[]');renderRekap();toast('🗑️ Dihapus');}
 
-// ════════════════════════════════════════════════════
-// DOWNLOAD — hanya 2 format: TXT dan HTML
-// Keduanya 100% bekerja di semua browser tanpa library
-// ════════════════════════════════════════════════════
+// ── DOWNLOAD ──
 function dlBlob(content,filename,mime){
-  var blob=new Blob([content],{type:mime});
-  var url=URL.createObjectURL(blob);
-  var a=document.createElement('a');
-  a.href=url;a.download=filename;a.style.display='none';
+  var blob=new Blob([content],{type:mime});var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');a.href=url;a.download=filename;a.style.display='none';
   document.body.appendChild(a);a.click();
   setTimeout(function(){URL.revokeObjectURL(url);a.remove();},1500);
 }
-
-// 1. TXT — rekap tabel rapi
 function unduhTXT(){
   if(!listSiswa.length){toast('⚠️ Belum ada data!');return;}
   var mp=document.getElementById('mapel').value||'Ujian';
   var kls=document.getElementById('kelas').value||'-';
   var tgl=new Date().toLocaleString('id-ID');
   function pad(s,l,r){s=String(s);if(r)return s.length>=l?s.substring(0,l):s+' '.repeat(l-s.length);return s.length>=l?s.substring(0,l):' '.repeat(l-s.length)+s;}
-  var SEP='='.repeat(62);var sep='-'.repeat(62);
-  var L=[];
-  L.push('BENYAMIN BATAU LJK SCANNER APP');
-  L.push('UPTD SMKN 1 SUMARORONG');
-  L.push(SEP);
-  L.push('Mata Pelajaran : '+mp);
-  L.push('Kelas          : '+kls);
-  L.push('Guru           : '+guru.nama);
-  L.push('Dicetak        : '+tgl);
-  L.push(SEP);
-  L.push(pad('No',4,true)+pad('Nama Siswa',26,true)+pad('Absen',7,true)+
-    pad('Nilai',7,false)+pad('B',5,false)+pad('S',5,false)+pad('K',5,false)+'  Pred');
+  var SEP='='.repeat(62);var sep='-'.repeat(62);var L=[];
+  L.push('BENYAMIN BATAU LJK SCANNER APP — SMKN 1 SUMARORONG');L.push(SEP);
+  L.push('Mapel: '+mp+' | Kelas: '+kls+' | Guru: '+guru.nama);L.push('Dicetak: '+tgl);L.push(SEP);
+  L.push(pad('No',4,true)+pad('Nama Siswa',26,true)+pad('Absen',7,true)+pad('Nilai',7,false)+pad('B',5,false)+pad('S',5,false)+pad('K',5,false)+'  Pred');
   L.push(sep);
   listSiswa.forEach(function(s,i){
-    var pct=s.n>0?Math.round(s.benar/s.n*100):0;
-    var gr=pct>=90?'A':pct>=80?'B':pct>=70?'C':pct>=60?'D':'E';
-    L.push(pad(i+1,4,true)+pad(s.nama||'-',26,true)+pad(s.noA||'-',7,true)+
-      pad(s.skor||0,7,false)+pad(s.benar||0,5,false)+pad(s.salah||0,5,false)+pad(s.kosong||0,5,false)+'  '+gr);
+    var pct=s.n>0?Math.round(s.benar/s.n*100):0;var gr=pct>=90?'A':pct>=80?'B':pct>=70?'C':pct>=60?'D':'E';
+    L.push(pad(i+1,4,true)+pad(s.nama||'-',26,true)+pad(s.noA||'-',7,true)+pad(s.skor||0,7,false)+pad(s.benar||0,5,false)+pad(s.salah||0,5,false)+pad(s.kosong||0,5,false)+'  '+gr);
   });
   L.push(SEP);
   var sk=listSiswa.map(function(s){return s.skor||0;});
   var avg=Math.round(sk.reduce(function(a,b){return a+b;},0)/sk.length*10)/10;
   var lulus=listSiswa.filter(function(s){return(s.skor||0)>=70;}).length;
-  L.push('Rata-rata: '+avg+'   Tertinggi: '+Math.max.apply(null,sk)+'   Terendah: '+Math.min.apply(null,sk));
-  L.push('Lulus (>=70): '+lulus+' siswa     Tidak Lulus: '+(listSiswa.length-lulus)+' siswa');
-  L.push(SEP);
-  L.push('');
-  L.push('DETAIL JAWABAN PER SISWA');
-  L.push(SEP);
-  listSiswa.forEach(function(s,idx){
-    var pct=s.n>0?Math.round(s.benar/s.n*100):0;
-    var gr=pct>=90?'A':pct>=80?'B':pct>=70?'C':pct>=60?'D':'E';
-    L.push('');
-    L.push((idx+1)+'. '+(s.nama||'-')+' | Kelas: '+(s.kls||'-')+
-      ' | No.Absen: '+(s.noA||'-')+' | Nilai: '+(s.skor||0)+' ('+gr+')');
-    L.push(sep);
-    var row='';
-    (s.detail||[]).forEach(function(d,di){
-      var st=d.status==='b'?'B':d.status==='s'?'S':'K';
-      row+=pad(d.no,3,false)+':'+pad(d.jwb||'-',2,false)+'['+st+'] ';
-      if((di+1)%10===0){L.push(row.trimEnd());row='';}
-    });
-    if(row.trim())L.push(row.trimEnd());
-  });
-  var fname='Rekap_LJK_'+mp.replace(/\s+/g,'_')+'_'+guru.nama.replace(/\s+/g,'_')+'.txt';
-  dlBlob(L.join('\n'),fname,'text/plain;charset=utf-8');
+  L.push('Rata-rata: '+avg+'  Tertinggi: '+Math.max.apply(null,sk)+'  Terendah: '+Math.min.apply(null,sk));
+  L.push('Lulus (>=70): '+lulus+' siswa   Tidak Lulus: '+(listSiswa.length-lulus)+' siswa');
+  dlBlob('\ufeff'+L.join('\n'),('Rekap_'+mp+'_'+guru.nama).replace(/\s+/g,'_')+'.txt','text/plain;charset=utf-8');
   toast('✅ File TXT diunduh!');
 }
-
-// 2. HTML — bisa dibuka browser, di-print, atau disimpan
 function unduhHTML(){
   if(!listSiswa.length){toast('⚠️ Belum ada data!');return;}
   var mp=document.getElementById('mapel').value||'Ujian';
@@ -1027,100 +1365,44 @@ function unduhHTML(){
   var avg=Math.round(sk.reduce(function(a,b){return a+b;},0)/sk.length*10)/10;
   var lulus=listSiswa.filter(function(s){return(s.skor||0)>=70;}).length;
   var rows=listSiswa.map(function(s,i){
-    var pct=s.n>0?Math.round(s.benar/s.n*100):0;
-    var gr=pct>=90?'A':pct>=80?'B':pct>=70?'C':pct>=60?'D':'E';
+    var pct=s.n>0?Math.round(s.benar/s.n*100):0;var gr=pct>=90?'A':pct>=80?'B':pct>=70?'C':pct>=60?'D':'E';
     var bg=(s.skor||0)>=70?'#e6faf3':(s.skor||0)>=60?'#fffbea':'#fef2f2';
-    return '<tr style="background:'+bg+'">'+
-      '<td style="text-align:center">'+(i+1)+'</td>'+
-      '<td><b>'+(s.nama||'-')+'</b></td>'+
-      '<td style="text-align:center">'+(s.noA||'-')+'</td>'+
+    return '<tr style="background:'+bg+'"><td style="text-align:center">'+(i+1)+'</td>'+
+      '<td><b>'+(s.nama||'-')+'</b></td><td style="text-align:center">'+(s.noA||'-')+'</td>'+
       '<td style="text-align:center">'+(s.kls||'-')+'</td>'+
-      '<td style="text-align:center;font-size:18px;font-weight:900;color:'+
-        ((s.skor||0)>=70?'#059669':(s.skor||0)>=60?'#d97706':'#dc2626')+'">'+
-        (s.skor||0)+'</td>'+
+      '<td style="text-align:center;font-size:18px;font-weight:900;color:'+((s.skor||0)>=70?'#059669':(s.skor||0)>=60?'#d97706':'#dc2626')+'">'+(s.skor||0)+'</td>'+
       '<td style="text-align:center;color:#059669">'+s.benar+'</td>'+
       '<td style="text-align:center;color:#dc2626">'+s.salah+'</td>'+
       '<td style="text-align:center;color:#d97706">'+s.kosong+'</td>'+
-      '<td style="text-align:center;font-weight:700">'+gr+'</td>'+
-      '<td style="font-size:11px;color:#666">'+s.ts+'</td>'+
-      '</tr>';
+      '<td style="text-align:center;font-weight:700">'+gr+'</td></tr>';
   }).join('');
-
-  // Detail per siswa
-  var detailSections=listSiswa.map(function(s,idx){
-    var pct=s.n>0?Math.round(s.benar/s.n*100):0;
-    var gr=pct>=90?'A':pct>=80?'B':pct>=70?'C':pct>=60?'D':'E';
-    var detRows=(s.detail||[]).map(function(d){
-      var c=d.status==='b'?'#059669':d.status==='s'?'#dc2626':'#999';
-      var bg=d.status==='b'?'#e6faf3':d.status==='s'?'#fef2f2':'#f9f9f9';
-      return '<tr style="background:'+bg+'">'+
-        '<td style="text-align:center">'+d.no+'</td>'+
-        '<td style="text-align:center;font-weight:700;color:'+c+'">'+d.jwb+'</td>'+
-        '<td style="text-align:center;font-weight:700;color:#059669">'+d.kunci+'</td>'+
-        '<td style="text-align:center;color:'+c+';font-weight:700">'+
-          (d.status==='b'?'✓ Benar':d.status==='s'?'✗ Salah':'— Kosong')+'</td></tr>';
-    }).join('');
-    return '<div style="margin-top:28px;page-break-inside:avoid">'+
-      '<h3 style="background:#1e3a5f;color:#fff;padding:10px 14px;border-radius:6px;margin:0">'+
-      (idx+1)+'. '+(s.nama||'-')+
-      ' <span style="font-size:13px;font-weight:400">| Kelas: '+(s.kls||'-')+
-      ' | No.Absen: '+(s.noA||'-')+'</span>'+
-      ' <span style="float:right;font-size:20px">Nilai: '+(s.skor||0)+' ('+gr+')</span></h3>'+
-      '<div style="display:flex;gap:16px;padding:10px 14px;background:#f0f4f8;border:1px solid #dde;border-top:none">'+
-      '<span style="color:#059669;font-weight:700">✓ Benar: '+s.benar+'</span>'+
-      '<span style="color:#dc2626;font-weight:700">✗ Salah: '+s.salah+'</span>'+
-      '<span style="color:#d97706;font-weight:700">— Kosong: '+s.kosong+'</span>'+
-      '<span style="font-weight:700">Total: '+s.n+' soal</span></div>'+
-      '<table style="width:100%;border-collapse:collapse;font-size:13px;border:1px solid #ddd">'+
-      '<thead><tr style="background:#374151;color:#fff">'+
-      '<th style="padding:6px">No</th><th style="padding:6px">Jawaban</th>'+
-      '<th style="padding:6px">Kunci</th><th style="padding:6px">Status</th></tr></thead>'+
-      '<tbody>'+detRows+'</tbody></table></div>';
-  }).join('');
-
-  var html='<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8">'+
-    '<title>Rekap LJK – '+mp+'</title>'+
-    '<style>body{font-family:Arial,sans-serif;margin:20px;color:#1a1a1a;font-size:13px}'+
-    'h1,h2{color:#1e3a5f}table{width:100%;border-collapse:collapse}'+
-    'th,td{border:1px solid #ddd;padding:7px 8px}'+
-    'th{background:#1e3a5f;color:#fff;text-align:left}'+
-    'tr:hover{filter:brightness(.97)}'+
-    '.stat{display:inline-block;background:#f0f4f8;border:1px solid #ccd;'+
-      'border-radius:8px;padding:8px 16px;margin:4px;text-align:center}'+
-    '.stat-n{font-size:24px;font-weight:900}'+
-    '.stat-l{font-size:11px;color:#666}'+
+  var html='<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"><title>Rekap '+mp+'</title>'+
+    '<style>body{font-family:Arial,sans-serif;margin:20px;font-size:13px}table{width:100%;border-collapse:collapse}'+
+    'th,td{border:1px solid #ddd;padding:7px}th{background:#1e3a5f;color:#fff}'+
+    '.stat{display:inline-block;background:#f0f4f8;border-radius:8px;padding:8px 16px;margin:4px;text-align:center}'+
+    '.sn{font-size:24px;font-weight:900}.sl{font-size:11px;color:#666}'+
     '@media print{.noprint{display:none}}</style></head><body>'+
-    '<div style="text-align:center;margin-bottom:20px">'+
-    '<h1 style="margin:0">REKAP NILAI UJIAN</h1>'+
-    '<h2 style="margin:4px 0">'+mp+' — '+kls+'</h2>'+
-    '<div style="color:#666">Guru: <b>'+guru.nama+'</b> &nbsp;|&nbsp; Dicetak: '+tgl+'</div></div>'+
-    '<div style="margin-bottom:16px">'+
-    '<span class="stat"><div class="stat-n">'+listSiswa.length+'</div><div class="stat-l">Total Siswa</div></span>'+
-    '<span class="stat"><div class="stat-n" style="color:#059669">'+avg+'</div><div class="stat-l">Rata-rata</div></span>'+
-    '<span class="stat"><div class="stat-n" style="color:#059669">'+Math.max.apply(null,sk)+'</div><div class="stat-l">Tertinggi</div></span>'+
-    '<span class="stat"><div class="stat-n" style="color:#dc2626">'+Math.min.apply(null,sk)+'</div><div class="stat-l">Terendah</div></span>'+
-    '<span class="stat"><div class="stat-n" style="color:#059669">'+lulus+'</div><div class="stat-l">Lulus ≥70</div></span>'+
-    '<span class="stat"><div class="stat-n" style="color:#dc2626">'+(listSiswa.length-lulus)+'</div><div class="stat-l">Tidak Lulus</div></span>'+
-    '</div>'+
-    '<table><thead><tr><th>No</th><th>Nama Siswa</th><th>No Absen</th><th>Kelas</th>'+
-    '<th>Nilai</th><th>Benar</th><th>Salah</th><th>Kosong</th><th>Predikat</th><th>Waktu</th></tr></thead>'+
+    '<h1 style="color:#1e3a5f;margin:0">REKAP NILAI — '+mp+'</h1>'+
+    '<h2 style="margin:4px 0 8px;color:#444">Kelas: '+kls+' | Guru: '+guru.nama+' | '+tgl+'</h2>'+
+    '<div style="margin-bottom:14px">'+
+    '<span class="stat"><div class="sn">'+listSiswa.length+'</div><div class="sl">Siswa</div></span>'+
+    '<span class="stat"><div class="sn" style="color:#059669">'+avg+'</div><div class="sl">Rata-rata</div></span>'+
+    '<span class="stat"><div class="sn" style="color:#059669">'+Math.max.apply(null,sk)+'</div><div class="sl">Tertinggi</div></span>'+
+    '<span class="stat"><div class="sn" style="color:#dc2626">'+Math.min.apply(null,sk)+'</div><div class="sl">Terendah</div></span>'+
+    '<span class="stat"><div class="sn" style="color:#059669">'+lulus+'</div><div class="sl">Lulus ≥70</div></span>'+
+    '<span class="stat"><div class="sn" style="color:#dc2626">'+(listSiswa.length-lulus)+'</div><div class="sl">Tidak Lulus</div></span>'+
+    '</div><table><thead><tr><th>No</th><th>Nama</th><th>Absen</th><th>Kelas</th>'+
+    '<th>Nilai</th><th>Benar</th><th>Salah</th><th>Kosong</th><th>Pred</th></tr></thead>'+
     '<tbody>'+rows+'</tbody></table>'+
-    '<hr style="margin:32px 0">'+
-    '<h2>DETAIL JAWABAN PER SISWA</h2>'+
-    detailSections+
-    '<div class="noprint" style="margin-top:24px;text-align:center">'+
-    '<button onclick="window.print()" style="padding:12px 28px;background:#1e3a5f;color:#fff;'+
-      'border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer">🖨️ Print</button></div>'+
+    '<div class="noprint" style="margin-top:20px;text-align:center">'+
+    '<button onclick="window.print()" style="padding:12px 28px;background:#1e3a5f;color:#fff;border:none;border-radius:8px;font-size:14px;cursor:pointer">🖨️ Print</button></div>'+
     '</body></html>';
-
-  var fname='Rekap_LJK_'+mp.replace(/\s+/g,'_')+'_'+guru.nama.replace(/\s+/g,'_')+'.html';
-  dlBlob(html,fname,'text/html;charset=utf-8');
-  toast('✅ File HTML diunduh — buka di browser!');
+  dlBlob(html,('Rekap_'+mp+'_'+guru.nama).replace(/\s+/g,'_')+'.html','text/html;charset=utf-8');
+  toast('✅ File HTML diunduh!');
 }
 
 function toast(msg){
-  var el=document.createElement('div');
-  el.className='toast';el.textContent=msg;
+  var el=document.createElement('div');el.className='toast';el.textContent=msg;
   document.getElementById('toastWrap').appendChild(el);
   setTimeout(function(){el.remove();},3200);
 }
