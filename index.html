@@ -778,7 +778,10 @@ function detectGrid(gray, W, H){
   var rowH=0;
   for(var i=0;i<bestRun.length-1;i++)rowH+=bestRun[i+1]-bestRun[i];
   rowH/=(bestRun.length-1);
-  bestRun.push(Math.round(bestRun[bestRun.length-1]+rowH));
+  // Pastikan bestRun cukup panjang (minimal 25 untuk soal 40)
+  for(var _ext=0;_ext<5;_ext++){
+    bestRun.push(Math.round(bestRun[bestRun.length-1]+rowH));
+  }
 
   // ── vcols via proyeksi vertikal ──
   var kV=cv.getStructuringElement(cv.MORPH_RECT,new cv.Size(1,Math.max(3,Math.round(rowH*3.0))));
@@ -868,11 +871,11 @@ function snakeScan(thMat, W, H, bounds, bestRun, rowsPerBlok, blokStart, riStart
       var totalInk=0;var totalPx=0;var horzInk=0;
       // SNAKE: strip 0→N ganjil kiri→kanan, genap kanan→kiri
       for(var strip=0;strip<N_STRIPS;strip++){
-        var sy=Math.round(ryTop+cellH*0.22)+strip*stripH;
-        var ey=Math.min(sy+stripH,Math.round(ryTop+cellH*0.78));
+        var sy=Math.round(ryTop+cellH*0.25)+strip*stripH;
+        var ey=Math.min(sy+stripH,Math.round(ryTop+cellH*0.75));
         if(sy>=ey)continue;
         // margin horizontal kecil
-        var sx=cx1+2,ex=cx2-2;
+        var sx=cx1+15,ex=cx2-15;
         if(sx>=ex)continue;
         var stripInk=0;var stripPx=(ey-sy)*(ex-sx);
         // arah zigzag (snake pattern)
@@ -928,8 +931,8 @@ function geckoScan(thMat, W, H, bounds, bestRun, rowsPerBlok, blokStart, riStart
       var cx1=bounds[oi],cx2=bounds[oi+1];
       var cellW=cx2-cx1;
       // 9 zona tapak cicak (3×3 grid), skip tepi 15%
-      var x0=Math.round(cx1+cellW*.10),x1=Math.round(cx2-cellW*.10);
-      var y0=Math.round(ryTop+cellH*.22),y1=Math.round(ryBot-cellH*.22);
+      var x0=cx1+15,x1=cx2-15;
+      var y0=Math.round(ryTop+cellH*.25),y1=Math.round(ryBot-cellH*.25);
       var zW=(x1-x0)/3,zH=(y1-y0)/3;
       if(zW<1||zH<1){vals.push(0);horzRatios.push(0);continue;}
       var zones=new Array(9).fill(0);
@@ -1080,6 +1083,9 @@ function runSnakeGeckoScan(srcCanvas){
       toast('⚠️ Grid tidak terdeteksi — isi manual');return;
     }
     var bestRun=grid.bestRun,lb=grid.lb,rb=grid.rb;
+    // Pastikan bestRun cukup untuk semua soal
+    var rowH_ext=grid.rowH;
+    while(bestRun.length<Math.ceil(n/2)+5){bestRun.push(Math.round(bestRun[bestRun.length-1]+rowH_ext));}
 
     // ── STEP 2: Pass 1 — Snake (threshold normal C=6) ──
     setProg(30,'Pass 1: Jejak Sisik Ular…','Adaptive threshold normal');
