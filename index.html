@@ -428,7 +428,8 @@ body::after{content:'';position:fixed;inset:0;z-index:0;
     </div>
   </div>
   <div class="brow">
-    <button class="btn btn-g btn-sm" onclick="dlCSV()">📊 CSV</button>
+    <button class="btn btn-g btn-sm" onclick="dlTXT()">📄 TXT</button>
+    <button class="btn btn-c btn-sm" onclick="printRekap()">🖨 Tampilan</button>
     <button class="btn btn-p btn-sm" onclick="dlHTML()">🌐 HTML</button>
     <button class="btn btn-o btn-sm" onclick="showChart()">📈 Grafik</button>
     <button class="btn btn-r btn-sm" onclick="clrRekap()">🗑 Hapus</button>
@@ -950,21 +951,106 @@ function clrRekap(){
 function dl(href,name){const a=document.createElement('a');a.href=href;a.download=name;a.click();}
 function ts(){return new Date().toISOString().slice(0,10);}
 
-function dlCSV(){
+function dlTXT(){
   if(!hasilSiswa.length){toast('Belum ada data!','var(--gold)');return;}
-  let c='No,Nama,No.Absen,Kelas,Benar,Salah,Kosong,Nilai,Grade,Confidence';
-  for(let i=1;i<=JUMLAH_SOAL;i++)c+=',S'+i;c+=',Kunci';c+='\n';
-  hasilSiswa.forEach((h,i)=>{
+  const avg=(hasilSiswa.reduce((a,h)=>a+h.nilai,0)/hasilSiswa.length).toFixed(1);
+  const sorted=[...hasilSiswa].sort((a,b)=>b.nilai-a.nilai);
+  const line='='.repeat(72);
+  const dash='-'.repeat(72);
+  let t='';
+  t+=line+'\n';
+  t+='  REKAP NILAI LJK – SMKN 1 SUMARORONG\n';
+  t+=`  Tanggal : ${new Date().toLocaleDateString('id-ID',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}\n`;
+  t+=`  Total Siswa : ${hasilSiswa.length}   |   Rata-rata : ${avg}\n`;
+  t+=line+'\n\n';
+  t+='No  Nama Siswa               Absen  Kelas   Benar  Salah  Kosong  Nilai  Grade\n';
+  t+=dash+'\n';
+  sorted.forEach((h,i)=>{
     const k=h.jawaban.filter(j=>!j||j==='?').length,sal=JUMLAH_SOAL-h.benar-k;
     const pct=Math.round(h.benar/JUMLAH_SOAL*100);
     const grade=pct>=90?'A':pct>=80?'B':pct>=70?'C':pct>=60?'D':'E';
-    c+=`${i+1},"${h.nama}","${h.noAbsen||''}","${h.kelas||''}",${h.benar},${sal},${k},${h.nilai},${grade},${h.avgConf||''}`;
-    h.jawaban.forEach(j=>c+=','+(j||'-'));
-    c+=','+h.kunci.map(k=>k||'-').join('|');
-    c+='\n';
+    const no=(i+1).toString().padEnd(4);
+    const nama=h.nama.substring(0,24).padEnd(24);
+    const absen=(h.noAbsen||'-').padEnd(7);
+    const kls=(h.kelas||'-').padEnd(8);
+    const benar=h.benar.toString().padEnd(7);
+    const salah=sal.toString().padEnd(7);
+    const kosong=k.toString().padEnd(8);
+    const nilai=h.nilai.toString().padEnd(7);
+    t+=`${no}${nama}${absen}${kls}${benar}${salah}${kosong}${nilai}${grade}\n`;
   });
-  dl('data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(c),'Rekap_LJK_SMKN1_'+ts()+'.csv');
-  toast('⬇ CSV diunduh','var(--accentG)');
+  t+='\n'+dash+'\n';
+  t+=`Rata-rata Nilai : ${avg}\n`;
+  const lulus=hasilSiswa.filter(h=>h.nilai>=75).length;
+  t+=`Lulus (≥75)     : ${lulus} siswa (${Math.round(lulus/hasilSiswa.length*100)}%)\n`;
+  t+=`Tidak Lulus (<75): ${hasilSiswa.length-lulus} siswa\n`;
+  t+=line+'\n';
+  t+='  Detail Jawaban per Siswa\n';
+  t+=line+'\n';
+  sorted.forEach((h,i)=>{
+    const pct=Math.round(h.benar/JUMLAH_SOAL*100);
+    const grade=pct>=90?'A':pct>=80?'B':pct>=70?'C':pct>=60?'D':'E';
+    t+=`\n[${i+1}] ${h.nama} | Absen: ${h.noAbsen||'-'} | Kelas: ${h.kelas||'-'} | Nilai: ${h.nilai} (${grade})\n`;
+    t+=`    Jawaban : ${h.jawaban.map((j,idx)=>(j||'_')+(h.kunci[idx]&&h.kunci[idx]===j?'✓':'✗')).join(' ')}\n`;
+    t+=`    Kunci   : ${h.kunci.map(k=>k||'-').join(' ')}\n`;
+  });
+  t+='\n'+line+'\n';
+  dl('data:text/plain;charset=utf-8,\uFEFF'+encodeURIComponent(t),'Rekap_LJK_SMKN1_'+ts()+'.txt');
+  toast('⬇ TXT diunduh','var(--accentG)');
+}
+
+function printRekap(){
+  if(!hasilSiswa.length){toast('Belum ada data!','var(--gold)');return;}
+  const avg=(hasilSiswa.reduce((a,h)=>a+h.nilai,0)/hasilSiswa.length).toFixed(1);
+  const lulus=hasilSiswa.filter(h=>h.nilai>=75).length;
+  const rows=[...hasilSiswa].sort((a,b)=>b.nilai-a.nilai).map((h,i)=>{
+    const k=h.jawaban.filter(j=>!j||j==='?').length,sal=JUMLAH_SOAL-h.benar-k;
+    const pct=Math.round(h.benar/JUMLAH_SOAL*100);
+    const grade=pct>=90?'A':pct>=80?'B':pct>=70?'C':pct>=60?'D':'E';
+    const bg=h.nilai>=75?'#d1fae5':h.nilai<50?'#fee2e2':'#fef9c3';
+    return `<tr><td>${i+1}</td><td style="text-align:left">${h.nama}</td><td>${h.noAbsen||'-'}</td><td>${h.kelas||'-'}</td><td>${h.benar}</td><td>${sal}</td><td>${k}</td><td style="background:${bg};font-weight:700">${h.nilai}</td><td><b>${grade}</b></td></tr>`;
+  }).join('');
+  const win=window.open('','_blank');
+  win.document.write(`<!DOCTYPE html><html><head><meta charset=UTF-8>
+  <title>Rekap LJK – SMKN 1 Sumarorong</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:Arial,sans-serif;padding:24px;color:#0f172a;font-size:13px}
+    .header{text-align:center;border-bottom:3px solid #0f172a;padding-bottom:14px;margin-bottom:18px}
+    .header h1{font-size:16px;text-transform:uppercase;letter-spacing:1px}
+    .header p{font-size:11px;color:#64748b;margin-top:4px}
+    .stats{display:flex;gap:16px;margin-bottom:16px;flex-wrap:wrap}
+    .stat{background:#f1f5f9;border-radius:6px;padding:8px 16px;flex:1;min-width:120px;text-align:center}
+    .stat .val{font-size:20px;font-weight:700;color:#0f172a}
+    .stat .lbl{font-size:10px;color:#64748b;text-transform:uppercase}
+    table{border-collapse:collapse;width:100%;margin-top:8px}
+    th{background:#0f172a;color:#fff;padding:8px;text-align:center;font-size:12px}
+    td{padding:6px 8px;border:1px solid #e2e8f0;text-align:center}
+    tr:nth-child(even){background:#f8fafc}
+    .footer{margin-top:16px;font-size:10px;color:#94a3b8;text-align:center}
+    @media print{body{padding:0} .no-print{display:none} @page{margin:15mm}}
+  </style></head><body>
+  <div class="header">
+    <h1>Rekap Nilai LJK – SMKN 1 Sumarorong</h1>
+    <p>Dicetak: ${new Date().toLocaleDateString('id-ID',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}</p>
+  </div>
+  <div class="stats">
+    <div class="stat"><div class="val">${hasilSiswa.length}</div><div class="lbl">Total Siswa</div></div>
+    <div class="stat"><div class="val">${avg}</div><div class="lbl">Rata-rata</div></div>
+    <div class="stat"><div class="val">${lulus}</div><div class="lbl">Lulus ≥75</div></div>
+    <div class="stat"><div class="val">${hasilSiswa.length-lulus}</div><div class="lbl">Tidak Lulus</div></div>
+  </div>
+  <div class="no-print" style="margin-bottom:12px">
+    <button onclick="window.print()" style="background:#0f172a;color:#fff;border:none;padding:8px 20px;border-radius:6px;cursor:pointer;font-size:13px">🖨 Cetak / Simpan PDF</button>
+  </div>
+  <table>
+    <thead><tr><th>#</th><th>Nama Siswa</th><th>Absen</th><th>Kelas</th><th>Benar</th><th>Salah</th><th>Kosong</th><th>Nilai</th><th>Grade</th></tr></thead>
+    <tbody>${rows}</tbody>
+  </table>
+  <div class="footer">SMKN 1 Sumarorong – Sistem Scanner LJK Otomatis</div>
+  </body></html>`);
+  win.document.close();
+  toast('🖨 Halaman cetak dibuka','var(--accentG)');
 }
 
 function dlHTML(){
