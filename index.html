@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#0a0f1e">
-<title>LJK Scanner — Paving Block</title>
+<title>BENYAMIN BATAU LJK SCANNER APP</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
@@ -264,7 +264,7 @@ label:first-child{margin-top:0}
     </svg>
   </div>
   <div class="hdr-title">
-    <h1>LJK SCANNER</h1>
+    <h1>BENYAMIN BATAU LJK SCANNER APP</h1>
     <p>PAVING BLOCK · HIGH INTENSITY PIXEL</p>
   </div>
   <div class="hdr-badge">v1.0</div>
@@ -1112,14 +1112,14 @@ function showRejectModal(validation) {
 
   const failCount=allFail.length;
   // Pesan utama berdasarkan jenis kegagalan dominan
-  let mainMsg='Gambar tidak dikenali sebagai LJK Paving Block yang valid.';
+  let mainMsg='Gambar tidak dikenali sebagai LJK yang valid.';
   if(mandFail.some(r=>r.name.includes('buram'))) mainMsg='📷 Gambar terlalu buram — bersihkan lensa dan tahan kamera stabil.';
   else if(mandFail.some(r=>r.name.includes('miring'))) mainMsg='📐 LJK terlalu miring — foto dari tepat di atas, sejajarkan dengan LJK.';
   else if(mandFail.some(r=>r.name.includes('perspektif')||r.name.includes('Perspektif'))) mainMsg='🎯 Distorsi perspektif — foto tegak lurus dari depan, jangan menyamping.';
   else if(mandFail.some(r=>r.name.includes('bayangan')||r.name.includes('merata'))) mainMsg='💡 Pencahayaan tidak merata — hindari bayangan tangan, gunakan cahaya cukup.';
   else if(mandFail.some(r=>r.name.includes('terpotong')||r.name.includes('Margin'))) mainMsg='📄 LJK terpotong — pastikan seluruh lembar masuk dalam frame kamera.';
   else if(mandFail.some(r=>r.name.includes('Kontras')||r.name.includes('pencahayaan'))) mainMsg='☀️ Pencahayaan kurang — tambah cahaya atau pindah ke tempat lebih terang.';
-  else if(strFail.length>=3) mainMsg='❓ Gambar ini bukan LJK Paving Block — upload file yang benar.';
+  else if(strFail.length>=3) mainMsg='❓ Gambar ini bukan LJK yang dikenali — upload file yang benar.';
 
   document.getElementById('rejectMsg').textContent=mainMsg;
   document.getElementById('rejectDetail').innerHTML=
@@ -1471,7 +1471,7 @@ function downloadPDF(){
   <div class="modal-box">
     <span class="modal-icon">🚫</span>
     <div class="modal-title">BUKAN LEMBAR JAWABAN</div>
-    <div class="modal-msg" id="rejectMsg">Gambar yang diupload tidak terdeteksi sebagai LJK Paving Block yang valid.</div>
+    <div class="modal-msg" id="rejectMsg">Gambar yang diupload tidak terdeteksi sebagai LJK yang valid.</div>
     <div id="valSteps"></div>
     <div class="modal-detail" id="rejectDetail">—</div>
     <div class="modal-hint">
