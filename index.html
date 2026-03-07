@@ -736,7 +736,7 @@ function detectGrid(gray, W, H){
   // Proyeksi
   var proj=new Float32Array(H);
   for(var y=0;y<H;y++){
-    var row=hLM.row(y);var s=0;
+    var s=0;
     for(var x=0;x<W;x++)s+=hLM.ucharAt(y,x);
     proj[y]=s/W;
   }
@@ -852,7 +852,7 @@ function detectGrid(gray, W, H){
 function snakeScan(thMat, W, H, bounds, bestRun, rowsPerBlok, blokStart, riStart, BATAL_R){
   var OPSI=['A','B','C','D','E'];
   var result={};
-  var N_STRIPS=6; // jumlah strip per sel
+  var N_STRIPS=Math.max(4,Math.min(8,Math.floor(20/Math.max(1,1)))); // adaptive
   for(var s=blokStart;s<blokStart+rowsPerBlok;s++){
     var ri=(s-blokStart)+riStart;
     if(ri>=bestRun.length-1)continue;
@@ -868,8 +868,8 @@ function snakeScan(thMat, W, H, bounds, bestRun, rowsPerBlok, blokStart, riStart
       var totalInk=0;var totalPx=0;var horzInk=0;
       // SNAKE: strip 0→N ganjil kiri→kanan, genap kanan→kiri
       for(var strip=0;strip<N_STRIPS;strip++){
-        var sy=Math.round(ryTop+cellH*0.20)+strip*stripH;
-        var ey=Math.min(sy+stripH,Math.round(ryTop+cellH*0.80));
+        var sy=Math.round(ryTop+cellH*0.22)+strip*stripH;
+        var ey=Math.min(sy+stripH,Math.round(ryTop+cellH*0.78));
         if(sy>=ey)continue;
         // margin horizontal kecil
         var sx=cx1+2,ex=cx2-2;
@@ -928,8 +928,8 @@ function geckoScan(thMat, W, H, bounds, bestRun, rowsPerBlok, blokStart, riStart
       var cx1=bounds[oi],cx2=bounds[oi+1];
       var cellW=cx2-cx1;
       // 9 zona tapak cicak (3×3 grid), skip tepi 15%
-      var x0=Math.round(cx1+cellW*.15),x1=Math.round(cx2-cellW*.15);
-      var y0=Math.round(ryTop+cellH*.20),y1=Math.round(ryBot-cellH*.20);
+      var x0=Math.round(cx1+cellW*.10),x1=Math.round(cx2-cellW*.10);
+      var y0=Math.round(ryTop+cellH*.22),y1=Math.round(ryBot-cellH*.22);
       var zW=(x1-x0)/3,zH=(y1-y0)/3;
       if(zW<1||zH<1){vals.push(0);horzRatios.push(0);continue;}
       var zones=new Array(9).fill(0);
@@ -1062,12 +1062,9 @@ function runSnakeGeckoScan(srcCanvas){
     var src=cv.imread(srcCanvas);
     var gray=new cv.Mat();cv.cvtColor(src,gray,cv.COLOR_RGBA2GRAY);src.delete();
     var W=gray.cols,H=gray.rows;
-    if(W>1400){var sc=1400/W;W=Math.round(W*sc);H=Math.round(H*sc);cv.resize(gray,gray,new cv.Size(W,H));}
-    // CLAHE untuk normalisasi kontras
-    var clahe=new cv.CLAHE(2.0,new cv.Size(8,8));
-    var enhanced=new cv.Mat();clahe.apply(gray,enhanced);
-    gray.delete();clahe.delete();
-    var blur=new cv.Mat();cv.GaussianBlur(enhanced,blur,new cv.Size(3,3),0);enhanced.delete();
+    if(W>1400){var sc=1400/W;var nW=Math.round(W*sc);var nH=Math.round(H*sc);cv.resize(gray,gray,new cv.Size(nW,nH));W=nW;H=nH;}
+    // Normalisasi kontras dengan equalizeHist (kompatibel OpenCV.js)
+    var blur=new cv.Mat();cv.GaussianBlur(gray,blur,new cv.Size(3,3),0);gray.delete();
 
     setProg(12,'Mendeteksi grid…','Proyeksi baris & kolom');
     setPass(0,'done');setPass(1,'act');
@@ -1136,9 +1133,15 @@ function runSnakeGeckoScan(srcCanvas){
       });
     });
   }catch(err){
-    console.error(err);
-    openVerify({jawaban:{},confidence:{}},parseInt(document.getElementById('jmlSoal').value));
-    goState('verify');toast('⚠️ Error scan — isi manual');
+    console.error('[SCAN ERROR]',err);
+    var msg=err&&err.message?err.message:String(err);
+    // Tampilkan error spesifik agar bisa debug
+    document.getElementById('scTxt').textContent='❌ Error: '+msg.substring(0,60);
+    document.getElementById('scSub').textContent='Coba foto ulang lebih terang & tegak';
+    setTimeout(function(){
+      openVerify({jawaban:{},confidence:{}},parseInt(document.getElementById('jmlSoal').value));
+      goState('verify');toast('❌ Error: '+msg.substring(0,40));
+    },1500);
   }
 }
 
