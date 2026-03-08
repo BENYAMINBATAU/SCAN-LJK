@@ -6,1777 +6,1259 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#0a0f1e">
+<meta name="theme-color" content="#060c1a">
 <title>BENYAMIN BATAU LJK SCANNER APP</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&family=Exo+2:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
+/* ═══ RESET & ROOT ═══════════════════════════════════════════════ */
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
   --bg:#060c1a;--bg2:#0d1528;--bg3:#111d35;
   --card:#0f1e38;--card2:#152444;
-  --border:#1e3a6e;--border2:#2a4f8f;
-  --cyan:#00e5ff;--cyan2:#00b8d9;--cyan3:#80deea;
-  --green:#00ff9d;--green2:#00cc7a;
-  --amber:#ffab00;--amber2:#ff8f00;
-  --red:#ff3d5a;--red2:#cc2244;
-  --text:#e8f4ff;--text2:#8ab0d4;--text3:#4a6d94;
-  --paving:#0f3460;--paving2:#1a4f8a;
-  --r:8px;--r2:4px;
-  --shadow:0 4px 24px rgba(0,229,255,.08);
+  --bdr:#1e3a6e;--bdr2:#2a4f8f;
+  --cy:#00e5ff;--cy2:#00b8d9;--cy3:#80deea;
+  --gn:#00ff9d;--gn2:#00cc7a;
+  --am:#ffab00;--am2:#ff8f00;
+  --rd:#ff3d5a;--rd2:#cc2244;
+  --tx:#e8f4ff;--tx2:#8ab0d4;--tx3:#4a6d94;
+  --pv:#0f3460;--pv2:#1a4f8a;
 }
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{width:100%;min-height:100vh;background:var(--bg);color:var(--text);
-  font-family:'Exo 2',sans-serif;overflow-x:hidden}
+html,body{width:100%;min-height:100vh;background:var(--bg);color:var(--tx);font-family:'Exo 2',sans-serif;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,229,255,.012) 2px,rgba(0,229,255,.012) 4px);pointer-events:none;z-index:0}
 
-/* ── SCAN LINES ATMOSPHERE ── */
-body::before{content:'';position:fixed;inset:0;
-  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,229,255,.015) 2px,rgba(0,229,255,.015) 4px);
-  pointer-events:none;z-index:0}
+/* ═══ HEADER ═══════════════════════════════════════════════════ */
+.hdr{position:sticky;top:0;z-index:200;background:linear-gradient(135deg,#060c1a,#0a1628);border-bottom:1px solid var(--bdr);padding:8px 14px;display:flex;align-items:center;gap:10px}
+.hdr-logo{width:34px;height:34px;border-radius:7px;background:linear-gradient(135deg,var(--pv),var(--cy2));display:grid;place-items:center;flex-shrink:0}
+.hdr-logo svg{width:18px;height:18px}
+.hdr-info{flex:1;min-width:0}
+.hdr-info h1{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;color:var(--cy);letter-spacing:.7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hdr-info p{font-size:9px;color:var(--tx3);font-family:'Share Tech Mono',monospace;margin-top:1px}
+.badge{background:var(--pv);border:1px solid var(--bdr2);border-radius:20px;padding:2px 8px;font-size:9px;color:var(--cy3);font-family:'Share Tech Mono',monospace;flex-shrink:0}
 
-/* ── HEADER ── */
-.hdr{position:sticky;top:0;z-index:100;
-  background:linear-gradient(135deg,#060c1a 0%,#0a1628 100%);
-  border-bottom:1px solid var(--border);
-  padding:10px 16px;display:flex;align-items:center;gap:10px}
-.hdr-logo{width:36px;height:36px;border-radius:8px;
-  background:linear-gradient(135deg,var(--paving),var(--cyan2));
-  display:grid;place-items:center;flex-shrink:0}
-.hdr-logo svg{width:20px;height:20px}
-.hdr-title{flex:1}
-.hdr-title h1{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;
-  color:var(--cyan);letter-spacing:1px;line-height:1}
-.hdr-title p{font-size:10px;color:var(--text3);font-family:'Share Tech Mono',monospace;margin-top:2px}
-.hdr-badge{background:var(--paving);border:1px solid var(--border2);
-  border-radius:20px;padding:3px 10px;font-size:10px;color:var(--cyan3);
-  font-family:'Share Tech Mono',monospace;white-space:nowrap}
-
-/* ── TABS ── */
-.tabs{display:flex;background:var(--bg2);border-bottom:1px solid var(--border);
-  position:sticky;top:57px;z-index:90;overflow-x:auto;scrollbar-width:none}
+/* ═══ TABS ════════════════════════════════════════════════════ */
+.tabs{display:flex;background:var(--bg2);border-bottom:1px solid var(--bdr);position:sticky;top:51px;z-index:190;overflow-x:auto;scrollbar-width:none}
 .tabs::-webkit-scrollbar{display:none}
-.tab{flex:1;min-width:60px;padding:10px 4px;text-align:center;cursor:pointer;
-  font-size:10px;font-family:'Rajdhani',sans-serif;font-weight:600;letter-spacing:.5px;
-  color:var(--text3);border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap}
-.tab.active{color:var(--cyan);border-bottom-color:var(--cyan)}
-.tab:hover:not(.active){color:var(--text2)}
-.tab .ti{display:block;font-size:18px;margin-bottom:2px}
+.tab{flex:1;min-width:52px;padding:8px 2px 6px;text-align:center;cursor:pointer;font-size:9px;font-family:'Rajdhani',sans-serif;font-weight:700;letter-spacing:.3px;color:var(--tx3);border-bottom:2px solid transparent;transition:all .2s;user-select:none}
+.tab.on{color:var(--cy);border-bottom-color:var(--cy)}
+.tab:hover:not(.on){color:var(--tx2)}
+.tab i{display:block;font-size:16px;margin-bottom:2px;font-style:normal}
 
-/* ── CONTENT ── */
-.page{display:none;padding:16px;max-width:480px;margin:0 auto;position:relative;z-index:1}
-.page.active{display:block}
+/* ═══ PAGES ═══════════════════════════════════════════════════ */
+.pg{display:none;padding:14px;max-width:500px;margin:0 auto;position:relative;z-index:1}
+.pg.on{display:block}
 
-/* ── CARD ── */
-.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);
-  padding:14px;margin-bottom:12px;box-shadow:var(--shadow)}
-.card-title{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:14px;
-  color:var(--cyan3);letter-spacing:.5px;margin-bottom:10px;
-  display:flex;align-items:center;gap:6px}
-.card-title::before{content:'';width:3px;height:14px;background:var(--cyan);
-  border-radius:2px;flex-shrink:0}
+/* ═══ CARD ════════════════════════════════════════════════════ */
+.card{background:var(--card);border:1px solid var(--bdr);border-radius:8px;padding:13px;margin-bottom:11px}
+.ctitle{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;color:var(--cy3);letter-spacing:.5px;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.ctitle::before{content:'';width:3px;height:13px;background:var(--cy);border-radius:2px;flex-shrink:0}
 
-/* ── INPUT / BUTTON ── */
-input,select,textarea{background:var(--bg3);border:1px solid var(--border);
-  border-radius:var(--r2);color:var(--text);font-family:'Exo 2',sans-serif;
-  font-size:13px;padding:8px 10px;width:100%;outline:none;transition:border .2s}
-input:focus,select:focus{border-color:var(--cyan2)}
-label{font-size:11px;color:var(--text2);display:block;margin-bottom:4px;margin-top:8px;
-  font-family:'Rajdhani',sans-serif;font-weight:600;letter-spacing:.5px}
-label:first-child{margin-top:0}
+/* ═══ FORM — override khusus supaya tidak konflik dengan kunci ═ */
+.field-input{background:var(--bg3);border:1px solid var(--bdr);border-radius:4px;color:var(--tx);font-family:'Exo 2',sans-serif;font-size:13px;padding:8px 10px;width:100%;outline:none;transition:border .2s}
+.field-input:focus{border-color:var(--cy2)}
+.lbl{font-size:11px;color:var(--tx2);display:block;margin-bottom:3px;margin-top:8px;font-family:'Rajdhani',sans-serif;font-weight:600;letter-spacing:.4px}
+.lbl:first-child{margin-top:0}
+.sel-field{background:var(--bg3);border:1px solid var(--bdr);border-radius:4px;color:var(--tx);font-family:'Exo 2',sans-serif;font-size:13px;padding:8px 10px;width:100%;outline:none;transition:border .2s;cursor:pointer}
+.sel-field:focus{border-color:var(--cy2)}
 
-.btn{display:flex;align-items:center;justify-content:center;gap:6px;
-  padding:10px 16px;border:none;border-radius:var(--r2);font-family:'Rajdhani',sans-serif;
-  font-weight:700;font-size:13px;letter-spacing:.5px;cursor:pointer;transition:all .15s;
-  width:100%;touch-action:manipulation}
-.btn-primary{background:linear-gradient(135deg,var(--cyan2),var(--paving2));color:#fff}
-.btn-primary:active{opacity:.85;transform:scale(.98)}
-.btn-green{background:linear-gradient(135deg,var(--green2),#007a4d);color:#fff}
-.btn-amber{background:linear-gradient(135deg,var(--amber2),#b35f00);color:#fff}
-.btn-red{background:linear-gradient(135deg,var(--red2),#880022);color:#fff}
-.btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border)}
-.btn-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.btn-row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+/* ═══ BUTTONS ════════════════════════════════════════════════ */
+.btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:10px 14px;border:none;border-radius:4px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;letter-spacing:.5px;cursor:pointer;transition:all .15s;width:100%;touch-action:manipulation;color:#fff}
+.btn:active{transform:scale(.97);opacity:.88}
+.btn:disabled{opacity:.38;cursor:default;transform:none!important}
+.btn-cy{background:linear-gradient(135deg,var(--cy2),var(--pv2))}
+.btn-gn{background:linear-gradient(135deg,var(--gn2),#007a4d)}
+.btn-am{background:linear-gradient(135deg,var(--am2),#b35f00)}
+.btn-rd{background:linear-gradient(135deg,var(--rd2),#880022)}
+.btn-pu{background:linear-gradient(135deg,#7c3aed,#4c1d95)}
+.btn-gh{background:transparent;color:var(--tx2);border:1px solid var(--bdr)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+.mt8{margin-top:8px}.mt4{margin-top:4px}
+.sep{height:1px;background:var(--bdr);margin:10px 0}
 
-/* ── KUNCI INPUT GRID ── */
-.kunci-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-top:4px}
-.kunci-item{display:flex;flex-direction:column;align-items:center;gap:3px}
-.kunci-no{font-size:9px;color:var(--text3);font-family:'Share Tech Mono',monospace}
-.kunci-sel{width:100%;padding:4px 2px;text-align:center;font-size:12px;
-  font-family:'Rajdhani',sans-serif;font-weight:700}
+/* ═══ UPLOAD ════════════════════════════════════════════════ */
+.upzone{border:2px dashed var(--bdr2);border-radius:8px;padding:28px 14px;text-align:center;cursor:pointer;transition:all .2s;background:var(--bg3);position:relative;overflow:hidden}
+.upzone:hover,.upzone.drag{border-color:var(--cy);background:rgba(0,229,255,.04)}
+.upzone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.upzone-icon{font-size:36px;margin-bottom:6px}
+.upzone-txt{font-family:'Rajdhani',sans-serif;font-size:13px;color:var(--tx2);font-weight:600}
+.upzone-sub{font-size:10px;color:var(--tx3);margin-top:3px}
 
-/* ── UPLOAD ZONE ── */
-.upload-zone{border:2px dashed var(--border2);border-radius:var(--r);
-  padding:32px 16px;text-align:center;cursor:pointer;transition:all .2s;
-  background:var(--bg3);position:relative;overflow:hidden}
-.upload-zone:hover,.upload-zone.drag{border-color:var(--cyan);background:rgba(0,229,255,.04)}
-.upload-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
-.upload-icon{font-size:40px;margin-bottom:8px}
-.upload-txt{font-family:'Rajdhani',sans-serif;font-size:14px;color:var(--text2);font-weight:600}
-.upload-sub{font-size:11px;color:var(--text3);margin-top:4px}
+/* ═══ CANVAS PREVIEW ════════════════════════════════════════ */
+#canvasWrap{display:none;position:relative;width:100%;background:#000;border-radius:4px;overflow:hidden;margin-bottom:10px;border:1px solid var(--bdr)}
+#cvMain{width:100%;display:block}
+#cvOverlay{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none}
 
-/* ── PREVIEW CANVAS ── */
-#previewWrap{position:relative;width:100%;background:#000;border-radius:var(--r2);
-  overflow:hidden;display:none;margin-bottom:12px}
-#previewWrap canvas{width:100%;display:block}
-#overlayCanvas{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none}
+/* ═══ STATUS BAR ════════════════════════════════════════════ */
+.sbar{display:flex;align-items:center;gap:8px;padding:8px 11px;border-radius:4px;font-size:11px;font-family:'Share Tech Mono',monospace;margin-bottom:10px;transition:all .3s}
+.sbar.idle{background:rgba(74,109,148,.1);border:1px solid var(--bdr);color:var(--tx3)}
+.sbar.work{background:rgba(0,229,255,.07);border:1px solid var(--cy2);color:var(--cy)}
+.sbar.ok  {background:rgba(0,255,157,.07);border:1px solid var(--gn2);color:var(--gn)}
+.sbar.err {background:rgba(255,61,90,.07);border:1px solid var(--rd2);color:var(--rd)}
+.sdot{width:7px;height:7px;border-radius:50%;background:currentColor;flex-shrink:0}
+.sbar.work .sdot{animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
 
-/* ── STATUS BAR ── */
-.status-bar{display:flex;align-items:center;gap:8px;padding:8px 12px;
-  border-radius:var(--r2);font-size:12px;font-family:'Share Tech Mono',monospace;margin-bottom:12px}
-.status-bar.idle{background:rgba(74,109,148,.15);border:1px solid var(--border);color:var(--text3)}
-.status-bar.scanning{background:rgba(0,229,255,.08);border:1px solid var(--cyan2);color:var(--cyan)}
-.status-bar.done{background:rgba(0,255,157,.08);border:1px solid var(--green2);color:var(--green)}
-.status-bar.error{background:rgba(255,61,90,.08);border:1px solid var(--red2);color:var(--red)}
-.status-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.idle .status-dot{background:var(--text3)}
-.scanning .status-dot{background:var(--cyan);animation:pulse 1s infinite}
-.done .status-dot{background:var(--green)}
-.error .status-dot{background:var(--red)}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+/* ═══ PROGRESS ══════════════════════════════════════════════ */
+.pbar-wrap{height:3px;background:var(--bg3);border-radius:2px;overflow:hidden;margin-bottom:8px;display:none}
+.pbar-inner{height:100%;background:linear-gradient(90deg,var(--cy2),var(--gn));border-radius:2px;transition:width .2s}
 
-/* ── PROGRESS ── */
-.progress{height:4px;background:var(--bg3);border-radius:2px;overflow:hidden;margin-bottom:4px}
-.progress-bar{height:100%;background:linear-gradient(90deg,var(--cyan2),var(--green));
-  transition:width .3s;border-radius:2px}
+/* ═══ PREVIEW PANEL (deteksi awal) ═════════════════════════ */
+#pvPanel{display:none;background:var(--card);border:1px solid var(--bdr);border-radius:8px;padding:12px;margin-bottom:11px}
+.pv-title{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:12px;color:var(--cy3);margin-bottom:6px}
+.pv-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:2px;margin-top:6px}
+.pvcell{background:var(--bg3);border:1px solid var(--bdr);border-radius:3px;padding:3px 0;text-align:center}
+.pvcell .pvn{display:block;font-size:7.5px;color:var(--tx3);font-family:'Share Tech Mono',monospace}
+.pvcell .pva{display:block;font-size:12px;font-weight:700;font-family:'Rajdhani',sans-serif;color:var(--tx3)}
+.pvcell.hit{border-color:var(--cy2);background:rgba(0,229,255,.08)}
+.pvcell.hit .pva{color:var(--cy)}
 
-/* ── HASIL TABLE ── */
-.hasil-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:3px;margin-top:8px}
-.hg-cell{background:var(--bg3);border:1px solid var(--border);border-radius:3px;
-  padding:4px 2px;text-align:center;font-size:11px;font-family:'Rajdhani',sans-serif;font-weight:600}
-.hg-no{font-size:9px;color:var(--text3)}
-.hg-ans{font-size:14px;font-weight:700}
-.hg-cell.correct{background:rgba(0,255,157,.12);border-color:var(--green2);color:var(--green)}
-.hg-cell.wrong{background:rgba(255,61,90,.12);border-color:var(--red2);color:var(--red)}
-.hg-cell.blank{background:rgba(255,171,0,.1);border-color:var(--amber2);color:var(--amber)}
+/* ═══ KUNCI GRID — PALING PENTING, class tersendiri ════════ */
+#kunciWrap{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-top:8px}
+.kcell{display:flex;flex-direction:column;align-items:center;gap:2px}
+.knum{font-size:8px;color:var(--tx3);font-family:'Share Tech Mono',monospace;line-height:1.2}
+/* CRITICAL: jangan pakai -webkit-appearance:none untuk select kunci agar bisa diklik */
+.ksel{
+  width:100%;
+  padding:4px 0;
+  text-align:center;
+  text-align-last:center;
+  font-size:13px;
+  font-family:'Rajdhani',sans-serif;
+  font-weight:700;
+  background:var(--bg3);
+  border:1px solid var(--bdr);
+  border-radius:3px;
+  color:var(--tx);
+  outline:none;
+  cursor:pointer;
+  /* TIDAK pakai -webkit-appearance:none agar native dropdown berfungsi di semua browser */
+}
+.ksel:focus{border-color:var(--cy2);background:rgba(0,184,217,.1)}
+.ksel.isi{border-color:var(--cy2);color:var(--cy);background:rgba(0,184,217,.08)}
 
-/* ── SKOR BESAR ── */
-.skor-display{text-align:center;padding:16px;
-  background:linear-gradient(135deg,var(--paving),var(--bg3));
-  border:1px solid var(--border2);border-radius:var(--r);margin-bottom:12px}
-.skor-nilai{font-family:'Rajdhani',sans-serif;font-size:52px;font-weight:700;
-  line-height:1;color:var(--cyan)}
-.skor-grade{font-size:24px;font-weight:700;margin-top:4px}
-.skor-grade.A{color:var(--green)}.skor-grade.B{color:#76ff03}
-.skor-grade.C{color:var(--amber)}.skor-grade.D{color:#ff9100}.skor-grade.E_{color:var(--red)}
-.skor-detail{font-size:11px;color:var(--text2);margin-top:6px;font-family:'Share Tech Mono',monospace}
-.skor-conf{font-size:10px;color:var(--text3);margin-top:4px}
+/* ═══ HASIL ═════════════════════════════════════════════════ */
+.skorbig{text-align:center;padding:18px;background:linear-gradient(135deg,var(--pv),#0a1628);border:1px solid var(--bdr2);border-radius:8px;margin-bottom:11px}
+.sval{font-family:'Rajdhani',sans-serif;font-size:58px;font-weight:700;line-height:1;color:var(--cy)}
+.sgrade{font-size:22px;font-weight:700;font-family:'Rajdhani',sans-serif;margin-top:3px}
+.gA{color:#00ff9d}.gB{color:#76ff03}.gC{color:#ffab00}.gD{color:#ff9100}.gE{color:#ff3d5a}
+.sdet{font-size:11px;color:var(--tx2);font-family:'Share Tech Mono',monospace;margin-top:6px}
+.sconf{font-size:10px;color:var(--tx3);margin-top:2px}
 
-/* ── REKAP TABLE ── */
-.rekap-table{width:100%;border-collapse:collapse;font-size:11px}
-.rekap-table th{background:var(--paving);color:var(--cyan3);padding:6px 4px;
-  font-family:'Rajdhani',sans-serif;font-weight:700;letter-spacing:.3px;border:1px solid var(--border2);text-align:center}
-.rekap-table td{padding:5px 4px;border:1px solid var(--border);text-align:center;color:var(--text2)}
-.rekap-table tr:nth-child(even) td{background:rgba(15,30,56,.5)}
-.rekap-table tr:hover td{background:rgba(0,229,255,.05)}
-.rekap-table .td-nama{text-align:left;max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.grade-chip{display:inline-block;padding:1px 6px;border-radius:10px;font-size:10px;font-weight:700;font-family:'Rajdhani',sans-serif}
-.chip-A{background:rgba(0,255,157,.2);color:var(--green)}
-.chip-B{background:rgba(118,255,3,.2);color:#76ff03}
-.chip-C{background:rgba(255,171,0,.2);color:var(--amber)}
-.chip-D{background:rgba(255,145,0,.2);color:#ff9100}
-.chip-E{background:rgba(255,61,90,.2);color:var(--red)}
+.hgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:3px;margin-top:8px}
+.hcell{background:var(--bg3);border:1px solid var(--bdr);border-radius:3px;padding:4px 1px;text-align:center}
+.hcell .hn{font-size:8px;color:var(--tx3);font-family:'Share Tech Mono',monospace}
+.hcell .ha{font-size:13px;font-weight:700;font-family:'Rajdhani',sans-serif;color:var(--tx2)}
+.hcell.ok{background:rgba(0,255,157,.12);border-color:var(--gn2)}.hcell.ok .ha{color:var(--gn)}
+.hcell.ng{background:rgba(255,61,90,.12);border-color:var(--rd2)}.hcell.ng .ha{color:var(--rd)}
+.hcell.ko{background:rgba(255,171,0,.08);border-color:var(--am2)}.hcell.ko .ha{color:var(--am)}
 
-/* ── KALIBRASI ── */
-.kal-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.kal-val{font-size:11px;color:var(--cyan);font-family:'Share Tech Mono',monospace;margin-top:3px}
-.slider-wrap{display:flex;align-items:center;gap:8px}
-.slider-wrap input[type=range]{flex:1;accent-color:var(--cyan);height:4px}
+/* ═══ INTENSITY BAR ═════════════════════════════════════════ */
+.ibar{height:16px;border-radius:3px;overflow:hidden;display:flex;margin-top:6px;gap:1px}
+.iseg{flex:1;border-radius:1px}
 
-/* ── INTENSITY METER ── */
-.int-bar{height:20px;border-radius:3px;overflow:hidden;display:flex;margin-top:6px}
-.int-seg{flex:1;transition:background .3s}
+/* ═══ REKAP ══════════════════════════════════════════════════ */
+.stat3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
+.stcard{background:var(--bg3);border:1px solid var(--bdr);border-radius:4px;padding:10px;text-align:center}
+.stval{font-family:'Rajdhani',sans-serif;font-size:26px;font-weight:700}
+.stlbl{font-size:9px;color:var(--tx3);margin-top:2px}
+.rtbl{width:100%;border-collapse:collapse;font-size:11px}
+.rtbl th{background:var(--pv);color:var(--cy3);padding:6px 4px;font-family:'Rajdhani',sans-serif;font-weight:700;border:1px solid var(--bdr2);text-align:center}
+.rtbl td{padding:5px 4px;border:1px solid var(--bdr);text-align:center;color:var(--tx2)}
+.rtbl tr:nth-child(even) td{background:rgba(15,30,56,.4)}
+.tdnama{text-align:left!important;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gchip{display:inline-block;padding:1px 6px;border-radius:8px;font-size:9px;font-weight:700;font-family:'Rajdhani',sans-serif}
+.cgA{background:rgba(0,255,157,.2);color:#00ff9d}.cgB{background:rgba(118,255,3,.2);color:#76ff03}
+.cgC{background:rgba(255,171,0,.2);color:#ffab00}.cgD{background:rgba(255,145,0,.2);color:#ff9100}
+.cgE{background:rgba(255,61,90,.2);color:#ff3d5a}
+.barchart{display:flex;align-items:flex-end;gap:4px;height:55px;margin:4px 0 8px}
+.barcol{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px}
+.barnum{font-size:9px;font-family:'Share Tech Mono',monospace}
+.barbg{width:100%;border-radius:2px 2px 0 0;opacity:.85}
+.barlbl{font-size:9px;font-family:'Rajdhani',sans-serif;font-weight:700}
 
-/* ── ROI DEBUG ── */
-.roi-info{font-size:9px;color:var(--text3);font-family:'Share Tech Mono',monospace;
-  padding:6px;background:var(--bg3);border-radius:3px;margin-top:4px}
+/* ═══ KALIBRASI ═════════════════════════════════════════════ */
+.slwrap{display:flex;align-items:center;gap:8px;margin-top:4px;margin-bottom:8px}
+.slwrap input[type=range]{flex:1;accent-color:var(--cy)}
+.slval{font-size:11px;color:var(--cy);font-family:'Share Tech Mono',monospace;min-width:38px;text-align:right}
 
-/* ── TOAST ── */
-.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);
-  background:var(--card2);border:1px solid var(--border2);border-radius:20px;
-  padding:8px 18px;font-size:12px;color:var(--text);z-index:999;
-  opacity:0;transition:all .3s;white-space:nowrap;pointer-events:none}
+/* ═══ MODAL ══════════════════════════════════════════════════ */
+.modal{position:fixed;inset:0;background:rgba(4,8,20,.94);z-index:999;display:flex;align-items:center;justify-content:center;padding:16px;opacity:0;pointer-events:none;transition:opacity .25s}
+.modal.show{opacity:1;pointer-events:all}
+.mbox{background:var(--card);border:1px solid var(--bdr2);border-radius:12px;padding:20px 16px;max-width:360px;width:100%;text-align:center;transform:scale(.92);transition:transform .25s;max-height:88vh;overflow-y:auto}
+.modal.show .mbox{transform:scale(1)}
+.micon{font-size:44px;margin-bottom:8px;display:block}
+.mtitle{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:var(--rd);margin-bottom:6px}
+.mmsg{font-size:12px;color:var(--tx2);line-height:1.6;margin-bottom:8px}
+.vlist{text-align:left;margin:6px 0}
+.vrow{display:flex;align-items:flex-start;gap:6px;padding:3px 0;font-size:9.5px;font-family:'Share Tech Mono',monospace;border-bottom:1px solid rgba(255,255,255,.05)}
+.vrow:last-child{border:none}
+.vdot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:2px}
+.vrow.vok{color:var(--gn)}.vrow.vok .vdot{background:var(--gn)}
+.vrow.vng{color:var(--rd)}.vrow.vng .vdot{background:var(--rd)}
+.mhint{font-size:10.5px;color:var(--am);background:rgba(255,171,0,.07);border:1px solid rgba(255,171,0,.2);border-radius:4px;padding:8px;margin:8px 0;line-height:1.7;text-align:left}
+.mdet{font-size:9px;color:var(--tx3);font-family:'Share Tech Mono',monospace;background:var(--bg3);border-radius:3px;padding:6px;margin-bottom:8px;text-align:left;white-space:pre-line;line-height:1.8}
+
+/* ═══ TOAST ══════════════════════════════════════════════════ */
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(12px);background:var(--card2);border:1px solid var(--bdr2);border-radius:20px;padding:7px 18px;font-size:12px;color:var(--tx);z-index:9999;opacity:0;transition:all .25s;white-space:nowrap;pointer-events:none;max-width:90vw;text-align:center}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-/* ── PAVING ROI OVERLAY ── */
-.roi-box{position:absolute;border:2px solid;border-radius:2px;pointer-events:none}
-
-/* ── BOTTOM NAV ── */
-.bnav{display:none}
-
-/* ── MISC ── */
-.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
-.sep{height:1px;background:var(--border);margin:12px 0}
-.chip{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;
-  background:var(--bg3);border:1px solid var(--border);color:var(--text3);margin:2px}
-.info-box{padding:8px 10px;border-radius:var(--r2);font-size:11px;color:var(--text2);
-  background:rgba(0,229,255,.05);border:1px solid rgba(0,229,255,.15);margin-bottom:8px;line-height:1.5}
-.warn-box{padding:8px 10px;border-radius:var(--r2);font-size:11px;color:var(--amber);
-  background:rgba(255,171,0,.06);border:1px solid rgba(255,171,0,.2);margin-bottom:8px}
-.mt{margin-top:8px}
-.small{font-size:10px;color:var(--text3);font-family:'Share Tech Mono',monospace}
-
-@media(max-width:360px){
-  .kunci-grid{grid-template-columns:repeat(5,1fr)}
-  .hasil-grid{grid-template-columns:repeat(5,1fr)}
-}
-
-/* ── VALIDASI MODAL ── */
-.modal-overlay{position:fixed;inset:0;background:rgba(4,8,20,.92);z-index:999;
-  display:flex;align-items:center;justify-content:center;padding:20px;
-  opacity:0;pointer-events:none;transition:opacity .25s}
-.modal-overlay.show{opacity:1;pointer-events:all}
-.modal-box{background:var(--card);border:1px solid var(--border2);border-radius:12px;
-  padding:24px 20px;max-width:360px;width:100%;text-align:center;
-  transform:scale(.92);transition:transform .25s}
-.modal-overlay.show .modal-box{transform:scale(1)}
-.modal-icon{font-size:52px;margin-bottom:12px;display:block}
-.modal-title{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;
-  color:var(--red);margin-bottom:8px;letter-spacing:.5px}
-.modal-msg{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:16px}
-.modal-detail{font-size:10px;color:var(--text3);font-family:'Share Tech Mono',monospace;
-  background:var(--bg3);border-radius:4px;padding:8px;margin-bottom:16px;text-align:left;line-height:1.8}
-.modal-hint{font-size:11px;color:var(--amber);margin-bottom:16px;
-  background:rgba(255,171,0,.07);border:1px solid rgba(255,171,0,.2);
-  border-radius:4px;padding:8px;line-height:1.6}
-.btn-modal{padding:10px 24px;border:none;border-radius:6px;font-family:'Rajdhani',sans-serif;
-  font-weight:700;font-size:14px;cursor:pointer;width:100%}
-.btn-modal-ok{background:linear-gradient(135deg,var(--border2),var(--paving));color:#fff}
-
-/* ── VALIDASI PROGRESS ── */
-.val-step{display:flex;align-items:center;gap:8px;padding:5px 0;
-  font-size:11px;font-family:'Share Tech Mono',monospace;color:var(--text3)}
-.val-step.ok{color:var(--green)}
-.val-step.fail{color:var(--red)}
-.val-step.run{color:var(--cyan)}
-.val-dot{width:8px;height:8px;border-radius:50%;background:currentColor;flex-shrink:0}
-#valSteps{margin:8px 0 12px;text-align:left}
-
+/* ═══ MISC ════════════════════════════════════════════════════ */
+.ibox{padding:8px 10px;border-radius:4px;font-size:11px;color:var(--tx2);background:rgba(0,229,255,.05);border:1px solid rgba(0,229,255,.13);margin-bottom:8px;line-height:1.5}
+.wbox{padding:8px 10px;border-radius:4px;font-size:11px;color:var(--am);background:rgba(255,171,0,.06);border:1px solid rgba(255,171,0,.18);margin-bottom:8px;line-height:1.5}
+.sm{font-size:10px;color:var(--tx3);font-family:'Share Tech Mono',monospace}
+.cnt{font-size:11px;color:var(--cy);font-family:'Share Tech Mono',monospace;font-weight:700}
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
+<!-- ── HEADER ─────────────────────────────────────────────────── -->
 <div class="hdr">
   <div class="hdr-logo">
-    <svg viewBox="0 0 24 24" fill="none" stroke="#00e5ff" stroke-width="2">
-      <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
-      <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
+    <svg viewBox="0 0 24 24" fill="none" stroke="#00e5ff" stroke-width="2.2">
+      <rect x="3" y="3" width="7" height="7" rx="1.2"/><rect x="14" y="3" width="7" height="7" rx="1.2"/>
+      <rect x="3" y="14" width="7" height="7" rx="1.2"/><rect x="14" y="14" width="7" height="7" rx="1.2"/>
     </svg>
   </div>
-  <div class="hdr-title">
+  <div class="hdr-info">
     <h1>BENYAMIN BATAU LJK SCANNER APP</h1>
-    <p>PAVING BLOCK · HIGH INTENSITY PIXEL</p>
+    <p>PAVING BLOCK · HIGH INTENSITY PIXEL · v3.0</p>
   </div>
-  <div class="hdr-badge">v1.0</div>
+  <div class="badge">v3.0</div>
 </div>
 
-<!-- TABS -->
+<!-- ── TABS ───────────────────────────────────────────────────── -->
 <div class="tabs">
-  <div class="tab active" onclick="goTab(0)"><span class="ti">📷</span>SCAN</div>
-  <div class="tab" onclick="goTab(1)"><span class="ti">🗝️</span>KUNCI</div>
-  <div class="tab" onclick="goTab(2)"><span class="ti">📊</span>HASIL</div>
-  <div class="tab" onclick="goTab(3)"><span class="ti">📋</span>REKAP</div>
-  <div class="tab" onclick="goTab(4)"><span class="ti">⚙️</span>KALIBRASI</div>
+  <div class="tab on"  onclick="goTab(0)"><i>📷</i>SCAN</div>
+  <div class="tab"     onclick="goTab(1)"><i>🗝️</i>KUNCI</div>
+  <div class="tab"     onclick="goTab(2)"><i>📊</i>HASIL</div>
+  <div class="tab"     onclick="goTab(3)"><i>📋</i>REKAP</div>
+  <div class="tab"     onclick="goTab(4)"><i>⚙️</i>KALIBRASI</div>
 </div>
 
-<!-- TOAST -->
+<!-- ── TOAST ──────────────────────────────────────────────────── -->
 <div class="toast" id="toast"></div>
 
-<!-- ═══════════════════════════════════════════════════════════ -->
-<!-- TAB 0: SCAN -->
-<!-- ═══════════════════════════════════════════════════════════ -->
-<div class="page active" id="tab0">
+<!-- ── MODAL REJECT ───────────────────────────────────────────── -->
+<div class="modal" id="mReject">
+  <div class="mbox">
+    <span class="micon">🚫</span>
+    <div class="mtitle">GAMBAR DITOLAK</div>
+    <div class="mmsg" id="mMsg">Gambar tidak terdeteksi sebagai LJK yang valid.</div>
+    <div class="vlist" id="mList"></div>
+    <div class="mdet" id="mDet"></div>
+    <div class="mhint" id="mHint">💡 Tips: Foto tegak lurus, seluruh lembar terlihat, cahaya cukup & merata, kamera stabil.</div>
+    <div class="mt8">
+      <button class="btn btn-gh" onclick="closeModal()">↩ Upload Ulang</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════ TAB 0: SCAN ══════════════════════════ -->
+<div class="pg on" id="pg0">
 
   <div class="card">
-    <div class="card-title">Identitas Siswa</div>
-    <label>Nama Siswa</label>
-    <input type="text" id="inNama" placeholder="Nama lengkap siswa..." autocomplete="off">
-    <div class="row2">
+    <div class="ctitle">Identitas Siswa</div>
+    <span class="lbl">Nama Lengkap</span>
+    <input class="field-input" type="text" id="inNama" placeholder="Nama siswa..." autocomplete="off">
+    <div class="g2 mt8">
       <div>
-        <label>No. Absen</label>
-        <input type="number" id="inAbsen" placeholder="01" min="1" max="50">
+        <span class="lbl">No. Absen</span>
+        <input class="field-input" type="number" id="inAbsen" placeholder="01" min="1" max="99">
       </div>
       <div>
-        <label>Kelas</label>
-        <input type="text" id="inKelas" placeholder="X-TKJ-1">
+        <span class="lbl">Kelas</span>
+        <input class="field-input" type="text" id="inKelas" placeholder="X-TKJ-1">
       </div>
     </div>
   </div>
 
   <div class="card">
-    <div class="card-title">Upload Lembar Jawaban</div>
-    <div class="upload-zone" id="dropZone">
-      <input type="file" id="fileInput" accept="image/*,application/pdf" capture="environment">
-      <div class="upload-icon">📄</div>
-      <div class="upload-txt">Foto / Upload LJK</div>
-      <div class="upload-sub">JPG, PNG, HEIC · PDF · Max 20MB</div>
+    <div class="ctitle">Upload Lembar Jawaban</div>
+    <div class="upzone" id="dropZone">
+      <input type="file" id="fileInput" accept="image/*,application/pdf" capture="environment" onchange="onFile(event)">
+      <div class="upzone-icon">📄</div>
+      <div class="upzone-txt">Foto / Upload LJK</div>
+      <div class="upzone-sub">JPG · PNG · HEIC · PDF · Maks 20MB</div>
     </div>
   </div>
 
-  <div id="previewWrap">
-    <canvas id="mainCanvas"></canvas>
-    <canvas id="overlayCanvas"></canvas>
+  <!-- Canvas preview gambar -->
+  <div id="canvasWrap">
+    <canvas id="cvMain"></canvas>
+    <canvas id="cvOverlay"></canvas>
   </div>
 
-  <div class="status-bar idle" id="statusBar">
-    <div class="status-dot"></div>
-    <span id="statusTxt">Belum ada gambar — upload LJK dulu</span>
+  <!-- Status & progress -->
+  <div class="sbar idle" id="sbar"><div class="sdot"></div><span id="sbarTxt">Upload LJK terlebih dahulu</span></div>
+  <div class="pbar-wrap" id="pbarWrap"><div class="pbar-inner" id="pbar" style="width:0%"></div></div>
+
+  <!-- Panel preview deteksi jawaban (tampil setelah gambar valid) -->
+  <div id="pvPanel">
+    <div class="pv-title">🔍 Preview Deteksi — Cek sebelum Scan Penuh</div>
+    <div class="sm" style="color:var(--tx3)">Kotak berwarna = terdeteksi ada isian. Pastikan posisi sesuai jawaban siswa.</div>
+    <div class="pv-grid" id="pvGrid"></div>
+    <div class="sm mt8" id="pvInfo"></div>
   </div>
 
-  <div class="progress" id="progressWrap" style="display:none">
-    <div class="progress-bar" id="progressBar" style="width:0%"></div>
+  <!-- Tombol aksi -->
+  <div class="g3 mt8">
+    <button class="btn btn-gh"  id="btnRoi"  onclick="toggleROI()"  disabled>👁 ROI</button>
+    <button class="btn btn-pu"  id="btnPrev" onclick="doPreview()"  disabled>🔍 Preview</button>
+    <button class="btn btn-cy"  id="btnScan" onclick="doScan()"     disabled>⚡ Scan</button>
+  </div>
+  <div class="mt8">
+    <button class="btn btn-gh" onclick="doReset()">🔄 Reset</button>
   </div>
 
-  <div class="btn-row mt">
-    <button class="btn btn-ghost" onclick="toggleROI()">👁 Preview ROI</button>
-    <button class="btn btn-primary" onclick="doScan()" id="btnScan" disabled>⚡ SCAN</button>
-  </div>
-  <div class="mt">
-    <button class="btn btn-ghost" onclick="resetScan()">🔄 Reset</button>
-  </div>
+</div><!-- end pg0 -->
 
-  <div class="roi-info" id="roiInfo" style="display:none">
-    ROI: Menampilkan 250 kotak deteksi pada gambar
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════════════════════════ -->
-<!-- TAB 1: KUNCI -->
-<!-- ═══════════════════════════════════════════════════════════ -->
-<div class="page" id="tab1">
+<!-- ══════════════════════ TAB 1: KUNCI ══════════════════════════ -->
+<div class="pg" id="pg1">
   <div class="card">
-    <div class="card-title">Kunci Jawaban</div>
-    <div class="info-box">Pilih jawaban benar untuk setiap soal. Sistem mendukung multi-kunci (pisahkan dengan koma, misal: A,B)</div>
-    <div class="btn-row mt">
-      <button class="btn btn-ghost" onclick="kunciRandom()">🎲 Acak</button>
-      <button class="btn btn-ghost" onclick="kunciClear()">🗑 Kosongkan</button>
-    </div>
-    <div class="btn-row mt">
-      <button class="btn btn-ghost" onclick="kunciImport()">📥 Import TXT</button>
-      <button class="btn btn-amber" onclick="kunciSave()">💾 Simpan</button>
-    </div>
+    <div class="ctitle">Kunci Jawaban — 50 Soal</div>
+    <div class="ibox">Pilih jawaban benar tiap soal. Tersimpan otomatis di browser.</div>
+
+    <!-- Counter -->
+    <div class="sm">Terisi: <span class="cnt" id="kCount">0</span>/50 soal</div>
+
+    <!-- Grid kunci 50 soal -->
+    <div id="kunciWrap"></div>
+
+    <!-- Tombol kunci -->
     <div class="sep"></div>
-    <div id="kunciGrid" class="kunci-grid"></div>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════════════════════════ -->
-<!-- TAB 2: HASIL -->
-<!-- ═══════════════════════════════════════════════════════════ -->
-<div class="page" id="tab2">
-  <div id="hasilEmpty" class="info-box">Belum ada hasil scan. Scan LJK terlebih dahulu.</div>
-  <div id="hasilContent" style="display:none">
-    <div class="skor-display">
-      <div class="skor-nilai" id="skNilai">—</div>
-      <div class="skor-grade" id="skGrade">—</div>
-      <div class="skor-detail" id="skDetail">—</div>
-      <div class="skor-conf" id="skConf">—</div>
+    <div class="g2">
+      <button class="btn btn-gh" onclick="kRandom()">🎲 Acak Semua</button>
+      <button class="btn btn-gh" onclick="kClear()">🗑 Kosongkan</button>
     </div>
-    <div class="card">
-      <div class="card-title">Detail Jawaban (50 soal)</div>
-      <div class="hasil-grid" id="hasilGrid"></div>
+    <div class="mt8">
+      <button class="btn btn-gh" onclick="kImport()">📥 Import (ketik/paste 50 jawaban)</button>
     </div>
-    <div class="card">
-      <div class="card-title">Intensity Map</div>
-      <div class="int-bar" id="intBar"></div>
-      <div class="small mt" id="intLegend">Hijau=Terdeteksi jelas · Kuning=Ambiguous · Merah=Kosong</div>
-    </div>
-    <div class="card">
-      <div class="card-title">Simpan & Export</div>
-      <div class="btn-row">
-        <button class="btn btn-green" onclick="simpanHasil()">💾 Simpan ke Rekap</button>
-        <button class="btn btn-primary" onclick="downloadPDF()">📄 Download PDF</button>
-      </div>
-      <div class="mt">
-        <button class="btn btn-ghost" onclick="downloadTXT()">📝 Download TXT</button>
-      </div>
+    <div class="mt8">
+      <button class="btn btn-am" onclick="kSave()">💾 Simpan Kunci</button>
     </div>
   </div>
-</div>
+</div><!-- end pg1 -->
 
-<!-- ═══════════════════════════════════════════════════════════ -->
-<!-- TAB 3: REKAP -->
-<!-- ═══════════════════════════════════════════════════════════ -->
-<div class="page" id="tab3">
+<!-- ══════════════════════ TAB 2: HASIL ══════════════════════════ -->
+<div class="pg" id="pg2">
+  <div class="ibox" id="hEmpty">Belum ada hasil. Scan LJK terlebih dahulu di tab SCAN.</div>
+  <div id="hContent" style="display:none">
+    <div class="skorbig">
+      <div class="sval"   id="hNilai">—</div>
+      <div class="sgrade" id="hGrade">—</div>
+      <div class="sdet"   id="hDet">—</div>
+      <div class="sconf"  id="hConf">—</div>
+    </div>
+    <div class="card">
+      <div class="ctitle">Detail 50 Jawaban</div>
+      <div class="hgrid" id="hGrid"></div>
+    </div>
+    <div class="card">
+      <div class="ctitle">Peta Intensitas</div>
+      <div class="ibar" id="ibar"></div>
+      <div class="sm mt8">🟢 Benar &nbsp; 🔴 Salah &nbsp; 🟡 Kosong/Ambig</div>
+    </div>
+    <div class="card">
+      <div class="ctitle">Export Hasil</div>
+      <div class="g2">
+        <button class="btn btn-gn" onclick="hSimpan()">💾 Simpan ke Rekap</button>
+        <button class="btn btn-cy" onclick="hPDF()">🖨 Cetak PDF</button>
+      </div>
+      <div class="mt8">
+        <button class="btn btn-gh" onclick="hTXT()">📝 Download TXT</button>
+      </div>
+    </div>
+  </div>
+</div><!-- end pg2 -->
+
+<!-- ══════════════════════ TAB 3: REKAP ══════════════════════════ -->
+<div class="pg" id="pg3">
   <div class="card">
-    <div class="card-title">Rekap Kelas</div>
-    <div class="row3">
-      <div style="text-align:center">
-        <div style="font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:700;color:var(--cyan)" id="rkJml">0</div>
-        <div class="small">Siswa</div>
-      </div>
-      <div style="text-align:center">
-        <div style="font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:700;color:var(--green)" id="rkRata">—</div>
-        <div class="small">Rata-rata</div>
-      </div>
-      <div style="text-align:center">
-        <div style="font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:700;color:var(--amber)" id="rkLulus">0%</div>
-        <div class="small">Lulus(≥75)</div>
-      </div>
+    <div class="ctitle">Statistik Kelas</div>
+    <div class="stat3">
+      <div class="stcard"><div class="stval" id="rJml"   style="color:var(--cy)">0</div><div class="stlbl">Siswa</div></div>
+      <div class="stcard"><div class="stval" id="rRata"  style="color:var(--gn)">—</div><div class="stlbl">Rata-rata</div></div>
+      <div class="stcard"><div class="stval" id="rLulus" style="color:var(--am)">0%</div><div class="stlbl">Lulus ≥75</div></div>
     </div>
-    <div class="sep"></div>
-    <div id="rkGrafik" style="margin-bottom:8px"></div>
-    <div class="btn-row">
-      <button class="btn btn-primary" onclick="rekapDownloadPDF()">📄 PDF Rekap</button>
-      <button class="btn btn-ghost" onclick="rekapDownloadTXT()">📝 TXT Rekap</button>
+    <div class="barchart" id="barChart"></div>
+    <div class="g2">
+      <button class="btn btn-cy" onclick="rPDF()">🖨 Cetak Rekap</button>
+      <button class="btn btn-gh" onclick="rTXT()">📝 TXT</button>
     </div>
-    <div class="mt">
-      <button class="btn btn-red" onclick="rekapHapus()">🗑 Hapus Semua</button>
+    <div class="mt8">
+      <button class="btn btn-rd" onclick="rHapus()">🗑 Hapus Semua</button>
     </div>
   </div>
   <div class="card">
-    <div class="card-title">Daftar Nilai</div>
+    <div class="ctitle">Daftar Nilai</div>
     <div style="overflow-x:auto">
-      <table class="rekap-table" id="rekapTbl">
-        <thead>
-          <tr><th>#</th><th>Nama</th><th>Kelas</th><th>Benar</th><th>Nilai</th><th>Grade</th></tr>
-        </thead>
-        <tbody id="rekapBody"></tbody>
+      <table class="rtbl">
+        <thead><tr><th>#</th><th>Nama</th><th>Kls</th><th>Benar</th><th>Nilai</th><th>Grade</th></tr></thead>
+        <tbody id="rBody"></tbody>
       </table>
     </div>
   </div>
-</div>
+</div><!-- end pg3 -->
 
-<!-- ═══════════════════════════════════════════════════════════ -->
-<!-- TAB 4: KALIBRASI -->
-<!-- ═══════════════════════════════════════════════════════════ -->
-<div class="page" id="tab4">
+<!-- ══════════════════════ TAB 4: KALIBRASI ══════════════════════ -->
+<div class="pg" id="pg4">
   <div class="card">
-    <div class="card-title">Parameter Deteksi</div>
-    <div class="info-box">Sesuaikan nilai ini jika hasil deteksi kurang akurat. Rekomendasi: mulai dari nilai default.</div>
+    <div class="ctitle">Parameter Deteksi</div>
+    <div class="ibox">Sesuaikan jika deteksi kurang akurat. Default sudah optimal untuk LJK Paving Block.</div>
 
-    <label>Threshold Minimum Intensitas</label>
-    <div class="slider-wrap">
-      <input type="range" id="kalThr" min="5" max="60" value="15" oninput="kalUpdate()">
-      <span class="kal-val" id="kalThrVal">15</span>
-    </div>
-    <div class="small">Makin tinggi = lebih selektif (kurangi noise)</div>
+    <span class="lbl">Threshold Minimum (gelap piksel)</span>
+    <div class="slwrap"><input type="range" id="sThr"   min="5"  max="60"  value="15"  oninput="kalSync()"><span class="slval" id="vThr">15</span></div>
 
-    <label style="margin-top:12px">Ratio Minimum Dominansi</label>
-    <div class="slider-wrap">
-      <input type="range" id="kalRatio" min="10" max="50" value="20" oninput="kalUpdate()">
-      <span class="kal-val" id="kalRatioVal">0.20</span>
-    </div>
-    <div class="small">Makin tinggi = lebih ketat (kurangi false positive)</div>
+    <span class="lbl">Ratio Dominansi Minimum</span>
+    <div class="slwrap"><input type="range" id="sRatio" min="10" max="50"  value="20"  oninput="kalSync()"><span class="slval" id="vRatio">0.20</span></div>
 
-    <label style="margin-top:12px">Offset X (geser kiri-kanan)</label>
-    <div class="slider-wrap">
-      <input type="range" id="kalOfsX" min="-30" max="30" value="0" oninput="kalUpdate()">
-      <span class="kal-val" id="kalOfsXVal">0px</span>
-    </div>
+    <span class="lbl">Offset X (geser kiri–kanan, px)</span>
+    <div class="slwrap"><input type="range" id="sOfsX"  min="-40" max="40" value="0"  oninput="kalSync()"><span class="slval" id="vOfsX">0</span></div>
 
-    <label style="margin-top:12px">Offset Y (geser atas-bawah)</label>
-    <div class="slider-wrap">
-      <input type="range" id="kalOfsY" min="-30" max="30" value="0" oninput="kalUpdate()">
-      <span class="kal-val" id="kalOfsYVal">0px</span>
-    </div>
+    <span class="lbl">Offset Y (geser atas–bawah, px)</span>
+    <div class="slwrap"><input type="range" id="sOfsY"  min="-40" max="40" value="0"  oninput="kalSync()"><span class="slval" id="vOfsY">0</span></div>
 
-    <label style="margin-top:12px">Skala X (zoom horizontal)</label>
-    <div class="slider-wrap">
-      <input type="range" id="kalSX" min="80" max="120" value="100" oninput="kalUpdate()">
-      <span class="kal-val" id="kalSXVal">1.00</span>
-    </div>
+    <span class="lbl">Skala X</span>
+    <div class="slwrap"><input type="range" id="sSX"    min="80"  max="120" value="100" oninput="kalSync()"><span class="slval" id="vSX">1.00</span></div>
 
-    <label style="margin-top:12px">Skala Y (zoom vertikal)</label>
-    <div class="slider-wrap">
-      <input type="range" id="kalSY" min="80" max="120" value="100" oninput="kalUpdate()">
-      <span class="kal-val" id="kalSYVal">1.00</span>
-    </div>
+    <span class="lbl">Skala Y</span>
+    <div class="slwrap"><input type="range" id="sSY"    min="80"  max="120" value="100" oninput="kalSync()"><span class="slval" id="vSY">1.00</span></div>
 
-    <div class="sep"></div>
-    <div class="btn-row">
-      <button class="btn btn-ghost" onclick="kalReset()">🔄 Default</button>
-      <button class="btn btn-amber" onclick="kalSave()">💾 Simpan</button>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-title">Mode Deteksi</div>
-    <label>Algoritma Pixel</label>
-    <select id="kalMode">
-      <option value="hipx">High Intensity Pixel (HiPX) — Rekomendasi</option>
-      <option value="avg">Average Gray Diff</option>
+    <span class="lbl">Algoritma Pixel</span>
+    <select class="sel-field" id="sMode">
+      <option value="hipx">HiPX — High Intensity Pixel (Rekomendasi)</option>
+      <option value="avg">Average Gray Difference</option>
       <option value="dark">Dark Pixel Count</option>
-      <option value="combo">Combo (HiPX + Dark)</option>
+      <option value="combo">Combo (HiPX + Dark Count)</option>
     </select>
-    <div class="small mt">HiPX: menghitung piksel gelap >threshold, lebih akurat untuk tanda X dan arsiran</div>
 
-    <label style="margin-top:12px">Pencahayaan Adaptif</label>
-    <select id="kalAdaptif">
-      <option value="1">Aktif (auto-normalize tiap baris)</option>
+    <span class="lbl">Pencahayaan Adaptif</span>
+    <select class="sel-field" id="sAdapt">
+      <option value="1">Aktif — auto-normalize per baris</option>
       <option value="0">Nonaktif</option>
     </select>
 
-    <label style="margin-top:12px">Anti-noise Gaussian</label>
-    <select id="kalGauss">
-      <option value="1">Aktif</option>
-      <option value="0">Nonaktif</option>
-    </select>
     <div class="sep"></div>
-    <button class="btn btn-primary" onclick="kalSave()">💾 Simpan Semua Setting</button>
+    <div class="g2">
+      <button class="btn btn-gh" onclick="kalReset()">🔄 Default</button>
+      <button class="btn btn-am" onclick="kalSave()">💾 Simpan</button>
+    </div>
   </div>
-</div>
+</div><!-- end pg4 -->
 
-<!-- ═══════════════════════════════════════════════════════════ -->
-<!-- SCRIPT ENGINE -->
-<!-- ═══════════════════════════════════════════════════════════ -->
 <script>
-// ─── KOORDINAT GRID LJK (dari Python) ────────────────────────
-const LJK_COORDS = {"page_w":595.276,"page_h":841.89,"row_h":20.271,"opw":46.205,"bsize":14.602,"no_w":25.512,"mar_l":34.016,"blok_w":256.535,"gap_tengah":14.173,"grid_top_from_top":226.772,"hdr_h_pt":16.217,"grid":[{"nomor":1,"opsi":[{"opsi":"A","x":75.329,"y_top":245.823,"w":14.602,"h":14.602,"rx":0.126545,"ry":0.29199,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":121.534,"y_top":245.823,"w":14.602,"h":14.602,"rx":0.204164,"ry":0.29199,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":167.739,"y_top":245.823,"w":14.602,"h":14.602,"rx":0.281783,"ry":0.29199,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":213.943,"y_top":245.823,"w":14.602,"h":14.602,"rx":0.359402,"ry":0.29199,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":260.148,"y_top":245.823,"w":14.602,"h":14.602,"rx":0.437021,"ry":0.29199,"rw":0.024529,"rh":0.017344}],"row_y_top":242.988,"row_y_bot":263.259},{"nomor":2,"opsi":[{"opsi":"A","x":75.329,"y_top":266.094,"w":14.602,"h":14.602,"rx":0.126545,"ry":0.316068,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":121.534,"y_top":266.094,"w":14.602,"h":14.602,"rx":0.204164,"ry":0.316068,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":167.739,"y_top":266.094,"w":14.602,"h":14.602,"rx":0.281783,"ry":0.316068,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":213.943,"y_top":266.094,"w":14.602,"h":14.602,"rx":0.359402,"ry":0.316068,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":260.148,"y_top":266.094,"w":14.602,"h":14.602,"rx":0.437021,"ry":0.316068,"rw":0.024529,"rh":0.017344}],"row_y_top":263.259,"row_y_bot":283.53},{"nomor":3,"opsi":[{"opsi":"A","x":75.329,"y_top":286.365,"w":14.602,"h":14.602,"rx":0.126545,"ry":0.340146,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":121.534,"y_top":286.365,"w":14.602,"h":14.602,"rx":0.204164,"ry":0.340146,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":167.739,"y_top":286.365,"w":14.602,"h":14.602,"rx":0.281783,"ry":0.340146,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":213.943,"y_top":286.365,"w":14.602,"h":14.602,"rx":0.359402,"ry":0.340146,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":260.148,"y_top":286.365,"w":14.602,"h":14.602,"rx":0.437021,"ry":0.340146,"rw":0.024529,"rh":0.017344}],"row_y_top":283.53,"row_y_bot":303.802},{"nomor":4,"opsi":[{"opsi":"A","x":75.329,"y_top":306.636,"w":14.602,"h":14.602,"rx":0.126545,"ry":0.364224,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":121.534,"y_top":306.636,"w":14.602,"h":14.602,"rx":0.204164,"ry":0.364224,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":167.739,"y_top":306.636,"w":14.602,"h":14.602,"rx":0.281783,"ry":0.364224,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":213.943,"y_top":306.636,"w":14.602,"h":14.602,"rx":0.359402,"ry":0.364224,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":260.148,"y_top":306.636,"w":14.602,"h":14.602,"rx":0.437021,"ry":0.364224,"rw":0.024529,"rh":0.017344}],"row_y_top":303.802,"row_y_bot":324.073},{"nomor":5,"opsi":[{"opsi":"A","x":75.329,"y_top":326.907,"w":14.602,"h":14.602,"rx":0.126545,"ry":0.388302,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":121.534,"y_top":326.907,"w":14.602,"h":14.602,"rx":0.204164,"ry":0.388302,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":167.739,"y_top":326.907,"w":14.602,"h":14.602,"rx":0.281783,"ry":0.388302,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":213.943,"y_top":326.907,"w":14.602,"h":14.602,"rx":0.359402,"ry":0.388302,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":260.148,"y_top":326.907,"w":14.602,"h":14.602,"rx":0.437021,"ry":0.388302,"rw":0.024529,"rh":0.017344}],"row_y_top":324.073,"row_y_bot":344.344},{"nomor":6,"opsi":[{"opsi":"A","x":75.329,"y_top":347.178,"w":14.602,"h":14.602,"rx":0.126545,"ry":0.41238,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":121.534,"y_top":347.178,"w":14.602,"h":14.602,"rx":0.204164,"ry":0.41238,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":167.739,"y_top":347.178,"w":14.602,"h":14.602,"rx":0.281783,"ry":0.41238,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":213.943,"y_top":347.178,"w":14.602,"h":14.602,"rx":0.359402,"ry":0.41238,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":260.148,"y_top":347.178,"w":14.602,"h":14.602,"rx":0.437021,"ry":0.41238,"rw":0.024529,"rh":0.017344}],"row_y_top":344.344,"row_y_bot":364.615},{"nomor":7,"opsi":[{"opsi":"A","x":75.329,"y_top":367.449,"w":14.602,"h":14.602,"rx":0.126545,"ry":0.436458,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":121.534,"y_top":367.449,"w":14.602,"h":14.602,"rx":0.204164,"ry":0.436458,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":167.739,"y_top":367.449,"w":14.602,"h":14.602,"rx":0.281783,"ry":0.436458,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":213.943,"y_top":367.449,"w":14.602,"h":14.602,"rx":0.359402,"ry":0.436458,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":260.148,"y_top":367.449,"w":14.602,"h":14.602,"rx":0.437021,"ry":0.436458,"rw":0.024529,"rh":0.017344}],"row_y_top":364.615,"row_y_bot":384.886},{"nomor":8,"opsi":[{"opsi":"A","x":75.329,"y_top":387.72,"w":14.602,"h":14.602,"rx":0.126545,"ry":0.460536,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":121.534,"y_top":387.72,"w":14.602,"h":14.602,"rx":0.204164,"ry":0.460536,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":167.739,"y_top":387.72,"w":14.602,"h":14.602,"rx":0.281783,"ry":0.460536,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":213.943,"y_top":387.72,"w":14.602,"h":14.602,"rx":0.359402,"ry":0.460536,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":260.148,"y_top":387.72,"w":14.602,"h":14.602,"rx":0.437021,"ry":0.460536,"rw":0.024529,"rh":0.017344}],"row_y_top":384.886,"row_y_bot":405.157},{"nomor":9,"opsi":[{"opsi":"A","x":75.329,"y_top":407.991,"w":14.602,"h":14.602,"rx":0.126545,"ry":0.484614,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":121.534,"y_top":407.991,"w":14.602,"h":14.602,"rx":0.204164,"ry":0.484614,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":167.739,"y_top":407.991,"w":14.602,"h":14.602,"rx":0.281783,"ry":0.484614,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":213.943,"y_top":407.991,"w":14.602,"h":14.602,"rx":0.359402,"ry":0.484614,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":260.148,"y_top":407.991,"w":14.602,"h":14.602,"rx":0.437021,"ry":0.484614,"rw":0.024529,"rh":0.017344}],"row_y_top":405.157,"row_y_bot":425.428},{"nomor":10,"opsi":[{"opsi":"A","x":75.329,"y_top":428.262,"w":14.602,"h":14.602,"rx":0.126545,"ry":0.508692,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":121.534,"y_top":428.262,"w":14.602,"h":14.602,"rx":0.204164,"ry":0.508692,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":167.739,"y_top":428.262,"w":14.602,"h":14.602,"rx":0.281783,"ry":0.508692,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":213.943,"y_top":428.262,"w":14.602,"h":14.602,"rx":0.359402,"ry":0.508692,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":260.148,"y_top":428.262,"w":14.602,"h":14.602,"rx":0.437021,"ry":0.508692,"rw":0.024529,"rh":0.017344}],"row_y_top":425.428,"row_y_bot":445.699},{"nomor":11,"opsi":[{"opsi":"A","x":75.329,"y_top":448.533,"w":14.602,"h":14.602,"rx":0.126545,"ry":0.53277,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":121.534,"y_top":448.533,"w":14.602,"h":14.602,"rx":0.204164,"ry":0.53277,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":167.739,"y_top":448.533,"w":14.602,"h":14.602,"rx":0.281783,"ry":0.53277,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":213.943,"y_top":448.533,"w":14.602,"h":14.602,"rx":0.359402,"ry":0.53277,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":260.148,"y_top":448.533,"w":14.602,"h":14.602,"rx":0.437021,"ry":0.53277,"rw":0.024529,"rh":0.017344}],"row_y_top":445.699,"row_y_bot":465.97},{"nomor":12,"opsi":[{"opsi":"A","x":75.329,"y_top":468.804,"w":14.602,"h":14.602,"rx":0.126545,"ry":0.556848,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":121.534,"y_top":468.804,"w":14.602,"h":14.602,"rx":0.204164,"ry":0.556848,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":167.739,"y_top":468.804,"w":14.602,"h":14.602,"rx":0.281783,"ry":0.556848,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":213.943,"y_top":468.804,"w":14.602,"h":14.602,"rx":0.359402,"ry":0.556848,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":260.148,"y_top":468.804,"w":14.602,"h":14.602,"rx":0.437021,"ry":0.556848,"rw":0.024529,"rh":0.017344}],"row_y_top":465.97,"row_y_bot":486.241},{"nomor":13,"opsi":[{"opsi":"A","x":75.329,"y_top":489.075,"w":14.602,"h":14.602,"rx":0.126545,"ry":0.580926,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":121.534,"y_top":489.075,"w":14.602,"h":14.602,"rx":0.204164,"ry":0.580926,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":167.739,"y_top":489.075,"w":14.602,"h":14.602,"rx":0.281783,"ry":0.580926,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":213.943,"y_top":489.075,"w":14.602,"h":14.602,"rx":0.359402,"ry":0.580926,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":260.148,"y_top":489.075,"w":14.602,"h":14.602,"rx":0.437021,"ry":0.580926,"rw":0.024529,"rh":0.017344}],"row_y_top":486.241,"row_y_bot":506.512},{"nomor":14,"opsi":[{"opsi":"A","x":75.329,"y_top":509.346,"w":14.602,"h":14.602,"rx":0.126545,"ry":0.605004,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":121.534,"y_top":509.346,"w":14.602,"h":14.602,"rx":0.204164,"ry":0.605004,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":167.739,"y_top":509.346,"w":14.602,"h":14.602,"rx":0.281783,"ry":0.605004,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":213.943,"y_top":509.346,"w":14.602,"h":14.602,"rx":0.359402,"ry":0.605004,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":260.148,"y_top":509.346,"w":14.602,"h":14.602,"rx":0.437021,"ry":0.605004,"rw":0.024529,"rh":0.017344}],"row_y_top":506.512,"row_y_bot":526.783},{"nomor":15,"opsi":[{"opsi":"A","x":75.329,"y_top":529.617,"w":14.602,"h":14.602,"rx":0.126545,"ry":0.629082,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":121.534,"y_top":529.617,"w":14.602,"h":14.602,"rx":0.204164,"ry":0.629082,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":167.739,"y_top":529.617,"w":14.602,"h":14.602,"rx":0.281783,"ry":0.629082,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":213.943,"y_top":529.617,"w":14.602,"h":14.602,"rx":0.359402,"ry":0.629082,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":260.148,"y_top":529.617,"w":14.602,"h":14.602,"rx":0.437021,"ry":0.629082,"rw":0.024529,"rh":0.017344}],"row_y_top":526.783,"row_y_bot":547.054},{"nomor":16,"opsi":[{"opsi":"A","x":75.329,"y_top":549.888,"w":14.602,"h":14.602,"rx":0.126545,"ry":0.65316,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":121.534,"y_top":549.888,"w":14.602,"h":14.602,"rx":0.204164,"ry":0.65316,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":167.739,"y_top":549.888,"w":14.602,"h":14.602,"rx":0.281783,"ry":0.65316,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":213.943,"y_top":549.888,"w":14.602,"h":14.602,"rx":0.359402,"ry":0.65316,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":260.148,"y_top":549.888,"w":14.602,"h":14.602,"rx":0.437021,"ry":0.65316,"rw":0.024529,"rh":0.017344}],"row_y_top":547.054,"row_y_bot":567.325},{"nomor":17,"opsi":[{"opsi":"A","x":75.329,"y_top":570.159,"w":14.602,"h":14.602,"rx":0.126545,"ry":0.677237,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":121.534,"y_top":570.159,"w":14.602,"h":14.602,"rx":0.204164,"ry":0.677237,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":167.739,"y_top":570.159,"w":14.602,"h":14.602,"rx":0.281783,"ry":0.677237,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":213.943,"y_top":570.159,"w":14.602,"h":14.602,"rx":0.359402,"ry":0.677237,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":260.148,"y_top":570.159,"w":14.602,"h":14.602,"rx":0.437021,"ry":0.677237,"rw":0.024529,"rh":0.017344}],"row_y_top":567.325,"row_y_bot":587.596},{"nomor":18,"opsi":[{"opsi":"A","x":75.329,"y_top":590.43,"w":14.602,"h":14.602,"rx":0.126545,"ry":0.701315,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":121.534,"y_top":590.43,"w":14.602,"h":14.602,"rx":0.204164,"ry":0.701315,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":167.739,"y_top":590.43,"w":14.602,"h":14.602,"rx":0.281783,"ry":0.701315,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":213.943,"y_top":590.43,"w":14.602,"h":14.602,"rx":0.359402,"ry":0.701315,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":260.148,"y_top":590.43,"w":14.602,"h":14.602,"rx":0.437021,"ry":0.701315,"rw":0.024529,"rh":0.017344}],"row_y_top":587.596,"row_y_bot":607.867},{"nomor":19,"opsi":[{"opsi":"A","x":75.329,"y_top":610.701,"w":14.602,"h":14.602,"rx":0.126545,"ry":0.725393,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":121.534,"y_top":610.701,"w":14.602,"h":14.602,"rx":0.204164,"ry":0.725393,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":167.739,"y_top":610.701,"w":14.602,"h":14.602,"rx":0.281783,"ry":0.725393,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":213.943,"y_top":610.701,"w":14.602,"h":14.602,"rx":0.359402,"ry":0.725393,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":260.148,"y_top":610.701,"w":14.602,"h":14.602,"rx":0.437021,"ry":0.725393,"rw":0.024529,"rh":0.017344}],"row_y_top":607.867,"row_y_bot":628.138},{"nomor":20,"opsi":[{"opsi":"A","x":75.329,"y_top":630.972,"w":14.602,"h":14.602,"rx":0.126545,"ry":0.749471,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":121.534,"y_top":630.972,"w":14.602,"h":14.602,"rx":0.204164,"ry":0.749471,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":167.739,"y_top":630.972,"w":14.602,"h":14.602,"rx":0.281783,"ry":0.749471,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":213.943,"y_top":630.972,"w":14.602,"h":14.602,"rx":0.359402,"ry":0.749471,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":260.148,"y_top":630.972,"w":14.602,"h":14.602,"rx":0.437021,"ry":0.749471,"rw":0.024529,"rh":0.017344}],"row_y_top":628.138,"row_y_bot":648.409},{"nomor":21,"opsi":[{"opsi":"A","x":75.329,"y_top":651.243,"w":14.602,"h":14.602,"rx":0.126545,"ry":0.773549,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":121.534,"y_top":651.243,"w":14.602,"h":14.602,"rx":0.204164,"ry":0.773549,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":167.739,"y_top":651.243,"w":14.602,"h":14.602,"rx":0.281783,"ry":0.773549,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":213.943,"y_top":651.243,"w":14.602,"h":14.602,"rx":0.359402,"ry":0.773549,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":260.148,"y_top":651.243,"w":14.602,"h":14.602,"rx":0.437021,"ry":0.773549,"rw":0.024529,"rh":0.017344}],"row_y_top":648.409,"row_y_bot":668.68},{"nomor":22,"opsi":[{"opsi":"A","x":75.329,"y_top":671.514,"w":14.602,"h":14.602,"rx":0.126545,"ry":0.797627,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":121.534,"y_top":671.514,"w":14.602,"h":14.602,"rx":0.204164,"ry":0.797627,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":167.739,"y_top":671.514,"w":14.602,"h":14.602,"rx":0.281783,"ry":0.797627,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":213.943,"y_top":671.514,"w":14.602,"h":14.602,"rx":0.359402,"ry":0.797627,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":260.148,"y_top":671.514,"w":14.602,"h":14.602,"rx":0.437021,"ry":0.797627,"rw":0.024529,"rh":0.017344}],"row_y_top":668.68,"row_y_bot":688.951},{"nomor":23,"opsi":[{"opsi":"A","x":75.329,"y_top":691.785,"w":14.602,"h":14.602,"rx":0.126545,"ry":0.821705,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":121.534,"y_top":691.785,"w":14.602,"h":14.602,"rx":0.204164,"ry":0.821705,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":167.739,"y_top":691.785,"w":14.602,"h":14.602,"rx":0.281783,"ry":0.821705,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":213.943,"y_top":691.785,"w":14.602,"h":14.602,"rx":0.359402,"ry":0.821705,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":260.148,"y_top":691.785,"w":14.602,"h":14.602,"rx":0.437021,"ry":0.821705,"rw":0.024529,"rh":0.017344}],"row_y_top":688.951,"row_y_bot":709.222},{"nomor":24,"opsi":[{"opsi":"A","x":75.329,"y_top":712.056,"w":14.602,"h":14.602,"rx":0.126545,"ry":0.845783,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":121.534,"y_top":712.056,"w":14.602,"h":14.602,"rx":0.204164,"ry":0.845783,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":167.739,"y_top":712.056,"w":14.602,"h":14.602,"rx":0.281783,"ry":0.845783,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":213.943,"y_top":712.056,"w":14.602,"h":14.602,"rx":0.359402,"ry":0.845783,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":260.148,"y_top":712.056,"w":14.602,"h":14.602,"rx":0.437021,"ry":0.845783,"rw":0.024529,"rh":0.017344}],"row_y_top":709.222,"row_y_bot":729.493},{"nomor":25,"opsi":[{"opsi":"A","x":75.329,"y_top":732.327,"w":14.602,"h":14.602,"rx":0.126545,"ry":0.869861,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":121.534,"y_top":732.327,"w":14.602,"h":14.602,"rx":0.204164,"ry":0.869861,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":167.739,"y_top":732.327,"w":14.602,"h":14.602,"rx":0.281783,"ry":0.869861,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":213.943,"y_top":732.327,"w":14.602,"h":14.602,"rx":0.359402,"ry":0.869861,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":260.148,"y_top":732.327,"w":14.602,"h":14.602,"rx":0.437021,"ry":0.869861,"rw":0.024529,"rh":0.017344}],"row_y_top":729.493,"row_y_bot":749.764},{"nomor":26,"opsi":[{"opsi":"A","x":346.038,"y_top":245.823,"w":14.602,"h":14.602,"rx":0.581307,"ry":0.29199,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":392.242,"y_top":245.823,"w":14.602,"h":14.602,"rx":0.658926,"ry":0.29199,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":438.447,"y_top":245.823,"w":14.602,"h":14.602,"rx":0.736545,"ry":0.29199,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":484.652,"y_top":245.823,"w":14.602,"h":14.602,"rx":0.814164,"ry":0.29199,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":530.857,"y_top":245.823,"w":14.602,"h":14.602,"rx":0.891783,"ry":0.29199,"rw":0.024529,"rh":0.017344}],"row_y_top":242.988,"row_y_bot":263.259},{"nomor":27,"opsi":[{"opsi":"A","x":346.038,"y_top":266.094,"w":14.602,"h":14.602,"rx":0.581307,"ry":0.316068,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":392.242,"y_top":266.094,"w":14.602,"h":14.602,"rx":0.658926,"ry":0.316068,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":438.447,"y_top":266.094,"w":14.602,"h":14.602,"rx":0.736545,"ry":0.316068,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":484.652,"y_top":266.094,"w":14.602,"h":14.602,"rx":0.814164,"ry":0.316068,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":530.857,"y_top":266.094,"w":14.602,"h":14.602,"rx":0.891783,"ry":0.316068,"rw":0.024529,"rh":0.017344}],"row_y_top":263.259,"row_y_bot":283.53},{"nomor":28,"opsi":[{"opsi":"A","x":346.038,"y_top":286.365,"w":14.602,"h":14.602,"rx":0.581307,"ry":0.340146,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":392.242,"y_top":286.365,"w":14.602,"h":14.602,"rx":0.658926,"ry":0.340146,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":438.447,"y_top":286.365,"w":14.602,"h":14.602,"rx":0.736545,"ry":0.340146,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":484.652,"y_top":286.365,"w":14.602,"h":14.602,"rx":0.814164,"ry":0.340146,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":530.857,"y_top":286.365,"w":14.602,"h":14.602,"rx":0.891783,"ry":0.340146,"rw":0.024529,"rh":0.017344}],"row_y_top":283.53,"row_y_bot":303.802},{"nomor":29,"opsi":[{"opsi":"A","x":346.038,"y_top":306.636,"w":14.602,"h":14.602,"rx":0.581307,"ry":0.364224,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":392.242,"y_top":306.636,"w":14.602,"h":14.602,"rx":0.658926,"ry":0.364224,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":438.447,"y_top":306.636,"w":14.602,"h":14.602,"rx":0.736545,"ry":0.364224,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":484.652,"y_top":306.636,"w":14.602,"h":14.602,"rx":0.814164,"ry":0.364224,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":530.857,"y_top":306.636,"w":14.602,"h":14.602,"rx":0.891783,"ry":0.364224,"rw":0.024529,"rh":0.017344}],"row_y_top":303.802,"row_y_bot":324.073},{"nomor":30,"opsi":[{"opsi":"A","x":346.038,"y_top":326.907,"w":14.602,"h":14.602,"rx":0.581307,"ry":0.388302,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":392.242,"y_top":326.907,"w":14.602,"h":14.602,"rx":0.658926,"ry":0.388302,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":438.447,"y_top":326.907,"w":14.602,"h":14.602,"rx":0.736545,"ry":0.388302,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":484.652,"y_top":326.907,"w":14.602,"h":14.602,"rx":0.814164,"ry":0.388302,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":530.857,"y_top":326.907,"w":14.602,"h":14.602,"rx":0.891783,"ry":0.388302,"rw":0.024529,"rh":0.017344}],"row_y_top":324.073,"row_y_bot":344.344},{"nomor":31,"opsi":[{"opsi":"A","x":346.038,"y_top":347.178,"w":14.602,"h":14.602,"rx":0.581307,"ry":0.41238,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":392.242,"y_top":347.178,"w":14.602,"h":14.602,"rx":0.658926,"ry":0.41238,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":438.447,"y_top":347.178,"w":14.602,"h":14.602,"rx":0.736545,"ry":0.41238,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":484.652,"y_top":347.178,"w":14.602,"h":14.602,"rx":0.814164,"ry":0.41238,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":530.857,"y_top":347.178,"w":14.602,"h":14.602,"rx":0.891783,"ry":0.41238,"rw":0.024529,"rh":0.017344}],"row_y_top":344.344,"row_y_bot":364.615},{"nomor":32,"opsi":[{"opsi":"A","x":346.038,"y_top":367.449,"w":14.602,"h":14.602,"rx":0.581307,"ry":0.436458,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":392.242,"y_top":367.449,"w":14.602,"h":14.602,"rx":0.658926,"ry":0.436458,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":438.447,"y_top":367.449,"w":14.602,"h":14.602,"rx":0.736545,"ry":0.436458,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":484.652,"y_top":367.449,"w":14.602,"h":14.602,"rx":0.814164,"ry":0.436458,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":530.857,"y_top":367.449,"w":14.602,"h":14.602,"rx":0.891783,"ry":0.436458,"rw":0.024529,"rh":0.017344}],"row_y_top":364.615,"row_y_bot":384.886},{"nomor":33,"opsi":[{"opsi":"A","x":346.038,"y_top":387.72,"w":14.602,"h":14.602,"rx":0.581307,"ry":0.460536,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":392.242,"y_top":387.72,"w":14.602,"h":14.602,"rx":0.658926,"ry":0.460536,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":438.447,"y_top":387.72,"w":14.602,"h":14.602,"rx":0.736545,"ry":0.460536,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":484.652,"y_top":387.72,"w":14.602,"h":14.602,"rx":0.814164,"ry":0.460536,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":530.857,"y_top":387.72,"w":14.602,"h":14.602,"rx":0.891783,"ry":0.460536,"rw":0.024529,"rh":0.017344}],"row_y_top":384.886,"row_y_bot":405.157},{"nomor":34,"opsi":[{"opsi":"A","x":346.038,"y_top":407.991,"w":14.602,"h":14.602,"rx":0.581307,"ry":0.484614,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":392.242,"y_top":407.991,"w":14.602,"h":14.602,"rx":0.658926,"ry":0.484614,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":438.447,"y_top":407.991,"w":14.602,"h":14.602,"rx":0.736545,"ry":0.484614,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":484.652,"y_top":407.991,"w":14.602,"h":14.602,"rx":0.814164,"ry":0.484614,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":530.857,"y_top":407.991,"w":14.602,"h":14.602,"rx":0.891783,"ry":0.484614,"rw":0.024529,"rh":0.017344}],"row_y_top":405.157,"row_y_bot":425.428},{"nomor":35,"opsi":[{"opsi":"A","x":346.038,"y_top":428.262,"w":14.602,"h":14.602,"rx":0.581307,"ry":0.508692,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":392.242,"y_top":428.262,"w":14.602,"h":14.602,"rx":0.658926,"ry":0.508692,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":438.447,"y_top":428.262,"w":14.602,"h":14.602,"rx":0.736545,"ry":0.508692,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":484.652,"y_top":428.262,"w":14.602,"h":14.602,"rx":0.814164,"ry":0.508692,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":530.857,"y_top":428.262,"w":14.602,"h":14.602,"rx":0.891783,"ry":0.508692,"rw":0.024529,"rh":0.017344}],"row_y_top":425.428,"row_y_bot":445.699},{"nomor":36,"opsi":[{"opsi":"A","x":346.038,"y_top":448.533,"w":14.602,"h":14.602,"rx":0.581307,"ry":0.53277,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":392.242,"y_top":448.533,"w":14.602,"h":14.602,"rx":0.658926,"ry":0.53277,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":438.447,"y_top":448.533,"w":14.602,"h":14.602,"rx":0.736545,"ry":0.53277,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":484.652,"y_top":448.533,"w":14.602,"h":14.602,"rx":0.814164,"ry":0.53277,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":530.857,"y_top":448.533,"w":14.602,"h":14.602,"rx":0.891783,"ry":0.53277,"rw":0.024529,"rh":0.017344}],"row_y_top":445.699,"row_y_bot":465.97},{"nomor":37,"opsi":[{"opsi":"A","x":346.038,"y_top":468.804,"w":14.602,"h":14.602,"rx":0.581307,"ry":0.556848,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":392.242,"y_top":468.804,"w":14.602,"h":14.602,"rx":0.658926,"ry":0.556848,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":438.447,"y_top":468.804,"w":14.602,"h":14.602,"rx":0.736545,"ry":0.556848,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":484.652,"y_top":468.804,"w":14.602,"h":14.602,"rx":0.814164,"ry":0.556848,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":530.857,"y_top":468.804,"w":14.602,"h":14.602,"rx":0.891783,"ry":0.556848,"rw":0.024529,"rh":0.017344}],"row_y_top":465.97,"row_y_bot":486.241},{"nomor":38,"opsi":[{"opsi":"A","x":346.038,"y_top":489.075,"w":14.602,"h":14.602,"rx":0.581307,"ry":0.580926,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":392.242,"y_top":489.075,"w":14.602,"h":14.602,"rx":0.658926,"ry":0.580926,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":438.447,"y_top":489.075,"w":14.602,"h":14.602,"rx":0.736545,"ry":0.580926,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":484.652,"y_top":489.075,"w":14.602,"h":14.602,"rx":0.814164,"ry":0.580926,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":530.857,"y_top":489.075,"w":14.602,"h":14.602,"rx":0.891783,"ry":0.580926,"rw":0.024529,"rh":0.017344}],"row_y_top":486.241,"row_y_bot":506.512},{"nomor":39,"opsi":[{"opsi":"A","x":346.038,"y_top":509.346,"w":14.602,"h":14.602,"rx":0.581307,"ry":0.605004,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":392.242,"y_top":509.346,"w":14.602,"h":14.602,"rx":0.658926,"ry":0.605004,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":438.447,"y_top":509.346,"w":14.602,"h":14.602,"rx":0.736545,"ry":0.605004,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":484.652,"y_top":509.346,"w":14.602,"h":14.602,"rx":0.814164,"ry":0.605004,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":530.857,"y_top":509.346,"w":14.602,"h":14.602,"rx":0.891783,"ry":0.605004,"rw":0.024529,"rh":0.017344}],"row_y_top":506.512,"row_y_bot":526.783},{"nomor":40,"opsi":[{"opsi":"A","x":346.038,"y_top":529.617,"w":14.602,"h":14.602,"rx":0.581307,"ry":0.629082,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":392.242,"y_top":529.617,"w":14.602,"h":14.602,"rx":0.658926,"ry":0.629082,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":438.447,"y_top":529.617,"w":14.602,"h":14.602,"rx":0.736545,"ry":0.629082,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":484.652,"y_top":529.617,"w":14.602,"h":14.602,"rx":0.814164,"ry":0.629082,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":530.857,"y_top":529.617,"w":14.602,"h":14.602,"rx":0.891783,"ry":0.629082,"rw":0.024529,"rh":0.017344}],"row_y_top":526.783,"row_y_bot":547.054},{"nomor":41,"opsi":[{"opsi":"A","x":346.038,"y_top":549.888,"w":14.602,"h":14.602,"rx":0.581307,"ry":0.65316,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":392.242,"y_top":549.888,"w":14.602,"h":14.602,"rx":0.658926,"ry":0.65316,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":438.447,"y_top":549.888,"w":14.602,"h":14.602,"rx":0.736545,"ry":0.65316,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":484.652,"y_top":549.888,"w":14.602,"h":14.602,"rx":0.814164,"ry":0.65316,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":530.857,"y_top":549.888,"w":14.602,"h":14.602,"rx":0.891783,"ry":0.65316,"rw":0.024529,"rh":0.017344}],"row_y_top":547.054,"row_y_bot":567.325},{"nomor":42,"opsi":[{"opsi":"A","x":346.038,"y_top":570.159,"w":14.602,"h":14.602,"rx":0.581307,"ry":0.677237,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":392.242,"y_top":570.159,"w":14.602,"h":14.602,"rx":0.658926,"ry":0.677237,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":438.447,"y_top":570.159,"w":14.602,"h":14.602,"rx":0.736545,"ry":0.677237,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":484.652,"y_top":570.159,"w":14.602,"h":14.602,"rx":0.814164,"ry":0.677237,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":530.857,"y_top":570.159,"w":14.602,"h":14.602,"rx":0.891783,"ry":0.677237,"rw":0.024529,"rh":0.017344}],"row_y_top":567.325,"row_y_bot":587.596},{"nomor":43,"opsi":[{"opsi":"A","x":346.038,"y_top":590.43,"w":14.602,"h":14.602,"rx":0.581307,"ry":0.701315,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":392.242,"y_top":590.43,"w":14.602,"h":14.602,"rx":0.658926,"ry":0.701315,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":438.447,"y_top":590.43,"w":14.602,"h":14.602,"rx":0.736545,"ry":0.701315,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":484.652,"y_top":590.43,"w":14.602,"h":14.602,"rx":0.814164,"ry":0.701315,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":530.857,"y_top":590.43,"w":14.602,"h":14.602,"rx":0.891783,"ry":0.701315,"rw":0.024529,"rh":0.017344}],"row_y_top":587.596,"row_y_bot":607.867},{"nomor":44,"opsi":[{"opsi":"A","x":346.038,"y_top":610.701,"w":14.602,"h":14.602,"rx":0.581307,"ry":0.725393,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":392.242,"y_top":610.701,"w":14.602,"h":14.602,"rx":0.658926,"ry":0.725393,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":438.447,"y_top":610.701,"w":14.602,"h":14.602,"rx":0.736545,"ry":0.725393,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":484.652,"y_top":610.701,"w":14.602,"h":14.602,"rx":0.814164,"ry":0.725393,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":530.857,"y_top":610.701,"w":14.602,"h":14.602,"rx":0.891783,"ry":0.725393,"rw":0.024529,"rh":0.017344}],"row_y_top":607.867,"row_y_bot":628.138},{"nomor":45,"opsi":[{"opsi":"A","x":346.038,"y_top":630.972,"w":14.602,"h":14.602,"rx":0.581307,"ry":0.749471,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":392.242,"y_top":630.972,"w":14.602,"h":14.602,"rx":0.658926,"ry":0.749471,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":438.447,"y_top":630.972,"w":14.602,"h":14.602,"rx":0.736545,"ry":0.749471,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":484.652,"y_top":630.972,"w":14.602,"h":14.602,"rx":0.814164,"ry":0.749471,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":530.857,"y_top":630.972,"w":14.602,"h":14.602,"rx":0.891783,"ry":0.749471,"rw":0.024529,"rh":0.017344}],"row_y_top":628.138,"row_y_bot":648.409},{"nomor":46,"opsi":[{"opsi":"A","x":346.038,"y_top":651.243,"w":14.602,"h":14.602,"rx":0.581307,"ry":0.773549,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":392.242,"y_top":651.243,"w":14.602,"h":14.602,"rx":0.658926,"ry":0.773549,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":438.447,"y_top":651.243,"w":14.602,"h":14.602,"rx":0.736545,"ry":0.773549,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":484.652,"y_top":651.243,"w":14.602,"h":14.602,"rx":0.814164,"ry":0.773549,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":530.857,"y_top":651.243,"w":14.602,"h":14.602,"rx":0.891783,"ry":0.773549,"rw":0.024529,"rh":0.017344}],"row_y_top":648.409,"row_y_bot":668.68},{"nomor":47,"opsi":[{"opsi":"A","x":346.038,"y_top":671.514,"w":14.602,"h":14.602,"rx":0.581307,"ry":0.797627,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":392.242,"y_top":671.514,"w":14.602,"h":14.602,"rx":0.658926,"ry":0.797627,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":438.447,"y_top":671.514,"w":14.602,"h":14.602,"rx":0.736545,"ry":0.797627,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":484.652,"y_top":671.514,"w":14.602,"h":14.602,"rx":0.814164,"ry":0.797627,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":530.857,"y_top":671.514,"w":14.602,"h":14.602,"rx":0.891783,"ry":0.797627,"rw":0.024529,"rh":0.017344}],"row_y_top":668.68,"row_y_bot":688.951},{"nomor":48,"opsi":[{"opsi":"A","x":346.038,"y_top":691.785,"w":14.602,"h":14.602,"rx":0.581307,"ry":0.821705,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":392.242,"y_top":691.785,"w":14.602,"h":14.602,"rx":0.658926,"ry":0.821705,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":438.447,"y_top":691.785,"w":14.602,"h":14.602,"rx":0.736545,"ry":0.821705,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":484.652,"y_top":691.785,"w":14.602,"h":14.602,"rx":0.814164,"ry":0.821705,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":530.857,"y_top":691.785,"w":14.602,"h":14.602,"rx":0.891783,"ry":0.821705,"rw":0.024529,"rh":0.017344}],"row_y_top":688.951,"row_y_bot":709.222},{"nomor":49,"opsi":[{"opsi":"A","x":346.038,"y_top":712.056,"w":14.602,"h":14.602,"rx":0.581307,"ry":0.845783,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":392.242,"y_top":712.056,"w":14.602,"h":14.602,"rx":0.658926,"ry":0.845783,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":438.447,"y_top":712.056,"w":14.602,"h":14.602,"rx":0.736545,"ry":0.845783,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":484.652,"y_top":712.056,"w":14.602,"h":14.602,"rx":0.814164,"ry":0.845783,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":530.857,"y_top":712.056,"w":14.602,"h":14.602,"rx":0.891783,"ry":0.845783,"rw":0.024529,"rh":0.017344}],"row_y_top":709.222,"row_y_bot":729.493},{"nomor":50,"opsi":[{"opsi":"A","x":346.038,"y_top":732.327,"w":14.602,"h":14.602,"rx":0.581307,"ry":0.869861,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":392.242,"y_top":732.327,"w":14.602,"h":14.602,"rx":0.658926,"ry":0.869861,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":438.447,"y_top":732.327,"w":14.602,"h":14.602,"rx":0.736545,"ry":0.869861,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":484.652,"y_top":732.327,"w":14.602,"h":14.602,"rx":0.814164,"ry":0.869861,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":530.857,"y_top":732.327,"w":14.602,"h":14.602,"rx":0.891783,"ry":0.869861,"rw":0.024529,"rh":0.017344}],"row_y_top":729.493,"row_y_bot":749.764}]}
-;
+// ══════════════════════════════════════════════════════════════════
+// KOORDINAT GRID LJK
+// ══════════════════════════════════════════════════════════════════
+const C = {"page_w":595.276,"page_h":841.89,"row_h":20.271,"opw":46.205,"bsize":14.602,"no_w":25.512,"mar_l":34.016,"blok_w":256.535,"gap_tengah":14.173,"grid_top_from_top":226.772,"hdr_h_pt":16.217,"grid":[{"nomor":1,"opsi":[{"opsi":"A","x":75.329,"y_top":245.823,"w":14.602,"h":14.602,"rx":0.126545,"ry":0.29199,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":121.534,"y_top":245.823,"w":14.602,"h":14.602,"rx":0.204164,"ry":0.29199,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":167.739,"y_top":245.823,"w":14.602,"h":14.602,"rx":0.281783,"ry":0.29199,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":213.943,"y_top":245.823,"w":14.602,"h":14.602,"rx":0.359402,"ry":0.29199,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":260.148,"y_top":245.823,"w":14.602,"h":14.602,"rx":0.437021,"ry":0.29199,"rw":0.024529,"rh":0.017344}],"row_y_top":242.988,"row_y_bot":263.259},{"nomor":2,"opsi":[{"opsi":"A","x":75.329,"y_top":266.094,"w":14.602,"h":14.602,"rx":0.126545,"ry":0.316068,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":121.534,"y_top":266.094,"w":14.602,"h":14.602,"rx":0.204164,"ry":0.316068,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":167.739,"y_top":266.094,"w":14.602,"h":14.602,"rx":0.281783,"ry":0.316068,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":213.943,"y_top":266.094,"w":14.602,"h":14.602,"rx":0.359402,"ry":0.316068,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":260.148,"y_top":266.094,"w":14.602,"h":14.602,"rx":0.437021,"ry":0.316068,"rw":0.024529,"rh":0.017344}],"row_y_top":263.259,"row_y_bot":283.53},{"nomor":3,"opsi":[{"opsi":"A","x":75.329,"y_top":286.365,"w":14.602,"h":14.602,"rx":0.126545,"ry":0.340146,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":121.534,"y_top":286.365,"w":14.602,"h":14.602,"rx":0.204164,"ry":0.340146,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":167.739,"y_top":286.365,"w":14.602,"h":14.602,"rx":0.281783,"ry":0.340146,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":213.943,"y_top":286.365,"w":14.602,"h":14.602,"rx":0.359402,"ry":0.340146,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":260.148,"y_top":286.365,"w":14.602,"h":14.602,"rx":0.437021,"ry":0.340146,"rw":0.024529,"rh":0.017344}],"row_y_top":283.53,"row_y_bot":303.802},{"nomor":4,"opsi":[{"opsi":"A","x":75.329,"y_top":306.636,"w":14.602,"h":14.602,"rx":0.126545,"ry":0.364224,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":121.534,"y_top":306.636,"w":14.602,"h":14.602,"rx":0.204164,"ry":0.364224,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":167.739,"y_top":306.636,"w":14.602,"h":14.602,"rx":0.281783,"ry":0.364224,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":213.943,"y_top":306.636,"w":14.602,"h":14.602,"rx":0.359402,"ry":0.364224,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":260.148,"y_top":306.636,"w":14.602,"h":14.602,"rx":0.437021,"ry":0.364224,"rw":0.024529,"rh":0.017344}],"row_y_top":303.802,"row_y_bot":324.073},{"nomor":5,"opsi":[{"opsi":"A","x":75.329,"y_top":326.907,"w":14.602,"h":14.602,"rx":0.126545,"ry":0.388302,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":121.534,"y_top":326.907,"w":14.602,"h":14.602,"rx":0.204164,"ry":0.388302,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":167.739,"y_top":326.907,"w":14.602,"h":14.602,"rx":0.281783,"ry":0.388302,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":213.943,"y_top":326.907,"w":14.602,"h":14.602,"rx":0.359402,"ry":0.388302,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":260.148,"y_top":326.907,"w":14.602,"h":14.602,"rx":0.437021,"ry":0.388302,"rw":0.024529,"rh":0.017344}],"row_y_top":324.073,"row_y_bot":344.344},{"nomor":6,"opsi":[{"opsi":"A","x":75.329,"y_top":347.178,"w":14.602,"h":14.602,"rx":0.126545,"ry":0.41238,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":121.534,"y_top":347.178,"w":14.602,"h":14.602,"rx":0.204164,"ry":0.41238,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":167.739,"y_top":347.178,"w":14.602,"h":14.602,"rx":0.281783,"ry":0.41238,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":213.943,"y_top":347.178,"w":14.602,"h":14.602,"rx":0.359402,"ry":0.41238,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":260.148,"y_top":347.178,"w":14.602,"h":14.602,"rx":0.437021,"ry":0.41238,"rw":0.024529,"rh":0.017344}],"row_y_top":344.344,"row_y_bot":364.615},{"nomor":7,"opsi":[{"opsi":"A","x":75.329,"y_top":367.449,"w":14.602,"h":14.602,"rx":0.126545,"ry":0.436458,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":121.534,"y_top":367.449,"w":14.602,"h":14.602,"rx":0.204164,"ry":0.436458,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":167.739,"y_top":367.449,"w":14.602,"h":14.602,"rx":0.281783,"ry":0.436458,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":213.943,"y_top":367.449,"w":14.602,"h":14.602,"rx":0.359402,"ry":0.436458,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":260.148,"y_top":367.449,"w":14.602,"h":14.602,"rx":0.437021,"ry":0.436458,"rw":0.024529,"rh":0.017344}],"row_y_top":364.615,"row_y_bot":384.886},{"nomor":8,"opsi":[{"opsi":"A","x":75.329,"y_top":387.72,"w":14.602,"h":14.602,"rx":0.126545,"ry":0.460536,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":121.534,"y_top":387.72,"w":14.602,"h":14.602,"rx":0.204164,"ry":0.460536,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":167.739,"y_top":387.72,"w":14.602,"h":14.602,"rx":0.281783,"ry":0.460536,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":213.943,"y_top":387.72,"w":14.602,"h":14.602,"rx":0.359402,"ry":0.460536,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":260.148,"y_top":387.72,"w":14.602,"h":14.602,"rx":0.437021,"ry":0.460536,"rw":0.024529,"rh":0.017344}],"row_y_top":384.886,"row_y_bot":405.157},{"nomor":9,"opsi":[{"opsi":"A","x":75.329,"y_top":407.991,"w":14.602,"h":14.602,"rx":0.126545,"ry":0.484614,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":121.534,"y_top":407.991,"w":14.602,"h":14.602,"rx":0.204164,"ry":0.484614,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":167.739,"y_top":407.991,"w":14.602,"h":14.602,"rx":0.281783,"ry":0.484614,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":213.943,"y_top":407.991,"w":14.602,"h":14.602,"rx":0.359402,"ry":0.484614,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":260.148,"y_top":407.991,"w":14.602,"h":14.602,"rx":0.437021,"ry":0.484614,"rw":0.024529,"rh":0.017344}],"row_y_top":405.157,"row_y_bot":425.428},{"nomor":10,"opsi":[{"opsi":"A","x":75.329,"y_top":428.262,"w":14.602,"h":14.602,"rx":0.126545,"ry":0.508692,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":121.534,"y_top":428.262,"w":14.602,"h":14.602,"rx":0.204164,"ry":0.508692,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":167.739,"y_top":428.262,"w":14.602,"h":14.602,"rx":0.281783,"ry":0.508692,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":213.943,"y_top":428.262,"w":14.602,"h":14.602,"rx":0.359402,"ry":0.508692,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":260.148,"y_top":428.262,"w":14.602,"h":14.602,"rx":0.437021,"ry":0.508692,"rw":0.024529,"rh":0.017344}],"row_y_top":425.428,"row_y_bot":445.699},{"nomor":11,"opsi":[{"opsi":"A","x":75.329,"y_top":448.533,"w":14.602,"h":14.602,"rx":0.126545,"ry":0.53277,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":121.534,"y_top":448.533,"w":14.602,"h":14.602,"rx":0.204164,"ry":0.53277,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":167.739,"y_top":448.533,"w":14.602,"h":14.602,"rx":0.281783,"ry":0.53277,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":213.943,"y_top":448.533,"w":14.602,"h":14.602,"rx":0.359402,"ry":0.53277,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":260.148,"y_top":448.533,"w":14.602,"h":14.602,"rx":0.437021,"ry":0.53277,"rw":0.024529,"rh":0.017344}],"row_y_top":445.699,"row_y_bot":465.97},{"nomor":12,"opsi":[{"opsi":"A","x":75.329,"y_top":468.804,"w":14.602,"h":14.602,"rx":0.126545,"ry":0.556848,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":121.534,"y_top":468.804,"w":14.602,"h":14.602,"rx":0.204164,"ry":0.556848,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":167.739,"y_top":468.804,"w":14.602,"h":14.602,"rx":0.281783,"ry":0.556848,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":213.943,"y_top":468.804,"w":14.602,"h":14.602,"rx":0.359402,"ry":0.556848,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":260.148,"y_top":468.804,"w":14.602,"h":14.602,"rx":0.437021,"ry":0.556848,"rw":0.024529,"rh":0.017344}],"row_y_top":465.97,"row_y_bot":486.241},{"nomor":13,"opsi":[{"opsi":"A","x":75.329,"y_top":489.075,"w":14.602,"h":14.602,"rx":0.126545,"ry":0.580926,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":121.534,"y_top":489.075,"w":14.602,"h":14.602,"rx":0.204164,"ry":0.580926,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":167.739,"y_top":489.075,"w":14.602,"h":14.602,"rx":0.281783,"ry":0.580926,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":213.943,"y_top":489.075,"w":14.602,"h":14.602,"rx":0.359402,"ry":0.580926,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":260.148,"y_top":489.075,"w":14.602,"h":14.602,"rx":0.437021,"ry":0.580926,"rw":0.024529,"rh":0.017344}],"row_y_top":486.241,"row_y_bot":506.512},{"nomor":14,"opsi":[{"opsi":"A","x":75.329,"y_top":509.346,"w":14.602,"h":14.602,"rx":0.126545,"ry":0.605004,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":121.534,"y_top":509.346,"w":14.602,"h":14.602,"rx":0.204164,"ry":0.605004,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":167.739,"y_top":509.346,"w":14.602,"h":14.602,"rx":0.281783,"ry":0.605004,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":213.943,"y_top":509.346,"w":14.602,"h":14.602,"rx":0.359402,"ry":0.605004,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":260.148,"y_top":509.346,"w":14.602,"h":14.602,"rx":0.437021,"ry":0.605004,"rw":0.024529,"rh":0.017344}],"row_y_top":506.512,"row_y_bot":526.783},{"nomor":15,"opsi":[{"opsi":"A","x":75.329,"y_top":529.617,"w":14.602,"h":14.602,"rx":0.126545,"ry":0.629082,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":121.534,"y_top":529.617,"w":14.602,"h":14.602,"rx":0.204164,"ry":0.629082,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":167.739,"y_top":529.617,"w":14.602,"h":14.602,"rx":0.281783,"ry":0.629082,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":213.943,"y_top":529.617,"w":14.602,"h":14.602,"rx":0.359402,"ry":0.629082,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":260.148,"y_top":529.617,"w":14.602,"h":14.602,"rx":0.437021,"ry":0.629082,"rw":0.024529,"rh":0.017344}],"row_y_top":526.783,"row_y_bot":547.054},{"nomor":16,"opsi":[{"opsi":"A","x":75.329,"y_top":549.888,"w":14.602,"h":14.602,"rx":0.126545,"ry":0.65316,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":121.534,"y_top":549.888,"w":14.602,"h":14.602,"rx":0.204164,"ry":0.65316,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":167.739,"y_top":549.888,"w":14.602,"h":14.602,"rx":0.281783,"ry":0.65316,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":213.943,"y_top":549.888,"w":14.602,"h":14.602,"rx":0.359402,"ry":0.65316,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":260.148,"y_top":549.888,"w":14.602,"h":14.602,"rx":0.437021,"ry":0.65316,"rw":0.024529,"rh":0.017344}],"row_y_top":547.054,"row_y_bot":567.325},{"nomor":17,"opsi":[{"opsi":"A","x":75.329,"y_top":570.159,"w":14.602,"h":14.602,"rx":0.126545,"ry":0.677237,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":121.534,"y_top":570.159,"w":14.602,"h":14.602,"rx":0.204164,"ry":0.677237,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":167.739,"y_top":570.159,"w":14.602,"h":14.602,"rx":0.281783,"ry":0.677237,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":213.943,"y_top":570.159,"w":14.602,"h":14.602,"rx":0.359402,"ry":0.677237,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":260.148,"y_top":570.159,"w":14.602,"h":14.602,"rx":0.437021,"ry":0.677237,"rw":0.024529,"rh":0.017344}],"row_y_top":567.325,"row_y_bot":587.596},{"nomor":18,"opsi":[{"opsi":"A","x":75.329,"y_top":590.43,"w":14.602,"h":14.602,"rx":0.126545,"ry":0.701315,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":121.534,"y_top":590.43,"w":14.602,"h":14.602,"rx":0.204164,"ry":0.701315,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":167.739,"y_top":590.43,"w":14.602,"h":14.602,"rx":0.281783,"ry":0.701315,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":213.943,"y_top":590.43,"w":14.602,"h":14.602,"rx":0.359402,"ry":0.701315,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":260.148,"y_top":590.43,"w":14.602,"h":14.602,"rx":0.437021,"ry":0.701315,"rw":0.024529,"rh":0.017344}],"row_y_top":587.596,"row_y_bot":607.867},{"nomor":19,"opsi":[{"opsi":"A","x":75.329,"y_top":610.701,"w":14.602,"h":14.602,"rx":0.126545,"ry":0.725393,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":121.534,"y_top":610.701,"w":14.602,"h":14.602,"rx":0.204164,"ry":0.725393,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":167.739,"y_top":610.701,"w":14.602,"h":14.602,"rx":0.281783,"ry":0.725393,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":213.943,"y_top":610.701,"w":14.602,"h":14.602,"rx":0.359402,"ry":0.725393,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":260.148,"y_top":610.701,"w":14.602,"h":14.602,"rx":0.437021,"ry":0.725393,"rw":0.024529,"rh":0.017344}],"row_y_top":607.867,"row_y_bot":628.138},{"nomor":20,"opsi":[{"opsi":"A","x":75.329,"y_top":630.972,"w":14.602,"h":14.602,"rx":0.126545,"ry":0.749471,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":121.534,"y_top":630.972,"w":14.602,"h":14.602,"rx":0.204164,"ry":0.749471,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":167.739,"y_top":630.972,"w":14.602,"h":14.602,"rx":0.281783,"ry":0.749471,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":213.943,"y_top":630.972,"w":14.602,"h":14.602,"rx":0.359402,"ry":0.749471,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":260.148,"y_top":630.972,"w":14.602,"h":14.602,"rx":0.437021,"ry":0.749471,"rw":0.024529,"rh":0.017344}],"row_y_top":628.138,"row_y_bot":648.409},{"nomor":21,"opsi":[{"opsi":"A","x":75.329,"y_top":651.243,"w":14.602,"h":14.602,"rx":0.126545,"ry":0.773549,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":121.534,"y_top":651.243,"w":14.602,"h":14.602,"rx":0.204164,"ry":0.773549,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":167.739,"y_top":651.243,"w":14.602,"h":14.602,"rx":0.281783,"ry":0.773549,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":213.943,"y_top":651.243,"w":14.602,"h":14.602,"rx":0.359402,"ry":0.773549,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":260.148,"y_top":651.243,"w":14.602,"h":14.602,"rx":0.437021,"ry":0.773549,"rw":0.024529,"rh":0.017344}],"row_y_top":648.409,"row_y_bot":668.68},{"nomor":22,"opsi":[{"opsi":"A","x":75.329,"y_top":671.514,"w":14.602,"h":14.602,"rx":0.126545,"ry":0.797627,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":121.534,"y_top":671.514,"w":14.602,"h":14.602,"rx":0.204164,"ry":0.797627,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":167.739,"y_top":671.514,"w":14.602,"h":14.602,"rx":0.281783,"ry":0.797627,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":213.943,"y_top":671.514,"w":14.602,"h":14.602,"rx":0.359402,"ry":0.797627,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":260.148,"y_top":671.514,"w":14.602,"h":14.602,"rx":0.437021,"ry":0.797627,"rw":0.024529,"rh":0.017344}],"row_y_top":668.68,"row_y_bot":688.951},{"nomor":23,"opsi":[{"opsi":"A","x":75.329,"y_top":691.785,"w":14.602,"h":14.602,"rx":0.126545,"ry":0.821705,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":121.534,"y_top":691.785,"w":14.602,"h":14.602,"rx":0.204164,"ry":0.821705,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":167.739,"y_top":691.785,"w":14.602,"h":14.602,"rx":0.281783,"ry":0.821705,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":213.943,"y_top":691.785,"w":14.602,"h":14.602,"rx":0.359402,"ry":0.821705,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":260.148,"y_top":691.785,"w":14.602,"h":14.602,"rx":0.437021,"ry":0.821705,"rw":0.024529,"rh":0.017344}],"row_y_top":688.951,"row_y_bot":709.222},{"nomor":24,"opsi":[{"opsi":"A","x":75.329,"y_top":712.056,"w":14.602,"h":14.602,"rx":0.126545,"ry":0.845783,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":121.534,"y_top":712.056,"w":14.602,"h":14.602,"rx":0.204164,"ry":0.845783,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":167.739,"y_top":712.056,"w":14.602,"h":14.602,"rx":0.281783,"ry":0.845783,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":213.943,"y_top":712.056,"w":14.602,"h":14.602,"rx":0.359402,"ry":0.845783,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":260.148,"y_top":712.056,"w":14.602,"h":14.602,"rx":0.437021,"ry":0.845783,"rw":0.024529,"rh":0.017344}],"row_y_top":709.222,"row_y_bot":729.493},{"nomor":25,"opsi":[{"opsi":"A","x":75.329,"y_top":732.327,"w":14.602,"h":14.602,"rx":0.126545,"ry":0.869861,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":121.534,"y_top":732.327,"w":14.602,"h":14.602,"rx":0.204164,"ry":0.869861,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":167.739,"y_top":732.327,"w":14.602,"h":14.602,"rx":0.281783,"ry":0.869861,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":213.943,"y_top":732.327,"w":14.602,"h":14.602,"rx":0.359402,"ry":0.869861,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":260.148,"y_top":732.327,"w":14.602,"h":14.602,"rx":0.437021,"ry":0.869861,"rw":0.024529,"rh":0.017344}],"row_y_top":729.493,"row_y_bot":749.764},{"nomor":26,"opsi":[{"opsi":"A","x":346.038,"y_top":245.823,"w":14.602,"h":14.602,"rx":0.581307,"ry":0.29199,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":392.242,"y_top":245.823,"w":14.602,"h":14.602,"rx":0.658926,"ry":0.29199,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":438.447,"y_top":245.823,"w":14.602,"h":14.602,"rx":0.736545,"ry":0.29199,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":484.652,"y_top":245.823,"w":14.602,"h":14.602,"rx":0.814164,"ry":0.29199,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":530.857,"y_top":245.823,"w":14.602,"h":14.602,"rx":0.891783,"ry":0.29199,"rw":0.024529,"rh":0.017344}],"row_y_top":242.988,"row_y_bot":263.259},{"nomor":27,"opsi":[{"opsi":"A","x":346.038,"y_top":266.094,"w":14.602,"h":14.602,"rx":0.581307,"ry":0.316068,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":392.242,"y_top":266.094,"w":14.602,"h":14.602,"rx":0.658926,"ry":0.316068,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":438.447,"y_top":266.094,"w":14.602,"h":14.602,"rx":0.736545,"ry":0.316068,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":484.652,"y_top":266.094,"w":14.602,"h":14.602,"rx":0.814164,"ry":0.316068,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":530.857,"y_top":266.094,"w":14.602,"h":14.602,"rx":0.891783,"ry":0.316068,"rw":0.024529,"rh":0.017344}],"row_y_top":263.259,"row_y_bot":283.53},{"nomor":28,"opsi":[{"opsi":"A","x":346.038,"y_top":286.365,"w":14.602,"h":14.602,"rx":0.581307,"ry":0.340146,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":392.242,"y_top":286.365,"w":14.602,"h":14.602,"rx":0.658926,"ry":0.340146,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":438.447,"y_top":286.365,"w":14.602,"h":14.602,"rx":0.736545,"ry":0.340146,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":484.652,"y_top":286.365,"w":14.602,"h":14.602,"rx":0.814164,"ry":0.340146,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":530.857,"y_top":286.365,"w":14.602,"h":14.602,"rx":0.891783,"ry":0.340146,"rw":0.024529,"rh":0.017344}],"row_y_top":283.53,"row_y_bot":303.802},{"nomor":29,"opsi":[{"opsi":"A","x":346.038,"y_top":306.636,"w":14.602,"h":14.602,"rx":0.581307,"ry":0.364224,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":392.242,"y_top":306.636,"w":14.602,"h":14.602,"rx":0.658926,"ry":0.364224,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":438.447,"y_top":306.636,"w":14.602,"h":14.602,"rx":0.736545,"ry":0.364224,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":484.652,"y_top":306.636,"w":14.602,"h":14.602,"rx":0.814164,"ry":0.364224,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":530.857,"y_top":306.636,"w":14.602,"h":14.602,"rx":0.891783,"ry":0.364224,"rw":0.024529,"rh":0.017344}],"row_y_top":303.802,"row_y_bot":324.073},{"nomor":30,"opsi":[{"opsi":"A","x":346.038,"y_top":326.907,"w":14.602,"h":14.602,"rx":0.581307,"ry":0.388302,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":392.242,"y_top":326.907,"w":14.602,"h":14.602,"rx":0.658926,"ry":0.388302,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":438.447,"y_top":326.907,"w":14.602,"h":14.602,"rx":0.736545,"ry":0.388302,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":484.652,"y_top":326.907,"w":14.602,"h":14.602,"rx":0.814164,"ry":0.388302,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":530.857,"y_top":326.907,"w":14.602,"h":14.602,"rx":0.891783,"ry":0.388302,"rw":0.024529,"rh":0.017344}],"row_y_top":324.073,"row_y_bot":344.344},{"nomor":31,"opsi":[{"opsi":"A","x":346.038,"y_top":347.178,"w":14.602,"h":14.602,"rx":0.581307,"ry":0.41238,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":392.242,"y_top":347.178,"w":14.602,"h":14.602,"rx":0.658926,"ry":0.41238,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":438.447,"y_top":347.178,"w":14.602,"h":14.602,"rx":0.736545,"ry":0.41238,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":484.652,"y_top":347.178,"w":14.602,"h":14.602,"rx":0.814164,"ry":0.41238,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":530.857,"y_top":347.178,"w":14.602,"h":14.602,"rx":0.891783,"ry":0.41238,"rw":0.024529,"rh":0.017344}],"row_y_top":344.344,"row_y_bot":364.615},{"nomor":32,"opsi":[{"opsi":"A","x":346.038,"y_top":367.449,"w":14.602,"h":14.602,"rx":0.581307,"ry":0.436458,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":392.242,"y_top":367.449,"w":14.602,"h":14.602,"rx":0.658926,"ry":0.436458,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":438.447,"y_top":367.449,"w":14.602,"h":14.602,"rx":0.736545,"ry":0.436458,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":484.652,"y_top":367.449,"w":14.602,"h":14.602,"rx":0.814164,"ry":0.436458,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":530.857,"y_top":367.449,"w":14.602,"h":14.602,"rx":0.891783,"ry":0.436458,"rw":0.024529,"rh":0.017344}],"row_y_top":364.615,"row_y_bot":384.886},{"nomor":33,"opsi":[{"opsi":"A","x":346.038,"y_top":387.72,"w":14.602,"h":14.602,"rx":0.581307,"ry":0.460536,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":392.242,"y_top":387.72,"w":14.602,"h":14.602,"rx":0.658926,"ry":0.460536,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":438.447,"y_top":387.72,"w":14.602,"h":14.602,"rx":0.736545,"ry":0.460536,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":484.652,"y_top":387.72,"w":14.602,"h":14.602,"rx":0.814164,"ry":0.460536,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":530.857,"y_top":387.72,"w":14.602,"h":14.602,"rx":0.891783,"ry":0.460536,"rw":0.024529,"rh":0.017344}],"row_y_top":384.886,"row_y_bot":405.157},{"nomor":34,"opsi":[{"opsi":"A","x":346.038,"y_top":407.991,"w":14.602,"h":14.602,"rx":0.581307,"ry":0.484614,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":392.242,"y_top":407.991,"w":14.602,"h":14.602,"rx":0.658926,"ry":0.484614,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":438.447,"y_top":407.991,"w":14.602,"h":14.602,"rx":0.736545,"ry":0.484614,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":484.652,"y_top":407.991,"w":14.602,"h":14.602,"rx":0.814164,"ry":0.484614,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":530.857,"y_top":407.991,"w":14.602,"h":14.602,"rx":0.891783,"ry":0.484614,"rw":0.024529,"rh":0.017344}],"row_y_top":405.157,"row_y_bot":425.428},{"nomor":35,"opsi":[{"opsi":"A","x":346.038,"y_top":428.262,"w":14.602,"h":14.602,"rx":0.581307,"ry":0.508692,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":392.242,"y_top":428.262,"w":14.602,"h":14.602,"rx":0.658926,"ry":0.508692,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":438.447,"y_top":428.262,"w":14.602,"h":14.602,"rx":0.736545,"ry":0.508692,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":484.652,"y_top":428.262,"w":14.602,"h":14.602,"rx":0.814164,"ry":0.508692,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":530.857,"y_top":428.262,"w":14.602,"h":14.602,"rx":0.891783,"ry":0.508692,"rw":0.024529,"rh":0.017344}],"row_y_top":425.428,"row_y_bot":445.699},{"nomor":36,"opsi":[{"opsi":"A","x":346.038,"y_top":448.533,"w":14.602,"h":14.602,"rx":0.581307,"ry":0.53277,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":392.242,"y_top":448.533,"w":14.602,"h":14.602,"rx":0.658926,"ry":0.53277,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":438.447,"y_top":448.533,"w":14.602,"h":14.602,"rx":0.736545,"ry":0.53277,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":484.652,"y_top":448.533,"w":14.602,"h":14.602,"rx":0.814164,"ry":0.53277,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":530.857,"y_top":448.533,"w":14.602,"h":14.602,"rx":0.891783,"ry":0.53277,"rw":0.024529,"rh":0.017344}],"row_y_top":445.699,"row_y_bot":465.97},{"nomor":37,"opsi":[{"opsi":"A","x":346.038,"y_top":468.804,"w":14.602,"h":14.602,"rx":0.581307,"ry":0.556848,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":392.242,"y_top":468.804,"w":14.602,"h":14.602,"rx":0.658926,"ry":0.556848,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":438.447,"y_top":468.804,"w":14.602,"h":14.602,"rx":0.736545,"ry":0.556848,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":484.652,"y_top":468.804,"w":14.602,"h":14.602,"rx":0.814164,"ry":0.556848,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":530.857,"y_top":468.804,"w":14.602,"h":14.602,"rx":0.891783,"ry":0.556848,"rw":0.024529,"rh":0.017344}],"row_y_top":465.97,"row_y_bot":486.241},{"nomor":38,"opsi":[{"opsi":"A","x":346.038,"y_top":489.075,"w":14.602,"h":14.602,"rx":0.581307,"ry":0.580926,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":392.242,"y_top":489.075,"w":14.602,"h":14.602,"rx":0.658926,"ry":0.580926,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":438.447,"y_top":489.075,"w":14.602,"h":14.602,"rx":0.736545,"ry":0.580926,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":484.652,"y_top":489.075,"w":14.602,"h":14.602,"rx":0.814164,"ry":0.580926,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":530.857,"y_top":489.075,"w":14.602,"h":14.602,"rx":0.891783,"ry":0.580926,"rw":0.024529,"rh":0.017344}],"row_y_top":486.241,"row_y_bot":506.512},{"nomor":39,"opsi":[{"opsi":"A","x":346.038,"y_top":509.346,"w":14.602,"h":14.602,"rx":0.581307,"ry":0.605004,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":392.242,"y_top":509.346,"w":14.602,"h":14.602,"rx":0.658926,"ry":0.605004,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":438.447,"y_top":509.346,"w":14.602,"h":14.602,"rx":0.736545,"ry":0.605004,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":484.652,"y_top":509.346,"w":14.602,"h":14.602,"rx":0.814164,"ry":0.605004,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":530.857,"y_top":509.346,"w":14.602,"h":14.602,"rx":0.891783,"ry":0.605004,"rw":0.024529,"rh":0.017344}],"row_y_top":506.512,"row_y_bot":526.783},{"nomor":40,"opsi":[{"opsi":"A","x":346.038,"y_top":529.617,"w":14.602,"h":14.602,"rx":0.581307,"ry":0.629082,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":392.242,"y_top":529.617,"w":14.602,"h":14.602,"rx":0.658926,"ry":0.629082,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":438.447,"y_top":529.617,"w":14.602,"h":14.602,"rx":0.736545,"ry":0.629082,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":484.652,"y_top":529.617,"w":14.602,"h":14.602,"rx":0.814164,"ry":0.629082,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":530.857,"y_top":529.617,"w":14.602,"h":14.602,"rx":0.891783,"ry":0.629082,"rw":0.024529,"rh":0.017344}],"row_y_top":526.783,"row_y_bot":547.054},{"nomor":41,"opsi":[{"opsi":"A","x":346.038,"y_top":549.888,"w":14.602,"h":14.602,"rx":0.581307,"ry":0.65316,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":392.242,"y_top":549.888,"w":14.602,"h":14.602,"rx":0.658926,"ry":0.65316,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":438.447,"y_top":549.888,"w":14.602,"h":14.602,"rx":0.736545,"ry":0.65316,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":484.652,"y_top":549.888,"w":14.602,"h":14.602,"rx":0.814164,"ry":0.65316,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":530.857,"y_top":549.888,"w":14.602,"h":14.602,"rx":0.891783,"ry":0.65316,"rw":0.024529,"rh":0.017344}],"row_y_top":547.054,"row_y_bot":567.325},{"nomor":42,"opsi":[{"opsi":"A","x":346.038,"y_top":570.159,"w":14.602,"h":14.602,"rx":0.581307,"ry":0.677237,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":392.242,"y_top":570.159,"w":14.602,"h":14.602,"rx":0.658926,"ry":0.677237,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":438.447,"y_top":570.159,"w":14.602,"h":14.602,"rx":0.736545,"ry":0.677237,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":484.652,"y_top":570.159,"w":14.602,"h":14.602,"rx":0.814164,"ry":0.677237,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":530.857,"y_top":570.159,"w":14.602,"h":14.602,"rx":0.891783,"ry":0.677237,"rw":0.024529,"rh":0.017344}],"row_y_top":567.325,"row_y_bot":587.596},{"nomor":43,"opsi":[{"opsi":"A","x":346.038,"y_top":590.43,"w":14.602,"h":14.602,"rx":0.581307,"ry":0.701315,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":392.242,"y_top":590.43,"w":14.602,"h":14.602,"rx":0.658926,"ry":0.701315,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":438.447,"y_top":590.43,"w":14.602,"h":14.602,"rx":0.736545,"ry":0.701315,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":484.652,"y_top":590.43,"w":14.602,"h":14.602,"rx":0.814164,"ry":0.701315,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":530.857,"y_top":590.43,"w":14.602,"h":14.602,"rx":0.891783,"ry":0.701315,"rw":0.024529,"rh":0.017344}],"row_y_top":587.596,"row_y_bot":607.867},{"nomor":44,"opsi":[{"opsi":"A","x":346.038,"y_top":610.701,"w":14.602,"h":14.602,"rx":0.581307,"ry":0.725393,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":392.242,"y_top":610.701,"w":14.602,"h":14.602,"rx":0.658926,"ry":0.725393,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":438.447,"y_top":610.701,"w":14.602,"h":14.602,"rx":0.736545,"ry":0.725393,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":484.652,"y_top":610.701,"w":14.602,"h":14.602,"rx":0.814164,"ry":0.725393,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":530.857,"y_top":610.701,"w":14.602,"h":14.602,"rx":0.891783,"ry":0.725393,"rw":0.024529,"rh":0.017344}],"row_y_top":607.867,"row_y_bot":628.138},{"nomor":45,"opsi":[{"opsi":"A","x":346.038,"y_top":630.972,"w":14.602,"h":14.602,"rx":0.581307,"ry":0.749471,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":392.242,"y_top":630.972,"w":14.602,"h":14.602,"rx":0.658926,"ry":0.749471,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":438.447,"y_top":630.972,"w":14.602,"h":14.602,"rx":0.736545,"ry":0.749471,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":484.652,"y_top":630.972,"w":14.602,"h":14.602,"rx":0.814164,"ry":0.749471,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":530.857,"y_top":630.972,"w":14.602,"h":14.602,"rx":0.891783,"ry":0.749471,"rw":0.024529,"rh":0.017344}],"row_y_top":628.138,"row_y_bot":648.409},{"nomor":46,"opsi":[{"opsi":"A","x":346.038,"y_top":651.243,"w":14.602,"h":14.602,"rx":0.581307,"ry":0.773549,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":392.242,"y_top":651.243,"w":14.602,"h":14.602,"rx":0.658926,"ry":0.773549,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":438.447,"y_top":651.243,"w":14.602,"h":14.602,"rx":0.736545,"ry":0.773549,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":484.652,"y_top":651.243,"w":14.602,"h":14.602,"rx":0.814164,"ry":0.773549,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":530.857,"y_top":651.243,"w":14.602,"h":14.602,"rx":0.891783,"ry":0.773549,"rw":0.024529,"rh":0.017344}],"row_y_top":648.409,"row_y_bot":668.68},{"nomor":47,"opsi":[{"opsi":"A","x":346.038,"y_top":671.514,"w":14.602,"h":14.602,"rx":0.581307,"ry":0.797627,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":392.242,"y_top":671.514,"w":14.602,"h":14.602,"rx":0.658926,"ry":0.797627,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":438.447,"y_top":671.514,"w":14.602,"h":14.602,"rx":0.736545,"ry":0.797627,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":484.652,"y_top":671.514,"w":14.602,"h":14.602,"rx":0.814164,"ry":0.797627,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":530.857,"y_top":671.514,"w":14.602,"h":14.602,"rx":0.891783,"ry":0.797627,"rw":0.024529,"rh":0.017344}],"row_y_top":668.68,"row_y_bot":688.951},{"nomor":48,"opsi":[{"opsi":"A","x":346.038,"y_top":691.785,"w":14.602,"h":14.602,"rx":0.581307,"ry":0.821705,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":392.242,"y_top":691.785,"w":14.602,"h":14.602,"rx":0.658926,"ry":0.821705,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":438.447,"y_top":691.785,"w":14.602,"h":14.602,"rx":0.736545,"ry":0.821705,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":484.652,"y_top":691.785,"w":14.602,"h":14.602,"rx":0.814164,"ry":0.821705,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":530.857,"y_top":691.785,"w":14.602,"h":14.602,"rx":0.891783,"ry":0.821705,"rw":0.024529,"rh":0.017344}],"row_y_top":688.951,"row_y_bot":709.222},{"nomor":49,"opsi":[{"opsi":"A","x":346.038,"y_top":712.056,"w":14.602,"h":14.602,"rx":0.581307,"ry":0.845783,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":392.242,"y_top":712.056,"w":14.602,"h":14.602,"rx":0.658926,"ry":0.845783,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":438.447,"y_top":712.056,"w":14.602,"h":14.602,"rx":0.736545,"ry":0.845783,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":484.652,"y_top":712.056,"w":14.602,"h":14.602,"rx":0.814164,"ry":0.845783,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":530.857,"y_top":712.056,"w":14.602,"h":14.602,"rx":0.891783,"ry":0.845783,"rw":0.024529,"rh":0.017344}],"row_y_top":709.222,"row_y_bot":729.493},{"nomor":50,"opsi":[{"opsi":"A","x":346.038,"y_top":732.327,"w":14.602,"h":14.602,"rx":0.581307,"ry":0.869861,"rw":0.024529,"rh":0.017344},{"opsi":"B","x":392.242,"y_top":732.327,"w":14.602,"h":14.602,"rx":0.658926,"ry":0.869861,"rw":0.024529,"rh":0.017344},{"opsi":"C","x":438.447,"y_top":732.327,"w":14.602,"h":14.602,"rx":0.736545,"ry":0.869861,"rw":0.024529,"rh":0.017344},{"opsi":"D","x":484.652,"y_top":732.327,"w":14.602,"h":14.602,"rx":0.814164,"ry":0.869861,"rw":0.024529,"rh":0.017344},{"opsi":"E","x":530.857,"y_top":732.327,"w":14.602,"h":14.602,"rx":0.891783,"ry":0.869861,"rw":0.024529,"rh":0.017344}],"row_y_top":729.493,"row_y_bot":749.764}]};
 
-// ─── STATE ───────────────────────────────────────────────────
-let imgLoaded = null;        // ImageData original
-let imgCanvas = null;        // canvas asli
-let hasilTerakhir = null;    // hasil scan terakhir
-let kunci = new Array(50).fill('');
-let rekap = [];
-let showROI = false;
-let KAL = loadKal();
+// ══════════════════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════════════════
+let imgD   = null;   // ImageData pixel array
+let imgW   = 0;
+let imgH   = 0;
+let hasROI = false;
+let last   = null;   // hasil scan terakhir
+let kunci  = new Array(50).fill('');
+let rekap  = [];
+let KAL    = kalLoad();
 
-// ─── INIT ────────────────────────────────────────────────────
-window.addEventListener('DOMContentLoaded', () => {
-  loadKunciUI();
-  loadRekap();
-  renderKunciGrid();
+// ══════════════════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  // Load data tersimpan
+  try { const s=localStorage.getItem('bb_kunci'); if(s) kunci=JSON.parse(s); } catch{}
+  try { const s=localStorage.getItem('bb_rekap');  if(s) rekap=JSON.parse(s);  } catch{}
+
+  // Bangun UI
+  buildKunci();
   renderRekap();
-  updateRekapStats();
-  kalLoadUI();
+  updateStats();
+  kalUI();
+
+  // Drag & drop
+  const dz=document.getElementById('dropZone');
+  dz.addEventListener('dragover', e=>{e.preventDefault();dz.classList.add('drag');});
+  dz.addEventListener('dragleave',()=>dz.classList.remove('drag'));
+  dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('drag');if(e.dataTransfer.files[0])processFile(e.dataTransfer.files[0]);});
 });
 
-// ─── TABS ────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════
+// TABS
+// ══════════════════════════════════════════════════════════════════
 function goTab(n){
-  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',i===n));
-  document.querySelectorAll('.page').forEach((p,i)=>p.classList.toggle('active',i===n));
-  if(n===3) renderRekap();
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('on',i===n));
+  document.querySelectorAll('.pg') .forEach((p,i)=>p.classList.toggle('on',i===n));
+  if(n===3){renderRekap();updateStats();}
+  if(n===1){updateKCount();}
 }
 
-// ─── TOAST ───────────────────────────────────────────────────
-let toastT;
-function toast(msg, dur=2000){
+// ══════════════════════════════════════════════════════════════════
+// TOAST & UI HELPERS
+// ══════════════════════════════════════════════════════════════════
+let _tt;
+function toast(msg,dur=2500){
   const el=document.getElementById('toast');
   el.textContent=msg; el.classList.add('show');
-  clearTimeout(toastT); toastT=setTimeout(()=>el.classList.remove('show'),dur);
+  clearTimeout(_tt); _tt=setTimeout(()=>el.classList.remove('show'),dur);
 }
-
-// ─── STATUS ──────────────────────────────────────────────────
-function setStatus(type, msg){
-  const bar=document.getElementById('statusBar');
-  bar.className='status-bar '+type;
-  document.getElementById('statusTxt').textContent=msg;
+function setSbar(type,msg){
+  const el=document.getElementById('sbar');
+  el.className='sbar '+type;
+  document.getElementById('sbarTxt').textContent=msg;
 }
-
-function setProgress(pct){
-  const pw=document.getElementById('progressWrap');
-  const pb=document.getElementById('progressBar');
-  pw.style.display = pct>=0&&pct<100?'block':'none';
-  pb.style.width=pct+'%';
+function setPbar(pct){
+  const w=document.getElementById('pbarWrap');
+  w.style.display=(pct>=0&&pct<100)?'block':'none';
+  document.getElementById('pbar').style.width=pct+'%';
 }
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
 
-// ─── FILE INPUT ───────────────────────────────────────────────
-document.getElementById('fileInput').addEventListener('change', async e=>{
-  const f=e.target.files[0]; if(!f) return;
-  await loadFile(f);
-});
-
-const dz=document.getElementById('dropZone');
-dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag')});
-dz.addEventListener('dragleave',()=>dz.classList.remove('drag'));
-dz.addEventListener('drop',async e=>{
-  e.preventDefault();dz.classList.remove('drag');
-  const f=e.dataTransfer.files[0]; if(f) await loadFile(f);
-});
-
-async function loadFile(f){
-  setStatus('scanning','Memuat gambar...');
-  if(f.type==='application/pdf'){
-    await loadPDF(f);
-  } else {
-    const url=URL.createObjectURL(f);
-    await loadImage(url);
+// ══════════════════════════════════════════════════════════════════
+// FILE HANDLING
+// ══════════════════════════════════════════════════════════════════
+function onFile(e){
+  const f=e.target.files[0];
+  e.target.value='';   // reset agar bisa upload file sama
+  if(f) processFile(f);
+}
+async function processFile(f){
+  clearCanvas();
+  setSbar('work','⏳ Memuat file...');
+  try{
+    if(f.type==='application/pdf'||f.name.toLowerCase().endsWith('.pdf')){
+      await loadPDF(f);
+    } else {
+      const url=URL.createObjectURL(f);
+      await loadImage(url);
+      URL.revokeObjectURL(url);
+    }
+  } catch(err){
+    setSbar('err','❌ Gagal memuat: '+err.message);
+    console.error(err);
   }
 }
-
 async function loadPDF(f){
-  // Gunakan PDF.js CDN
+  setSbar('work','⏳ Render PDF...');
   if(!window.pdfjsLib){
     await loadScript('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js');
     pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
   }
-  const ab=await f.arrayBuffer();
-  const pdf=await pdfjsLib.getDocument({data:ab}).promise;
-  const page=await pdf.getPage(1);
-  const vp=page.getViewport({scale:2.5});
-  const cv=document.createElement('canvas');
-  cv.width=vp.width; cv.height=vp.height;
-  const ctx=cv.getContext('2d');
-  await page.render({canvasContext:ctx,viewport:vp}).promise;
-  await loadImage(cv.toDataURL());
+  const buf=await f.arrayBuffer();
+  const pdf=await pdfjsLib.getDocument({data:buf}).promise;
+  const pg =await pdf.getPage(1);
+  const vp =pg.getViewport({scale:2.5});
+  const tmp=document.createElement('canvas');
+  tmp.width=vp.width; tmp.height=vp.height;
+  await pg.render({canvasContext:tmp.getContext('2d'),viewport:vp}).promise;
+  await loadImage(tmp.toDataURL());
 }
-
 function loadScript(src){
-  return new Promise((res,rej)=>{
+  return new Promise((ok,fail)=>{
     const s=document.createElement('script');
-    s.src=src; s.onload=res; s.onerror=rej;
+    s.src=src; s.onload=ok; s.onerror=()=>fail(new Error('Gagal load '+src));
     document.head.appendChild(s);
   });
 }
-
 async function loadImage(src){
-  return new Promise(async (res,rej)=>{
+  return new Promise((ok,fail)=>{
     const img=new Image();
-    img.onload=async ()=>{
-      const wrap=document.getElementById('previewWrap');
-      const cv=document.getElementById('mainCanvas');
-      const ov=document.getElementById('overlayCanvas');
-      cv.width=img.naturalWidth; cv.height=img.naturalHeight;
-      ov.width=img.naturalWidth; ov.height=img.naturalHeight;
+    img.onload=async()=>{
+      const cv =document.getElementById('cvMain');
+      const ov =document.getElementById('cvOverlay');
+      cv.width =ov.width =img.naturalWidth;
+      cv.height=ov.height=img.naturalHeight;
       const ctx=cv.getContext('2d');
       ctx.drawImage(img,0,0);
-
-      // ── VALIDASI LJK ──────────────────────────────────────
-      setStatus('scanning','⚙️ Memvalidasi lembar jawaban...');
-      const tmpData = ctx.getImageData(0,0,cv.width,cv.height);
-      const W=cv.width, H=cv.height;
-
-      // Tampilkan gambar dulu (preview sementara) 
-      imgCanvas=cv; wrap.style.display='block';
-
-      let stepIdx=0;
-      const validation = await VALIDATOR.validate(tmpData, W, H, (i, r)=>{
-        setStatus('scanning', `⚙️ Memeriksa: ${r.name}...`);
-      });
-
-      if(!validation.isValid){
-        // TOLAK
-        wrap.style.display='none';
-        setStatus('error','❌ Bukan LJK yang valid — ditolak');
-        showRejectModal(validation);
-        res(); return;
-      }
-
-      // TERIMA
-      imgLoaded=tmpData;
-      document.getElementById('btnScan').disabled=false;
-      setStatus('done',`✅ LJK terverifikasi (skor ${validation.score}/100) — siap scan`);
-      toast(`✅ LJK valid! Skor ${validation.score}/100`);
-      if(showROI) drawROI();
-      res();
+      imgD=ctx.getImageData(0,0,cv.width,cv.height);
+      imgW=cv.width; imgH=cv.height;
+      document.getElementById('canvasWrap').style.display='block';
+      setSbar('work','⚙️ Memvalidasi 13 layer...');
+      await sleep(20);
+      await validate();
+      ok();
     };
-    img.onerror=rej;
+    img.onerror=()=>fail(new Error('File gambar tidak valid'));
     img.src=src;
   });
 }
 
-
-// ═══════════════════════════════════════════════════════════════
-// LJK VALIDATOR ENGINE — Multi-Layer Detection
-// ═══════════════════════════════════════════════════════════════
-
-const VALIDATOR = {
-
-  // ── Layer 1: Rasio aspek halaman (A4 portrait) ─────────────
-  checkAspectRatio(W, H) {
-    const ratio = W / H;
-    // A4 portrait: 0.707 ± toleransi foto 15%
-    const A4 = 1 / Math.sqrt(2); // ~0.7071
-    const tol = 0.15;
-    const ok = Math.abs(ratio - A4) < tol;
-    return {
-      ok,
-      val: ratio.toFixed(3),
-      expected: `${(A4-tol).toFixed(2)}–${(A4+tol).toFixed(2)}`,
-      msg: ok ? `Rasio ${ratio.toFixed(3)} ✓` : `Rasio ${ratio.toFixed(3)} (bukan A4 portrait)`
-    };
-  },
-
-  // ── Layer 2: Resolusi minimum ──────────────────────────────
-  checkResolution(W, H) {
-    // Minimum 400x566 px (sangat rendah), optimal 1000+
-    const minPx = 400 * 566;
-    const ok = W * H >= minPx;
-    return {
-      ok,
-      val: `${W}x${H}`,
-      msg: ok ? `Resolusi ${W}x${H} ✓` : `Resolusi terlalu kecil (${W}x${H})`
-    };
-  },
-
-  // ── Layer 3: Dominasi warna terang (kertas putih) ──────────
-  checkBrightness(data, W, H) {
-    // Sample 500 titik acak, hitung rata-rata kecerahan
-    const samples = 500;
-    let sumGray = 0;
-    let brightCount = 0;
-    for (let i = 0; i < samples; i++) {
-      const px = Math.floor(Math.random() * W * H);
-      const idx = px * 4;
-      const gray = 0.299*data[idx] + 0.587*data[idx+1] + 0.114*data[idx+2];
-      sumGray += gray;
-      if (gray > 160) brightCount++;
-    }
-    const avgGray = sumGray / samples;
-    const brightRatio = brightCount / samples;
-    // Kertas putih: rata-rata >140, minimal 50% piksel terang
-    const ok = avgGray > 130 && brightRatio > 0.45;
-    return {
-      ok,
-      val: `avg=${avgGray.toFixed(0)}, terang=${Math.round(brightRatio*100)}%`,
-      msg: ok ? `Kecerahan OK (avg=${avgGray.toFixed(0)}) ✓` :
-           avgGray <= 130 ? `Gambar terlalu gelap (avg=${avgGray.toFixed(0)})` :
-           `Terlalu sedikit area putih (${Math.round(brightRatio*100)}%)`
-    };
-  },
-
-  // ── Layer 4: Deteksi garis grid paving block ───────────────
-  // Cek keberadaan garis-garis horizontal gelap (baris soal)
-  checkGridLines(data, W, H) {
-    // Scan strip vertikal di tengah gambar, cari transisi gelap-terang
-    const midX = Math.floor(W * 0.3); // kolom kiri grid
-    const startY = Math.floor(H * 0.27); // mulai dari area grid
-    const endY   = Math.floor(H * 0.90);
-    const stripW = Math.floor(W * 0.04);
-
-    let darkTransitions = 0;
-    let prevAvg = 255;
-    const rowH_est = Math.floor(H * 0.024); // estimasi tinggi baris ~2.4% H
-
-    for (let y = startY; y < endY; y += Math.max(1, Math.floor(rowH_est/3))) {
-      // Rata-rata strip horizontal
-      let rowSum = 0, cnt = 0;
-      for (let x = midX; x < Math.min(W, midX + stripW); x++) {
-        const idx = (y * W + x) * 4;
-        const gray = 0.299*data[idx] + 0.587*data[idx+1] + 0.114*data[idx+2];
-        rowSum += gray; cnt++;
-      }
-      const avg = cnt > 0 ? rowSum / cnt : 255;
-      // Deteksi transisi: dari terang ke gelap (garis border baris)
-      if (prevAvg > 180 && avg < 140) darkTransitions++;
-      prevAvg = avg;
-    }
-
-    // Harus ada minimal 15 transisi (25 baris × ~2 sisi per baris)
-    const ok = darkTransitions >= 10;
-    return {
-      ok,
-      val: `${darkTransitions} transisi`,
-      msg: ok ? `Grid terdeteksi (${darkTransitions} garis) ✓` :
-           `Grid tidak terdeteksi (${darkTransitions} garis, butuh ≥10)`
-    };
-  },
-
-  // ── Layer 5: Deteksi kolom nomor (blok gelap kiri) ─────────
-  checkNomorColumn(data, W, H) {
-    // Kolom nomor soal di kiri setiap blok = blok gelap (#0f3460)
-    // Cek zona kiri grid: x = 5-10% W, y = 27-90% H
-    // Warna target: R≈15, G≈52, B≈96 (gelap biru tua)
-    const x0 = Math.floor(W * 0.053), x1 = Math.floor(W * 0.09);
-    const y0 = Math.floor(H * 0.295), y1 = Math.floor(H * 0.88);
-    const samples = 120;
-    let darkBlueCount = 0;
-
-    for (let i = 0; i < samples; i++) {
-      const x = x0 + Math.floor(Math.random() * (x1 - x0));
-      const y = y0 + Math.floor(Math.random() * (y1 - y0));
-      const idx = (y * W + x) * 4;
-      const r = data[idx], g = data[idx+1], b = data[idx+2];
-      const gray = 0.299*r + 0.587*g + 0.114*b;
-      // Piksel gelap (warna nomor atau background biru gelap)
-      if (gray < 120) darkBlueCount++;
-    }
-
-    const ratio = darkBlueCount / samples;
-    // Harusnya ~40-80% area kolom nomor itu gelap
-    const ok = ratio >= 0.25;
-    return {
-      ok,
-      val: `${Math.round(ratio*100)}% gelap`,
-      msg: ok ? `Kolom nomor terdeteksi (${Math.round(ratio*100)}% gelap) ✓` :
-           `Kolom nomor tidak ditemukan (${Math.round(ratio*100)}% gelap, butuh ≥25%)`
-    };
-  },
-
-  // ── Layer 6: Deteksi header gelap (atas) ──────────────────
-  checkHeader(data, W, H) {
-    // Header gelap di atas: y = 1.2-5% H, cek rata-rata gelap
-    const y0 = Math.floor(H * 0.012), y1 = Math.floor(H * 0.05);
-    const x0 = Math.floor(W * 0.04), x1 = Math.floor(W * 0.96);
-    let darkCount = 0, total = 0;
-    const step = Math.max(1, Math.floor((x1-x0)/60));
-    for (let y = y0; y < y1; y += Math.max(1, Math.floor((y1-y0)/8))) {
-      for (let x = x0; x < x1; x += step) {
-        const idx = (y * W + x) * 4;
-        const gray = 0.299*data[idx] + 0.587*data[idx+1] + 0.114*data[idx+2];
-        if (gray < 100) darkCount++;
-        total++;
-      }
-    }
-    const ratio = total > 0 ? darkCount / total : 0;
-    const ok = ratio >= 0.30; // Header harus ≥30% gelap
-    return {
-      ok,
-      val: `${Math.round(ratio*100)}% gelap`,
-      msg: ok ? `Header gelap terdeteksi (${Math.round(ratio*100)}%) ✓` :
-           `Header tidak terdeteksi (${Math.round(ratio*100)}%, butuh ≥30%)`
-    };
-  },
-
-  // ── Layer 7: Skor Paving Block Pattern ─────────────────────
-  // Cek pola kotak bubble (putih) di zona jawaban
-  checkBubbleZone(data, W, H) {
-    // Area bubble kolom A soal 1-5: sekitar x=12-15%W, y=29-40%H
-    const x0 = Math.floor(W * 0.122), x1 = Math.floor(W * 0.155);
-    const y0 = Math.floor(H * 0.292), y1 = Math.floor(H * 0.38);
-    let whiteCount = 0, total = 0;
-    const stepX = Math.max(1, Math.floor((x1-x0)/15));
-    const stepY = Math.max(1, Math.floor((y1-y0)/15));
-    for (let y = y0; y < y1; y += stepY) {
-      for (let x = x0; x < x1; x += stepX) {
-        const idx = (y * W + x) * 4;
-        const gray = 0.299*data[idx] + 0.587*data[idx+1] + 0.114*data[idx+2];
-        if (gray > 180) whiteCount++;
-        total++;
-      }
-    }
-    const ratio = total > 0 ? whiteCount / total : 0;
-    const ok = ratio >= 0.35; // Zona bubble harus ada area putih (kotak kosong)
-    return {
-      ok,
-      val: `${Math.round(ratio*100)}% putih`,
-      msg: ok ? `Zona bubble terdeteksi (${Math.round(ratio*100)}% putih) ✓` :
-           `Zona bubble tidak ditemukan (${Math.round(ratio*100)}%, butuh ≥35%)`
-    };
-  },
-
-
-  // ── Layer 8: Deteksi Blur (Laplacian Variance) ────────────
-  // Gambar blur = variance rendah antar piksel tetangga
-  checkSharpness(data, W, H) {
-    // Sample zona tengah gambar (paling representatif)
-    const x0=Math.floor(W*0.2), x1=Math.floor(W*0.8);
-    const y0=Math.floor(H*0.2), y1=Math.floor(H*0.8);
-    const step=Math.max(2,Math.floor(W/120));
-    let vals=[];
-    for(let y=y0+step;y<y1-step;y+=step){
-      for(let x=x0+step;x<x1-step;x+=step){
-        const c=(y*W+x)*4;
-        const gc=0.299*data[c]+0.587*data[c+1]+0.114*data[c+2];
-        // Laplacian kernel sederhana: pusat - rata4 tetangga
-        const t=((y-step)*W+x)*4, b=((y+step)*W+x)*4;
-        const l=(y*W+(x-step))*4, r=(y*W+(x+step))*4;
-        const gt=0.299*data[t]+0.587*data[t+1]+0.114*data[t+2];
-        const gb=0.299*data[b]+0.587*data[b+1]+0.114*data[b+2];
-        const gl=0.299*data[l]+0.587*data[l+1]+0.114*data[l+2];
-        const gr=0.299*data[r]+0.587*data[r+1]+0.114*data[r+2];
-        const lap=Math.abs(4*gc-gt-gb-gl-gr);
-        vals.push(lap);
-      }
-    }
-    // Variance of Laplacian
-    const mean=vals.reduce((a,b)=>a+b,0)/vals.length;
-    const variance=vals.reduce((a,v)=>a+(v-mean)**2,0)/vals.length;
-    // Threshold: <80 = blur, ≥80 = cukup tajam
-    const ok=variance>=80;
-    return{ok,val:`var=${variance.toFixed(1)}`,
-      msg:ok?`Gambar tajam (var=${variance.toFixed(1)}) ✓`:`Gambar buram/tidak fokus (var=${variance.toFixed(1)}, butuh ≥80)`};
-  },
-
-  // ── Layer 9: Deteksi Kontras (Rentang Dinamis) ────────────
-  checkContrast(data, W, H) {
-    const samples=600;
-    let mn=255,mx=0,vals=[];
-    for(let i=0;i<samples;i++){
-      const px=Math.floor(Math.random()*W*H)*4;
-      const g=0.299*data[px]+0.587*data[px+1]+0.114*data[px+2];
-      if(g<mn)mn=g; if(g>mx)mx=g;
-      vals.push(g);
-    }
-    const range=mx-mn;
-    // Hitung std deviation
-    const mean=vals.reduce((a,b)=>a+b,0)/vals.length;
-    const std=Math.sqrt(vals.reduce((a,v)=>a+(v-mean)**2,0)/vals.length);
-    // Harus ada rentang ≥120 (ada area gelap header+nomor dan area terang kertas)
-    const ok=range>=120 && std>=25;
-    return{ok,val:`range=${range.toFixed(0)},std=${std.toFixed(1)}`,
-      msg:ok?`Kontras baik (range=${range.toFixed(0)}) ✓`
-        :range<120?`Kontras rendah (range=${range.toFixed(0)}, butuh ≥120)`
-        :`Distribusi piksel tidak normal (std=${std.toFixed(1)})`};
-  },
-
-  // ── Layer 10: Deteksi Margin Putih (4 sisi) ───────────────
-  // LJK punya margin putih tipis di 4 sisi sebelum elemen gelap
-  checkMargins(data, W, H) {
-    // Sampling 4 strip tepi: atas, bawah, kiri, kanan
-    // Setiap strip 1-3% dari dimensi halaman
-    const stripPct=0.025;
-    function stripAvg(x0,y0,x1,y1){
-      let sum=0,cnt=0;
-      const stepX=Math.max(1,Math.floor((x1-x0)/40));
-      const stepY=Math.max(1,Math.floor((y1-y0)/10));
-      for(let y=y0;y<y1;y+=stepY)
-        for(let x=x0;x<x1;x+=stepX){
-          const i=(y*W+x)*4;
-          sum+=0.299*data[i]+0.587*data[i+1]+0.114*data[i+2];
-          cnt++;
-        }
-      return cnt>0?sum/cnt:0;
-    }
-    const mT=Math.floor(H*stripPct), mB=Math.floor(H*stripPct);
-    const mL=Math.floor(W*stripPct), mR=Math.floor(W*stripPct);
-    const top   =stripAvg(Math.floor(W*.05),0,Math.floor(W*.95),mT);
-    const bot   =stripAvg(Math.floor(W*.05),H-mB,Math.floor(W*.95),H);
-    const left  =stripAvg(0,Math.floor(H*.1),mL,Math.floor(H*.9));
-    const right =stripAvg(W-mR,Math.floor(H*.1),W,Math.floor(H*.9));
-    // Semua sisi harus cukup terang (kertas, bukan terpotong/gelap)
-    const minOk=150;
-    const sides={atas:top,bawah:bot,kiri:left,kanan:right};
-    const failSides=Object.entries(sides).filter(([k,v])=>v<minOk);
-    const ok=failSides.length===0;
-    return{ok,
-      val:`T${top.toFixed(0)}/B${bot.toFixed(0)}/L${left.toFixed(0)}/R${right.toFixed(0)}`,
-      msg:ok?`Margin 4 sisi OK ✓`
-        :`Margin ${failSides.map(([k,v])=>k+':'+v.toFixed(0)).join(', ')} gelap — LJK terpotong/miring`};
-  },
-
-  // ── Layer 11: Deteksi Kelurusan (Skew Detection) ──────────
-  // Scan garis horizontal di zona grid, ukur konsistensi y-posisi transisi
-  checkSkew(data, W, H) {
-    // Sample 3 kolom vertikal di zona grid
-    // Cari posisi transisi gelap pertama dari atas di tiap kolom
-    const cols=[0.15,0.45,0.75]; // posisi x relatif
-    const yStart=Math.floor(H*0.26), yEnd=Math.floor(H*0.32);
-    const positions=[];
-    for(const cx of cols){
-      const x=Math.floor(cx*W);
-      let found=-1;
-      for(let y=yStart;y<yEnd;y++){
-        const i=(y*W+x)*4;
-        const g=0.299*data[i]+0.587*data[i+1]+0.114*data[i+2];
-        if(g<130){found=y;break;}
-      }
-      if(found>=0) positions.push(found);
-    }
-    if(positions.length<2) return{ok:true,val:'skip',msg:'Skew: tidak cukup referensi (toleransi) ✓'};
-    const mn=Math.min(...positions), mx=Math.max(...positions);
-    const diff=mx-mn;
-    // Dalam piksel: toleransi miring ≤ 2% tinggi gambar (~1.5°)
-    const maxDiff=Math.floor(H*0.022);
-    const ok=diff<=maxDiff;
-    const degEst=(Math.atan2(diff,W*0.6)*180/Math.PI).toFixed(1);
-    return{ok,val:`diff=${diff}px (~${degEst}°)`,
-      msg:ok?`Kelurusan OK (miring ~${degEst}°) ✓`
-        :`LJK terlalu miring (~${degEst}°, maks ~2°) — ambil foto lebih lurus`};
-  },
-
-  // ── Layer 12: Deteksi Distorsi Perspektif ─────────────────
-  // Bandingkan lebar konten di atas vs bawah (trapezoid = perspektif)
-  checkPerspective(data, W, H) {
-    // Temukan tepi gelap (border LJK) di 4 titik: kiri-atas, kanan-atas, kiri-bawah, kanan-bawah
-    function findEdgeX(scanY, fromLeft){
-      const y=Math.floor(scanY*H);
-      const step=fromLeft?1:-1;
-      const start=fromLeft?Math.floor(W*0.02):Math.floor(W*0.98);
-      const end=fromLeft?Math.floor(W*0.5):Math.floor(W*0.5);
-      for(let x=start;fromLeft?x<end:x>end;x+=step){
-        const i=(y*W+x)*4;
-        const g=0.299*data[i]+0.587*data[i+1]+0.114*data[i+2];
-        if(g<160) return x;
-      }
-      return fromLeft?Math.floor(W*0.1):Math.floor(W*0.9);
-    }
-    const topL=findEdgeX(0.05,true), topR=findEdgeX(0.05,false);
-    const botL=findEdgeX(0.92,true), botR=findEdgeX(0.92,false);
-    const widthTop=topR-topL, widthBot=botR-botL;
-    if(widthTop<=0||widthBot<=0) return{ok:true,val:'skip',msg:'Perspektif: tidak terdeteksi tepi (toleransi) ✓'};
-    const ratio=Math.min(widthTop,widthBot)/Math.max(widthTop,widthBot);
-    // Harus ≥0.82 (max 18% perbedaan lebar atas-bawah)
-    const ok=ratio>=0.82;
-    return{ok,val:`top=${widthTop}px bot=${widthBot}px ratio=${ratio.toFixed(2)}`,
-      msg:ok?`Perspektif OK (ratio=${ratio.toFixed(2)}) ✓`
-        :`Distorsi perspektif (ratio=${ratio.toFixed(2)}, butuh ≥0.82) — foto dari depan lurus`};
-  },
-
-  // ── Layer 13: Deteksi Bayangan / Pencahayaan Tidak Merata ─
-  checkLightingUniformity(data, W, H) {
-    // Bagi gambar jadi grid 3x3, hitung rata-rata kecerahan tiap zona
-    const zones=[];
-    for(let row=0;row<3;row++){
-      for(let col=0;col<3;col++){
-        const x0=Math.floor(W*col/3), x1=Math.floor(W*(col+1)/3);
-        const y0=Math.floor(H*row/3), y1=Math.floor(H*(row+1)/3);
-        let sum=0,cnt=0;
-        const step=Math.max(2,Math.floor(W/60));
-        for(let y=y0;y<y1;y+=step)
-          for(let x=x0;x<x1;x+=step){
-            const i=(y*W+x)*4;
-            sum+=0.299*data[i]+0.587*data[i+1]+0.114*data[i+2];
-            cnt++;
-          }
-        zones.push(cnt>0?sum/cnt:128);
-      }
-    }
-    const mn=Math.min(...zones), mx=Math.max(...zones);
-    const spread=mx-mn;
-    // Max perbedaan zona ≤110 (toleransi bayangan ringan)
-    const ok=spread<=110;
-    return{ok,val:`spread=${spread.toFixed(0)}(min=${mn.toFixed(0)},max=${mx.toFixed(0)})`,
-      msg:ok?`Pencahayaan merata (spread=${spread.toFixed(0)}) ✓`
-        :`Pencahayaan tidak merata (spread=${spread.toFixed(0)}, maks 110) — hindari bayangan/backlight`};
-  },
-
-  // ── MAIN VALIDATE ─────────────────────────────────────────
-  async validate(imageData, W, H, onStep) {
-    const data = imageData.data;
-
-    const steps = [
-      // ── MANDATORY: Format Dasar ──
-      { name: 'Rasio aspek (A4 Portrait)', fn: ()=>this.checkAspectRatio(W,H), group:'mandatory' },
-      { name: 'Resolusi minimum', fn: ()=>this.checkResolution(W,H), group:'mandatory' },
-      // ── MANDATORY: Kualitas Foto ──
-      { name: 'Ketajaman gambar (tidak buram)', fn: ()=>this.checkSharpness(data,W,H), group:'mandatory' },
-      { name: 'Kontras & pencahayaan cukup', fn: ()=>this.checkContrast(data,W,H), group:'mandatory' },
-      { name: 'Margin 4 sisi (tidak terpotong)', fn: ()=>this.checkMargins(data,W,H), group:'mandatory' },
-      { name: 'Kelurusan foto (tidak miring)', fn: ()=>this.checkSkew(data,W,H), group:'mandatory' },
-      { name: 'Perspektif (foto dari depan)', fn: ()=>this.checkPerspective(data,W,H), group:'mandatory' },
-      { name: 'Pencahayaan merata (tanpa bayangan)', fn: ()=>this.checkLightingUniformity(data,W,H), group:'mandatory' },
-      // ── STRUCTURAL: Konten LJK ──
-      { name: 'Kecerahan kertas (warna putih)', fn: ()=>this.checkBrightness(data,W,H), group:'structural' },
-      { name: 'Header LJK (blok gelap atas)', fn: ()=>this.checkHeader(data,W,H), group:'structural' },
-      { name: 'Grid garis paving block', fn: ()=>this.checkGridLines(data,W,H), group:'structural' },
-      { name: 'Kolom nomor soal', fn: ()=>this.checkNomorColumn(data,W,H), group:'structural' },
-      { name: 'Zona bubble jawaban', fn: ()=>this.checkBubbleZone(data,W,H), group:'structural' },
-    ];
-
-    const results = [];
-    for (let i = 0; i < steps.length; i++) {
-      await new Promise(r => setTimeout(r, 25));
-      const res = steps[i].fn();
-      results.push({ name: steps[i].name, group: steps[i].group, ...res });
-      if (onStep) onStep(i, results[i]);
-    }
-
-    const mandatory  = results.filter(r=>r.group==='mandatory');
-    const structural = results.filter(r=>r.group==='structural');
-
-    // SEMUA mandatory harus lulus + minimal 3/5 structural
-    const mandatoryPass  = mandatory.every(r=>r.ok);
-    const structuralPass = structural.filter(r=>r.ok).length;
-    const isValid = mandatoryPass && structuralPass >= 3;
-
-    const mScore = mandatory.filter(r=>r.ok).length / mandatory.length;
-    const sScore = structuralPass / structural.length;
-    const score  = Math.round(mScore*50 + sScore*50);
-
-    return { isValid, score, results, mandatory, structural, mandatoryPass, structuralPass };
+// ══════════════════════════════════════════════════════════════════
+// VALIDASI 13 LAYER
+// ══════════════════════════════════════════════════════════════════
+async function validate(){
+  const d=imgD.data, W=imgW, H=imgH;
+  const layers=[
+    {n:'Rasio aspek A4 Portrait',        f:()=>lAspect(d,W,H)},
+    {n:'Resolusi minimum',               f:()=>lRes(d,W,H)},
+    {n:'Ketajaman (tidak buram)',         f:()=>lSharp(d,W,H)},
+    {n:'Kontras & pencahayaan',          f:()=>lContrast(d,W,H)},
+    {n:'Margin 4 sisi tidak terpotong',  f:()=>lMargin(d,W,H)},
+    {n:'Kelurusan (maks ~2°)',           f:()=>lSkew(d,W,H)},
+    {n:'Perspektif (foto dari depan)',   f:()=>lPersp(d,W,H)},
+    {n:'Pencahayaan merata',             f:()=>lLight(d,W,H)},
+    {n:'Kecerahan kertas (putih)',        f:()=>lBright(d,W,H)},
+    {n:'Header gelap LJK',               f:()=>lHeader(d,W,H)},
+    {n:'Grid garis paving block',        f:()=>lGrid(d,W,H)},
+    {n:'Kolom nomor soal',               f:()=>lNomor(d,W,H)},
+    {n:'Zona bubble jawaban',            f:()=>lBubble(d,W,H)},
+  ];
+  const res=[];
+  for(let i=0;i<layers.length;i++){
+    setSbar('work',`⚙️ Cek ${i+1}/13: ${layers[i].n}...`);
+    await sleep(15);
+    res.push({n:layers[i].n,...layers[i].f()});
   }
-};
+  const mand=res.slice(0,8), str=res.slice(8);
+  const mandOK=mand.every(r=>r.ok);
+  const strOK =str.filter(r=>r.ok).length;
+  const valid =mandOK && strOK>=3;
+  const score =Math.round(mand.filter(r=>r.ok).length/8*50+strOK/5*50);
 
-// ─── MODAL REJECT ─────────────────────────────────────────────
-function showRejectModal(validation) {
-  const stepsEl = document.getElementById('valSteps');
-  stepsEl.innerHTML = '';
-
-  // Kelompok Mandatory
-  const mandFail = validation.results.filter(r=>r.group==='mandatory'&&!r.ok);
-  const strFail  = validation.results.filter(r=>r.group==='structural'&&!r.ok);
-  const allFail  = [...mandFail,...strFail];
-
-  // Tampilkan hanya yang GAGAL dulu (ringkas)
-  if(allFail.length>0){
-    const hdr=document.createElement('div');
-    hdr.style='font-size:10px;color:var(--text3);margin-bottom:4px;font-family:Share Tech Mono,monospace';
-    hdr.textContent='PEMERIKSAAN YANG GAGAL:';
-    stepsEl.appendChild(hdr);
-    allFail.forEach(r=>{
-      const div=document.createElement('div');
-      div.className='val-step fail';
-      div.innerHTML=`<div class="val-dot"></div><span>${r.name}: <b>${r.msg}</b></span>`;
-      stepsEl.appendChild(div);
-    });
+  if(!valid){
+    showReject(res,mand,str,mandOK,strOK,score);
+    imgD=null; clearCanvas();
+    setSbar('err',`❌ Ditolak — skor validasi ${score}/100`);
+    return;
   }
-
-  // Tampilkan yang lulus (compact)
-  const allPass=validation.results.filter(r=>r.ok);
-  if(allPass.length>0){
-    const hdr=document.createElement('div');
-    hdr.style='font-size:10px;color:var(--text3);margin:6px 0 4px;font-family:Share Tech Mono,monospace';
-    hdr.textContent='LULUS:';
-    stepsEl.appendChild(hdr);
-    allPass.forEach(r=>{
-      const div=document.createElement('div');
-      div.className='val-step ok';
-      div.innerHTML=`<div class="val-dot"></div>${r.name} ✓`;
-      stepsEl.appendChild(div);
-    });
-  }
-
-  const failCount=allFail.length;
-  // Pesan utama berdasarkan jenis kegagalan dominan
-  let mainMsg='Gambar tidak dikenali sebagai LJK yang valid.';
-  if(mandFail.some(r=>r.name.includes('buram'))) mainMsg='📷 Gambar terlalu buram — bersihkan lensa dan tahan kamera stabil.';
-  else if(mandFail.some(r=>r.name.includes('miring'))) mainMsg='📐 LJK terlalu miring — foto dari tepat di atas, sejajarkan dengan LJK.';
-  else if(mandFail.some(r=>r.name.includes('perspektif')||r.name.includes('Perspektif'))) mainMsg='🎯 Distorsi perspektif — foto tegak lurus dari depan, jangan menyamping.';
-  else if(mandFail.some(r=>r.name.includes('bayangan')||r.name.includes('merata'))) mainMsg='💡 Pencahayaan tidak merata — hindari bayangan tangan, gunakan cahaya cukup.';
-  else if(mandFail.some(r=>r.name.includes('terpotong')||r.name.includes('Margin'))) mainMsg='📄 LJK terpotong — pastikan seluruh lembar masuk dalam frame kamera.';
-  else if(mandFail.some(r=>r.name.includes('Kontras')||r.name.includes('pencahayaan'))) mainMsg='☀️ Pencahayaan kurang — tambah cahaya atau pindah ke tempat lebih terang.';
-  else if(strFail.length>=3) mainMsg='❓ Gambar ini bukan LJK yang dikenali — upload file yang benar.';
-
-  document.getElementById('rejectMsg').textContent=mainMsg;
-  document.getElementById('rejectDetail').innerHTML=
-    `Skor: ${validation.score}/100  |  Gagal: ${failCount} pemeriksaan\n`+
-    `Kualitas Foto: ${validation.mandatory.filter(r=>r.ok).length}/${validation.mandatory.length} lulus\n`+
-    `Konten LJK:    ${validation.structuralPass}/${validation.structural.length} lulus`;
-
-  document.getElementById('rejectModal').classList.add('show');
-  // Reset file input
-  document.getElementById('fileInput').value = '';
-  imgLoaded = null;
-  imgCanvas = null;
-  document.getElementById('btnScan').disabled = true;
-  document.getElementById('previewWrap').style.display = 'none';
+  setSbar('ok',`✅ LJK valid (skor ${score}/100) — pilih Preview atau langsung Scan`);
+  toast(`✅ Gambar valid! Skor ${score}/100`);
+  document.getElementById('btnRoi').disabled  = false;
+  document.getElementById('btnPrev').disabled = false;
+  document.getElementById('btnScan').disabled = false;
 }
 
-function closeRejectModal() {
-  document.getElementById('rejectModal').classList.remove('show');
-  setStatus('idle', 'Upload gambar LJK yang valid');
+// ── Layer functions ─────────────────────────────────────────────
+function g(d,i){return .299*d[i]+.587*d[i+1]+.114*d[i+2];}
+function lAspect(d,W,H){const r=W/H,ok=Math.abs(r-1/Math.sqrt(2))<.16;return{ok,msg:ok?`Rasio ${r.toFixed(3)} ✓`:`Rasio ${r.toFixed(3)} bukan A4 (perlu ~0.707)`};}
+function lRes(d,W,H){const ok=W*H>=400*566;return{ok,msg:ok?`${W}×${H}px ✓`:`${W}×${H} terlalu kecil`};}
+function lSharp(d,W,H){
+  const x0=Math.floor(W*.2),x1=Math.floor(W*.8),y0=Math.floor(H*.2),y1=Math.floor(H*.8);
+  const st=Math.max(2,Math.floor(W/80));let s=0,s2=0,n=0;
+  for(let y=y0+st;y<y1-st;y+=st) for(let x=x0+st;x<x1-st;x+=st){
+    const i=(y*W+x)*4;
+    const lap=Math.abs(4*g(d,i)-g(d,(y-st)*W*4+x*4)-g(d,(y+st)*W*4+x*4)-g(d,i-st*4)-g(d,i+st*4));
+    s+=lap;s2+=lap*lap;n++;
+  }
+  const v=n?(s2/n-(s/n)**2):0;
+  const ok=v>=80;return{ok,msg:ok?`Tajam (var=${v.toFixed(0)}) ✓`:`Buram (var=${v.toFixed(0)}, butuh ≥80)`};
+}
+function lContrast(d,W,H){
+  let mn=255,mx=0;for(let i=0;i<600;i++){const p=Math.floor(Math.random()*W*H)*4;const v=g(d,p);if(v<mn)mn=v;if(v>mx)mx=v;}
+  const ok=(mx-mn)>=120;return{ok,msg:ok?`Kontras OK (${(mx-mn).toFixed(0)}) ✓`:`Kontras rendah (${(mx-mn).toFixed(0)}, butuh ≥120)`};
+}
+function lMargin(d,W,H){
+  function avg(x0,y0,x1,y1){let s=0,c=0;const sx=Math.max(1,Math.floor((x1-x0)/40)),sy=Math.max(1,Math.floor((y1-y0)/8));for(let y=y0;y<y1;y+=sy)for(let x=x0;x<x1;x+=sx){s+=g(d,(y*W+x)*4);c++;}return c?s/c:0;}
+  const m=Math.floor(H*.025),ml=Math.floor(W*.025);
+  const sides={atas:avg(Math.floor(W*.05),0,Math.floor(W*.95),m),bawah:avg(Math.floor(W*.05),H-m,Math.floor(W*.95),H),kiri:avg(0,Math.floor(H*.1),ml,Math.floor(H*.9)),kanan:avg(W-ml,Math.floor(H*.1),W,Math.floor(H*.9))};
+  const fails=Object.entries(sides).filter(([,v])=>v<145).map(([k,v])=>`${k}:${v.toFixed(0)}`);
+  return{ok:!fails.length,msg:fails.length?`Margin gelap: ${fails.join(', ')}`:'Margin 4 sisi OK ✓'};
+}
+function lSkew(d,W,H){
+  const cols=[.15,.45,.75],yS=Math.floor(H*.26),yE=Math.floor(H*.32),pos=[];
+  for(const cx of cols){const x=Math.floor(cx*W);for(let y=yS;y<yE;y++){if(g(d,(y*W+x)*4)<130){pos.push(y);break;}}}
+  if(pos.length<2)return{ok:true,msg:'Lurus ✓'};
+  const diff=Math.max(...pos)-Math.min(...pos),maxD=Math.floor(H*.022);
+  const ok=diff<=maxD;
+  return{ok,msg:ok?`Lurus (${(Math.atan2(diff,W*.6)*180/Math.PI).toFixed(1)}°) ✓`:`Miring (${(Math.atan2(diff,W*.6)*180/Math.PI).toFixed(1)}°, maks ~2°)`};
+}
+function lPersp(d,W,H){
+  function ex(sy,fromL){const y=Math.floor(sy*H),st=fromL?1:-1,s=fromL?Math.floor(W*.02):Math.floor(W*.98);for(let x=s;fromL?x<W*.5:x>W*.5;x+=st){if(g(d,(y*W+x)*4)<160)return x;}return fromL?Math.floor(W*.1):Math.floor(W*.9);}
+  const tL=ex(.05,true),tR=ex(.05,false),bL=ex(.92,true),bR=ex(.92,false);
+  const wT=tR-tL,wB=bR-bL;if(wT<=0||wB<=0)return{ok:true,msg:'Perspektif OK ✓'};
+  const r=Math.min(wT,wB)/Math.max(wT,wB),ok=r>=.82;
+  return{ok,msg:ok?`Perspektif OK (${r.toFixed(2)}) ✓`:`Distorsi perspektif (${r.toFixed(2)}, butuh ≥0.82)`};
+}
+function lLight(d,W,H){
+  const zn=[];for(let r=0;r<3;r++)for(let c=0;c<3;c++){
+    let s=0,cnt=0;const st=Math.max(2,Math.floor(W/60));
+    for(let y=Math.floor(H*r/3);y<Math.floor(H*(r+1)/3);y+=st)for(let x=Math.floor(W*c/3);x<Math.floor(W*(c+1)/3);x+=st){s+=g(d,(y*W+x)*4);cnt++;}
+    zn.push(cnt?s/cnt:128);
+  }
+  const sp=Math.max(...zn)-Math.min(...zn),ok=sp<=115;
+  return{ok,msg:ok?`Merata (spread=${sp.toFixed(0)}) ✓`:`Tidak merata (spread=${sp.toFixed(0)}, maks 115)`};
+}
+function lBright(d,W,H){
+  let s=0,br=0;for(let i=0;i<500;i++){const p=Math.floor(Math.random()*W*H)*4;const v=g(d,p);s+=v;if(v>160)br++;}
+  const avg=s/500,ok=avg>130&&br/500>0.45;
+  return{ok,msg:ok?`Cerah (avg=${avg.toFixed(0)}) ✓`:`Gelap (avg=${avg.toFixed(0)})`};
+}
+function lHeader(d,W,H){
+  let dk=0,tot=0;const st=Math.max(1,Math.floor(W*.96/60));
+  for(let y=Math.floor(H*.012);y<Math.floor(H*.05);y+=Math.max(1,Math.floor(H*.038/8)))
+    for(let x=Math.floor(W*.04);x<Math.floor(W*.96);x+=st){if(g(d,(y*W+x)*4)<100)dk++;tot++;}
+  const r=tot?dk/tot:0,ok=r>=.28;
+  return{ok,msg:ok?`Header gelap (${(r*100).toFixed(0)}%) ✓`:`Header tidak ada (${(r*100).toFixed(0)}%, butuh ≥28%)`};
+}
+function lGrid(d,W,H){
+  const mx=Math.floor(W*.3),yS=Math.floor(H*.27),yE=Math.floor(H*.90),sw=Math.floor(W*.04),rH=Math.floor(H*.024);
+  let tr=0,prev=255;
+  for(let y=yS;y<yE;y+=Math.max(1,Math.floor(rH/3))){
+    let s=0,c=0;for(let x=mx;x<Math.min(W,mx+sw);x++){s+=g(d,(y*W+x)*4);c++;}
+    const avg=c?s/c:255;if(prev>180&&avg<140)tr++;prev=avg;
+  }
+  const ok=tr>=10;return{ok,msg:ok?`Grid terdeteksi (${tr}) ✓`:`Grid tidak ada (${tr} transisi, butuh ≥10)`};
+}
+function lNomor(d,W,H){
+  let dk=0;for(let i=0;i<120;i++){
+    const x=Math.floor(W*.053)+Math.floor(Math.random()*Math.floor(W*.037));
+    const y=Math.floor(H*.3)+Math.floor(Math.random()*Math.floor(H*.58));
+    if(g(d,(y*W+x)*4)<120)dk++;
+  }
+  const r=dk/120,ok=r>=.22;return{ok,msg:ok?`Nomor kolom (${(r*100).toFixed(0)}%) ✓`:`Kolom nomor tidak ada (${(r*100).toFixed(0)}%)`};
+}
+function lBubble(d,W,H){
+  let wh=0,tot=0;const sx=Math.max(1,Math.floor(W*.033/15)),sy=Math.max(1,Math.floor(H*.088/15));
+  for(let y=Math.floor(H*.292);y<Math.floor(H*.38);y+=sy)for(let x=Math.floor(W*.122);x<Math.floor(W*.155);x+=sx){
+    if(g(d,(y*W+x)*4)>180)wh++;tot++;
+  }
+  const r=tot?wh/tot:0,ok=r>=.32;
+  return{ok,msg:ok?`Bubble ada (${(r*100).toFixed(0)}% putih) ✓`:`Bubble tidak ada (${(r*100).toFixed(0)}%)`};
 }
 
-// ─── ROI PREVIEW ─────────────────────────────────────────────
+// ── Modal reject ────────────────────────────────────────────────
+function showReject(res,mand,str,mandOK,strOK,score){
+  const list=document.getElementById('mList');
+  list.innerHTML='';
+  const fails=res.filter(r=>!r.ok), ok=res.filter(r=>r.ok);
+  const mkH=txt=>{const d=document.createElement('div');d.style='font-size:9px;color:var(--tx3);font-family:Share Tech Mono,monospace;margin:5px 0 2px';d.textContent=txt;return d;};
+  const mkR=(r,cls)=>{const d=document.createElement('div');d.className='vrow '+cls;d.innerHTML=`<div class="vdot"></div><span>${r.n}: ${r.msg||''}</span>`;return d;};
+  if(fails.length){list.appendChild(mkH('❌ GAGAL:'));fails.forEach(r=>list.appendChild(mkR(r,'vng')));}
+  if(ok.length){list.appendChild(mkH('✅ LULUS:'));ok.forEach(r=>list.appendChild(mkR(r,'vok')));}
+
+  let msg='Gambar tidak dikenali sebagai LJK yang valid.';
+  if(fails.some(r=>r.n.includes('buram')||r.n.includes('Ketajaman'))) msg='📷 Gambar buram — bersihkan lensa & tahan kamera stabil.';
+  else if(fails.some(r=>r.n.includes('miring')||r.n.includes('Kelurusan'))) msg='📐 LJK terlalu miring — ambil foto tegak lurus.';
+  else if(fails.some(r=>r.n.includes('Perspektif'))) msg='🎯 Distorsi perspektif — foto dari depan, jangan menyamping.';
+  else if(fails.some(r=>r.n.includes('merata')||r.n.includes('Pencahayaan'))) msg='💡 Cahaya tidak merata — hindari bayangan.';
+  else if(fails.some(r=>r.n.includes('terpotong')||r.n.includes('Margin'))) msg='📄 LJK terpotong — pastikan seluruh lembar masuk frame.';
+  else if(fails.some(r=>r.n.includes('Kontras'))) msg='☀️ Pencahayaan kurang — pindah ke tempat lebih terang.';
+  else if(strOK<3) msg='❓ Bukan LJK Paving Block — upload file yang benar.';
+
+  document.getElementById('mMsg').textContent=msg;
+  document.getElementById('mDet').textContent=`Skor: ${score}/100  |  Gagal: ${fails.length} layer
+Kualitas foto : ${mand.filter(r=>r.ok).length}/8 lulus
+Konten LJK   : ${strOK}/5 lulus`;
+  document.getElementById('mHint').innerHTML='💡 <b>Tips foto LJK yang baik:</b><br>① Foto tegak lurus dari depan (jangan miring)<br>② Seluruh lembar masuk frame, tidak terpotong<br>③ Cahaya cukup & merata, hindari bayangan<br>④ Kamera stabil agar tidak buram<br>⑤ Jarak ideal 20–40 cm dari LJK';
+  document.getElementById('mReject').classList.add('show');
+}
+function closeModal(){
+  document.getElementById('mReject').classList.remove('show');
+  setSbar('idle','Upload LJK yang valid dan coba lagi.');
+}
+
+// ══════════════════════════════════════════════════════════════════
+// ROI OVERLAY
+// ══════════════════════════════════════════════════════════════════
+function getRoi(op){
+  const sx=KAL.sx||1, sy=KAL.sy||1;
+  const ox=(KAL.ofsx||0)/C.page_w*imgW;
+  const oy=(KAL.ofsy||0)/C.page_h*imgH;
+  return{x:op.rx*imgW*sx+ox, y:op.ry*imgH*sy+oy, w:op.rw*imgW*sx, h:op.rh*imgH*sy};
+}
 function toggleROI(){
-  showROI=!showROI;
-  if(!imgLoaded){toast('Upload gambar dulu!'); showROI=false; return;}
-  drawROI();
-  document.getElementById('roiInfo').style.display=showROI?'block':'none';
-}
-
-function drawROI(){
-  const ov=document.getElementById('overlayCanvas');
+  hasROI=!hasROI;
+  const ov=document.getElementById('cvOverlay');
   const ctx=ov.getContext('2d');
   ctx.clearRect(0,0,ov.width,ov.height);
-  if(!showROI) return;
-  const W=ov.width, H=ov.height;
-  const kal=KAL;
-  LJK_COORDS.grid.forEach(soal=>{
-    soal.opsi.forEach((op,oi)=>{
-      const roi=getRoi(op,W,H,kal);
-      ctx.strokeStyle=['#00e5ff','#00ff9d','#ffab00','#ff3d5a','#b388ff'][oi];
-      ctx.lineWidth=Math.max(1,W/600);
-      ctx.strokeRect(roi.x,roi.y,roi.w,roi.h);
-      // Label opsi
-      ctx.fillStyle=ctx.strokeStyle;
-      ctx.font=`bold ${Math.max(8,W/80)}px Rajdhani,sans-serif`;
-      ctx.fillText(op.opsi,roi.x+1,roi.y+roi.h-2);
+  document.getElementById('btnRoi').textContent=hasROI?'🚫 ROI':'👁 ROI';
+  if(!hasROI) return;
+  const cols=['#00e5ff','#00ff9d','#ffab00','#ff3d5a','#b388ff'];
+  const lw=Math.max(1,imgW/700);
+  C.grid.forEach(s=>{
+    s.opsi.forEach((op,oi)=>{
+      const r=getRoi(op);
+      ctx.strokeStyle=cols[oi]; ctx.lineWidth=lw;
+      ctx.strokeRect(r.x,r.y,r.w,r.h);
     });
   });
 }
 
-function getRoi(op, W, H, kal){
-  const sx=(kal.sx||1), sy=(kal.sy||1);
-  const ox=(kal.ofsx||0), oy=(kal.ofsy||0);
-  const pdf_w=LJK_COORDS.page_w, pdf_h=LJK_COORDS.page_h;
-  // Konversi koordinat PDF -> pixel gambar
-  let x=(op.rx*W*sx) + (ox/pdf_w)*W;
-  let y=(op.ry*H*sy) + (oy/pdf_h)*H;
-  let w=op.rw*W*sx;
-  let h=op.rh*H*sy;
-  return {x,y,w,h};
+// ══════════════════════════════════════════════════════════════════
+// PREVIEW DETEKSI (sebelum scan penuh)
+// ══════════════════════════════════════════════════════════════════
+async function doPreview(){
+  if(!imgD){toast('❌ Upload gambar dulu!');return;}
+  document.getElementById('btnPrev').disabled=true;
+  setSbar('work','🔍 Preview deteksi...');
+  await sleep(20);
+
+  const d=imgD.data, THR=KAL.thr||15, RATIO=KAL.ratio||.20, mode=KAL.mode||'hipx', adapt=KAL.adapt!==false;
+  const grid=document.getElementById('pvGrid');
+  grid.innerHTML='';
+  let det=0;
+
+  for(let si=0;si<C.grid.length;si++){
+    const soal=C.grid[si];
+    let sc=soal.opsi.map(op=>pixScore(d,imgW,imgH,getRoi(op),mode,THR));
+    if(adapt){
+      const mn=Math.min(...sc),mx=Math.max(...sc),rng=mx-mn;
+      if(rng>5) sc=sc.map(s=>(s-mn)/rng*100);
+    }
+    const mx=Math.max(...sc), mxi=sc.indexOf(mx);
+    const tot=sc.reduce((a,b)=>a+(b>0?b:0),0);
+    let jaw='';
+    if(mx>=THR&&tot>0&&mx/tot>=RATIO){jaw='ABCDE'[mxi];det++;}
+
+    const cell=document.createElement('div');
+    cell.className='pvcell'+(jaw?' hit':'');
+    cell.innerHTML=`<span class="pvn">${soal.nomor}</span><span class="pva">${jaw||'—'}</span>`;
+    cell.title=`Soal ${soal.nomor}: ${jaw||'kosong'} | mx=${mx.toFixed(1)}`;
+    grid.appendChild(cell);
+    if(si%10===0) await sleep(0);
+  }
+
+  document.getElementById('pvInfo').textContent=`Terdeteksi: ${det}/50 soal ada isian`;
+  document.getElementById('pvPanel').style.display='block';
+  document.getElementById('btnPrev').disabled=false;
+  setSbar('ok',`🔍 Preview selesai — ${det}/50 jawaban terdeteksi`);
+  toast(`Preview: ${det}/50 jawaban terdeteksi`);
 }
 
-// ─── SCAN ENGINE ──────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════
+// SCAN PENUH
+// ══════════════════════════════════════════════════════════════════
 async function doScan(){
-  if(!imgLoaded){toast('❌ Upload gambar dulu!');return;}
-  if(kunci.every(k=>k==='')){
-    if(!confirm('Kunci jawaban belum diisi. Lanjutkan scan tanpa koreksi?')) return;
-  }
+  if(!imgD){toast('❌ Upload gambar dulu!');return;}
+  const semua=kunci.every(k=>!k);
+  if(semua&&!confirm('Kunci jawaban belum diisi. Scan tanpa penilaian?')) return;
+
   document.getElementById('btnScan').disabled=true;
-  setStatus('scanning','Memproses... Analisis pixel...');
-  setProgress(0);
-  await sleep(30);
+  setSbar('work','⚡ Scanning...');
+  setPbar(0);
+  await sleep(20);
 
-  const W=imgLoaded.width, H=imgLoaded.height;
-  const data=imgLoaded.data;
-  const kal=KAL;
-  const mode=document.getElementById('kalMode').value;
-  const adaptif=document.getElementById('kalAdaptif').value==='1';
-  const gauss=document.getElementById('kalGauss').value==='1';
+  const d=imgD.data, THR=KAL.thr||15, RATIO=KAL.ratio||.20, mode=KAL.mode||'hipx', adapt=KAL.adapt!==false;
+  const hasil=[];
+  let totConf=0;
 
-  const THR=kal.thr||15;
-  const RATIO=kal.ratio||0.20;
-
-  let hasil=[];
-  let totalConf=0;
-
-  for(let si=0;si<LJK_COORDS.grid.length;si++){
-    const soal=LJK_COORDS.grid[si];
-    setProgress(Math.round(si/50*90));
-
-    // Hitung skor tiap opsi
-    let scores=[];
-    let rowScores=[];
-
-    for(let oi=0;oi<soal.opsi.length;oi++){
-      const op=soal.opsi[oi];
-      const roi=getRoi(op,W,H,kal);
-      const sc=calcScore(data,W,H,roi,mode,THR,gauss);
-      scores.push(sc);
-      rowScores.push(sc.raw);
+  for(let si=0;si<C.grid.length;si++){
+    const soal=C.grid[si];
+    setPbar(Math.round(si/50*90));
+    let sc=soal.opsi.map(op=>pixScore(d,imgW,imgH,getRoi(op),mode,THR));
+    if(adapt){
+      const mn=Math.min(...sc),mx=Math.max(...sc),rng=mx-mn;
+      if(rng>5) sc=sc.map(s=>(s-mn)/rng*100);
     }
+    const mx=Math.max(...sc), mxi=sc.indexOf(mx);
+    const tot=sc.reduce((a,b)=>a+(b>0?b:0),0);
+    let jaw='?',conf=0;
+    if(mx<THR){jaw='';conf=0;}
+    else if(tot>0&&mx/tot>=RATIO){jaw='ABCDE'[mxi];conf=Math.min(100,Math.round(mx/tot*180));}
+    else{jaw='?';conf=Math.round(mx/tot*50);}
 
-    // Adaptive normalization per baris
-    let normScores=rowScores.slice();
-    if(adaptif){
-      const rowMin=Math.min(...rowScores);
-      const rowMax=Math.max(...rowScores);
-      const rng=rowMax-rowMin;
-      if(rng>5) normScores=rowScores.map(s=>(s-rowMin)/rng*100);
-    }
-
-    const mx=Math.max(...normScores);
-    const mxi=normScores.indexOf(mx);
-    const total=normScores.reduce((a,b)=>a+(b>0?b:0),0);
-
-    let jawaban='?';
-    let conf=0;
-
-    if(mx<THR){
-      jawaban='';  // kosong
-      conf=0;
-    } else if(total>0 && mx/total>=RATIO){
-      jawaban=['A','B','C','D','E'][mxi];
-      conf=Math.min(100,Math.round(mx/total*100*2));
-    } else {
-      jawaban='?'; // ambiguous
-      conf=Math.round(mx/total*50);
-    }
-
-    const kunci_i=kunci[soal.nomor-1]||'';
-    const correct = kunci_i==='' ? null :
-      kunci_i.split(',').map(k=>k.trim()).includes(jawaban);
-
-    hasil.push({
-      nomor:soal.nomor, jawaban, kunci:kunci_i,
-      correct, conf,
-      rawScores:normScores, rawMax:mx
-    });
-    totalConf+=conf;
-    await sleep(0);
+    const kj=kunci[soal.nomor-1]||'';
+    const correct=kj===''?null:kj.split(',').map(k=>k.trim()).includes(jaw);
+    hasil.push({nomor:soal.nomor,jaw,kunci:kj,correct,conf});
+    totConf+=conf;
+    if(si%5===0) await sleep(0);
   }
 
-  setProgress(95);
-  await sleep(50);
+  setPbar(100); await sleep(60); setPbar(-1);
 
-  // Hitung nilai
-  const answered=hasil.filter(h=>h.jawaban!==''&&h.jawaban!=='?').length;
-  const benar=hasil.filter(h=>h.correct===true).length;
-  const salah=hasil.filter(h=>h.correct===false).length;
-  const kosong=hasil.filter(h=>h.jawaban===''||h.jawaban==='?').length;
-  const nilai=kunci.every(k=>k==='') ? null : Math.round(benar/50*100);
-  const grade=getGrade(nilai);
-  const avgConf=Math.round(totalConf/50);
+  const benar =hasil.filter(h=>h.correct===true).length;
+  const salah =hasil.filter(h=>h.correct===false).length;
+  const kosong=hasil.filter(h=>h.jaw===''||h.jaw==='?').length;
+  const nilai =semua?null:Math.round(benar/50*100);
+  const grade =nilai===null?null:nilai>=90?'A':nilai>=80?'B':nilai>=70?'C':nilai>=60?'D':'E';
+  const avgConf=Math.round(totConf/50);
 
-  hasilTerakhir={
+  last={
     nama:document.getElementById('inNama').value||'—',
     absen:document.getElementById('inAbsen').value||'—',
     kelas:document.getElementById('inKelas').value||'—',
     waktu:new Date().toLocaleString('id-ID'),
-    hasil, benar, salah, kosong, nilai, grade, avgConf, answered
+    hasil,benar,salah,kosong,nilai,grade,avgConf
   };
 
-  setProgress(100);
-  await sleep(100);
-  setProgress(-1);
-  setStatus('done',`✅ Scan selesai! ${benar}/50 benar · Confidence ${avgConf}%`);
   document.getElementById('btnScan').disabled=false;
-
+  setSbar('ok',`✅ Selesai! ${benar}/50 benar · Conf ${avgConf}%`);
   renderHasil();
-  renderIntBar(hasil);
   goTab(2);
   toast('✅ Scan selesai!');
 }
 
-// ─── SCORE CALCULATOR ─────────────────────────────────────────
-function calcScore(data,W,H,roi,mode,thr,gauss){
-  const x0=Math.max(0,Math.floor(roi.x));
-  const y0=Math.max(0,Math.floor(roi.y));
-  const x1=Math.min(W-1,Math.ceil(roi.x+roi.w));
-  const y1=Math.min(H-1,Math.ceil(roi.y+roi.h));
-  if(x1<=x0||y1<=y0) return {raw:0};
-
-  let darkCount=0, totalPx=0, sumGray=0, hipxScore=0;
-
-  for(let y=y0;y<y1;y++){
-    for(let x=x0;x<x1;x++){
-      const i=(y*W+x)*4;
-      const r=data[i],g=data[i+1],b=data[i+2];
-      // Gray dengan bobot persepsi manusia
-      const gray=0.299*r+0.587*g+0.114*b;
-      const dark=255-gray;
-      sumGray+=gray;
-      totalPx++;
-      if(dark>thr){
-        darkCount++;
-        hipxScore+=dark;  // bobot intensitas gelap
-      }
-    }
+// ── Hitung skor pixel satu ROI ──────────────────────────────────
+function pixScore(d,W,H,roi,mode,thr){
+  const x0=Math.max(0,Math.floor(roi.x)),y0=Math.max(0,Math.floor(roi.y));
+  const x1=Math.min(W,Math.ceil(roi.x+roi.w)),y1=Math.min(H,Math.ceil(roi.y+roi.h));
+  if(x1<=x0||y1<=y0) return 0;
+  let dk=0,tot=0,hipx=0,sumG=0;
+  for(let y=y0;y<y1;y++) for(let x=x0;x<x1;x++){
+    const i=(y*W+x)*4;
+    const gv=.299*d[i]+.587*d[i+1]+.114*d[i+2];
+    const dark=255-gv; sumG+=gv; tot++;
+    if(dark>thr){dk++;hipx+=dark;}
   }
-
-  if(totalPx===0) return {raw:0};
-
-  const avgGray=sumGray/totalPx;
-  const darkRatio=darkCount/totalPx;
-
-  let raw=0;
-  if(mode==='hipx') raw=hipxScore/totalPx;
-  else if(mode==='avg') raw=Math.max(0,180-avgGray);
-  else if(mode==='dark') raw=darkRatio*255;
-  else raw=(hipxScore/totalPx)*0.7+(darkRatio*255)*0.3;  // combo
-
-  return {raw, darkCount, darkRatio, avgGray, hipxScore, totalPx};
+  if(!tot) return 0;
+  if(mode==='hipx')  return hipx/tot;
+  if(mode==='avg')   return Math.max(0,180-sumG/tot);
+  if(mode==='dark')  return dk/tot*255;
+  return hipx/tot*.7+dk/tot*255*.3;
 }
 
-// ─── RENDER HASIL ─────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════
+// RENDER HASIL
+// ══════════════════════════════════════════════════════════════════
 function renderHasil(){
-  if(!hasilTerakhir) return;
-  const h=hasilTerakhir;
+  if(!last) return;
+  const h=last;
+  document.getElementById('hEmpty').style.display='none';
+  document.getElementById('hContent').style.display='block';
 
-  document.getElementById('hasilEmpty').style.display='none';
-  document.getElementById('hasilContent').style.display='block';
+  document.getElementById('hNilai').textContent=h.nilai!==null?h.nilai:'—';
+  const ge=document.getElementById('hGrade');
+  ge.textContent=h.grade||'—';
+  ge.className='sgrade'+(h.grade?' g'+h.grade:'');
+  document.getElementById('hDet').textContent=`Benar: ${h.benar}  Salah: ${h.salah}  Kosong: ${h.kosong}`;
+  document.getElementById('hConf').textContent=`Confidence: ${h.avgConf}%  |  ${h.nama}  |  ${h.waktu}`;
 
-  document.getElementById('skNilai').textContent=h.nilai!==null?h.nilai:'—';
-  const grEl=document.getElementById('skGrade');
-  grEl.textContent=h.grade||'—';
-  grEl.className='skor-grade '+(h.grade==='E'?'E_':h.grade||'');
-  document.getElementById('skDetail').textContent=
-    `Benar: ${h.benar}  Salah: ${h.salah}  Kosong: ${h.kosong}`;
-  document.getElementById('skConf').textContent=
-    `Confidence: ${h.avgConf}%  |  Siswa: ${h.nama}  |  ${h.waktu}`;
-
-  const grid=document.getElementById('hasilGrid');
+  const grid=document.getElementById('hGrid');
   grid.innerHTML='';
   h.hasil.forEach(s=>{
+    const cls=s.correct===true?'ok':s.correct===false?'ng':(s.jaw===''||s.jaw==='?')?'ko':'';
     const div=document.createElement('div');
-    div.className='hg-cell'+(s.correct===true?' correct':s.correct===false?' wrong':s.jawaban===''||s.jawaban==='?'?' blank':'');
-    div.innerHTML=`<div class="hg-no">${s.nomor}</div><div class="hg-ans">${s.jawaban||'—'}</div>`;
-    div.title=`Soal ${s.nomor}: Jawab=${s.jawaban||'-'} Kunci=${s.kunci||'-'} Conf=${s.conf}%`;
+    div.className='hcell '+cls;
+    div.innerHTML=`<div class="hn">${s.nomor}</div><div class="ha">${s.jaw||'—'}</div>`;
+    div.title=`Soal ${s.nomor}: Jawab=${s.jaw||'-'} Kunci=${s.kunci||'-'} Conf=${s.conf}%`;
     grid.appendChild(div);
   });
-}
 
-function renderIntBar(hasil){
-  const bar=document.getElementById('intBar');
-  bar.innerHTML='';
-  hasil.forEach(s=>{
-    const div=document.createElement('div');
-    div.className='int-seg';
-    const c=s.correct===true?'#00ff9d':s.correct===false?'#ff3d5a':
-             s.jawaban===''||s.jawaban==='?'?'#ffab00':'#4a6d94';
-    div.style.background=c;
-    div.title=`Q${s.nomor}: ${s.jawaban} (${s.conf}%)`;
-    bar.appendChild(div);
-  });
-}
-
-// ─── GRADE ───────────────────────────────────────────────────
-function getGrade(nilai){
-  if(nilai===null) return null;
-  if(nilai>=90) return 'A';
-  if(nilai>=80) return 'B';
-  if(nilai>=70) return 'C';
-  if(nilai>=60) return 'D';
-  return 'E';
-}
-
-// ─── SIMPAN & EXPORT ─────────────────────────────────────────
-function simpanHasil(){
-  if(!hasilTerakhir){toast('Tidak ada hasil!');return;}
-  rekap.push({...hasilTerakhir});
-  saveRekap();
-  renderRekap();
-  updateRekapStats();
-  toast('✅ Disimpan ke rekap!');
-  goTab(3);
-}
-
-function downloadTXT(){
-  if(!hasilTerakhir){toast('Tidak ada hasil!');return;}
-  const h=hasilTerakhir;
-  let txt='LEMBAR HASIL PEMERIKSA LJK
-';
-  txt+='==========================
-';
-  txt+=`Nama   : ${h.nama}
-`;
-  txt+=`Absen  : ${h.absen}
-`;
-  txt+=`Kelas  : ${h.kelas}
-`;
-  txt+=`Waktu  : ${h.waktu}
-`;
-  txt+=`Nilai  : ${h.nilai!==null?h.nilai:'—'}
-`;
-  txt+=`Grade  : ${h.grade||'—'}
-`;
-  txt+=`Benar  : ${h.benar}/50
-`;
-  txt+=`Salah  : ${h.salah}
-`;
-  txt+=`Kosong : ${h.kosong}
-`;
-  txt+=`Conf.  : ${h.avgConf}%
-
-`;
-  txt+='NO  JAWAB  KUNCI  STATUS
-';
-  txt+='--  -----  -----  ------
-';
+  const ibar=document.getElementById('ibar');
+  ibar.innerHTML='';
   h.hasil.forEach(s=>{
-    const st=s.correct===true?'BENAR':s.correct===false?'SALAH':s.jawaban===''?'KOSONG':'?';
-    txt+=`${String(s.nomor).padStart(2,' ')}  ${(s.jawaban||'-').padEnd(5,' ')}  ${(s.kunci||'-').padEnd(5,' ')}  ${st}
-`;
+    const seg=document.createElement('div');
+    seg.className='iseg';
+    seg.style.background=s.correct===true?'#00ff9d':s.correct===false?'#ff3d5a':(s.jaw===''||s.jaw==='?')?'#ffab00':'#4a6d94';
+    seg.title=`Q${s.nomor}: ${s.jaw} (${s.conf}%)`;
+    ibar.appendChild(seg);
   });
-  dlText(txt,`hasil_${h.nama}_${Date.now()}.txt`);
 }
 
-function downloadPDF(){
-  if(!hasilTerakhir){toast('Tidak ada hasil!');return;}
-  // Generate PDF report via print window
-  const h=hasilTerakhir;
+// ══════════════════════════════════════════════════════════════════
+// EXPORT HASIL
+// ══════════════════════════════════════════════════════════════════
+function hSimpan(){
+  if(!last){toast('Tidak ada hasil!');return;}
+  rekap.push({...last});
+  try{localStorage.setItem('bb_rekap',JSON.stringify(rekap));}catch{}
+  renderRekap(); updateStats();
+  toast('✅ Disimpan ke rekap!'); goTab(3);
+}
+
+function hTXT(){
+  if(!last){toast('Tidak ada hasil!');return;}
+  const h=last;
+  const ln=s=>s+'\n';
+  let t=ln('HASIL PEMERIKSA LJK — BENYAMIN BATAU LJK SCANNER APP');
+  t+=ln('='.repeat(54));
+  t+=ln('Nama   : '+h.nama);
+  t+=ln('Absen  : '+h.absen);
+  t+=ln('Kelas  : '+h.kelas);
+  t+=ln('Waktu  : '+h.waktu);
+  t+=ln('Nilai  : '+(h.nilai!==null?h.nilai:'— (tanpa kunci)'));
+  t+=ln('Grade  : '+(h.grade||'—'));
+  t+=ln('Benar  : '+h.benar+'/50');
+  t+=ln('Salah  : '+h.salah);
+  t+=ln('Kosong : '+h.kosong);
+  t+=ln('Conf.  : '+h.avgConf+'%');
+  t+=ln('');
+  t+=ln('No   Jawab   Kunci   Status');
+  t+=ln('-'.repeat(32));
+  h.hasil.forEach(s=>{
+    const st=s.correct===true?'BENAR':s.correct===false?'SALAH':s.jaw===''?'KOSONG':'AMBIG';
+    t+=ln(String(s.nomor).padStart(2)+'   '+(s.jaw||'-').padEnd(7)+(s.kunci||'-').padEnd(8)+st);
+  });
+  dlText(t,`hasil_${h.nama.replace(/\s+/g,'_')}_${Date.now()}.txt`);
+}
+
+function hPDF(){
+  if(!last){toast('Tidak ada hasil!');return;}
+  const h=last;
   let rows='';
   h.hasil.forEach(s=>{
-    const st=s.correct===true?'✓':s.correct===false?'✗':s.jawaban===''?'—':'?';
-    const col=s.correct===true?'#00c853':s.correct===false?'#d50000':s.jawaban===''?'#ff6d00':'#aaa';
-    rows+=`<tr><td>${s.nomor}</td><td style="font-weight:700">${s.jawaban||'—'}</td>
-      <td>${s.kunci||'—'}</td><td style="color:${col};font-weight:700">${st}</td><td>${s.conf}%</td></tr>`;
+    const col=s.correct===true?'#007a3d':s.correct===false?'#c0001a':s.jaw===''?'#d97000':'#888';
+    const st=s.correct===true?'✓':s.correct===false?'✗':s.jaw===''?'—':'?';
+    rows+=`<tr><td>${s.nomor}</td><td style="font-weight:700">${s.jaw||'—'}</td><td>${s.kunci||'—'}</td><td style="color:${col};font-weight:700">${st}</td><td>${s.conf}%</td></tr>`;
   });
-  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8">
-  <title>Hasil LJK - ${h.nama}</title>
-  <style>body{font-family:Arial,sans-serif;padding:20px;font-size:12px}
-  h1{font-size:16px;margin-bottom:4px}.info{margin-bottom:12px;line-height:1.8}
-  table{border-collapse:collapse;width:100%}th,td{border:1px solid #ccc;padding:4px 8px;text-align:center}
-  th{background:#0f3460;color:#fff}.grade{font-size:32px;font-weight:700;color:#0f3460}
-  .nilai{font-size:48px;font-weight:700;color:#0f3460}</style></head>
-  <body onload="window.print()">
-  <h1>LEMBAR HASIL PEMERIKSA LJK — PAVING BLOCK</h1>
-  <div class="info">
-    Nama: <b>${h.nama}</b> | Kelas: <b>${h.kelas}</b> | Absen: <b>${h.absen}</b><br>
-    Waktu: ${h.waktu} | Confidence: ${h.avgConf}%<br>
-    <span class="nilai">${h.nilai!==null?h.nilai:'—'}</span>
-    <span class="grade"> ${h.grade||'—'}</span><br>
-    Benar: <b>${h.benar}</b> | Salah: <b>${h.salah}</b> | Kosong: <b>${h.kosong}</b>
-  </div>
-  <table><thead><tr><th>No</th><th>Jawab</th><th>Kunci</th><th>Status</th><th>Conf</th></tr></thead>
-  <tbody>${rows}</tbody></table>
-<!-- MODAL TOLAK LJK -->
-<div class="modal-overlay" id="rejectModal">
-  <div class="modal-box">
-    <span class="modal-icon">🚫</span>
-    <div class="modal-title">BUKAN LEMBAR JAWABAN</div>
-    <div class="modal-msg" id="rejectMsg">Gambar yang diupload tidak terdeteksi sebagai LJK yang valid.</div>
-    <div id="valSteps"></div>
-    <div class="modal-detail" id="rejectDetail">—</div>
-    <div class="modal-hint">
-      💡 <b>Tips Foto LJK:</b><br>① Foto tegak lurus dari depan (bukan menyamping)<br>② Seluruh lembar masuk frame, tidak terpotong<br>③ Pencahayaan cukup & merata, hindari bayangan<br>④ Tahan kamera stabil agar tidak buram<br>⑤ Jarak ideal: 20–40 cm dari LJK
-    </div>
-    <button class="btn-modal btn-modal-ok" onclick="closeRejectModal()">↩ Upload Ulang</button>
-  </div>
+  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Hasil LJK</title>
+<style>body{font-family:Arial,sans-serif;padding:16px;font-size:11px}
+h2{font-size:13px;margin-bottom:6px}.info{margin-bottom:10px;line-height:2}
+.skb{font-size:42px;font-weight:700;color:#0f3460}.grd{font-size:18px;font-weight:700;color:#0f3460}
+table{border-collapse:collapse;width:100%}th,td{border:1px solid #ccc;padding:3px 6px;text-align:center}
+th{background:#0f3460;color:#fff}</style></head>
+<body onload="window.print()">
+<h2>HASIL LJK — BENYAMIN BATAU LJK SCANNER APP</h2>
+<div class="info">
+  Nama: <b>${h.nama}</b> | Kelas: <b>${h.kelas}</b> | Absen: <b>${h.absen}</b> | ${h.waktu}<br>
+  <span class="skb">${h.nilai!==null?h.nilai:'—'}</span>&nbsp;<span class="grd">${h.grade||''}</span><br>
+  Benar: <b>${h.benar}</b> | Salah: <b>${h.salah}</b> | Kosong: <b>${h.kosong}</b> | Conf: ${h.avgConf}%
 </div>
-
-</body></html>`;
+<table><thead><tr><th>No</th><th>Jawab</th><th>Kunci</th><th>Status</th><th>Conf</th></tr></thead>
+<tbody>${rows}</tbody></table></body></html>`;
   const w=window.open('','_blank');
-  w.document.write(html); w.document.close();
+  if(w){w.document.write(html);w.document.close();}
+  else toast('⚠️ Aktifkan popup browser untuk cetak');
 }
 
-// ─── REKAP ───────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════
+// REKAP
+// ══════════════════════════════════════════════════════════════════
 function renderRekap(){
-  const tbody=document.getElementById('rekapBody');
-  tbody.innerHTML='';
-  if(rekap.length===0){
-    tbody.innerHTML='<tr><td colspan="6" style="color:#4a6d94;padding:16px">Belum ada data</td></tr>';
+  const tb=document.getElementById('rBody');
+  tb.innerHTML='';
+  if(!rekap.length){
+    tb.innerHTML='<tr><td colspan="6" style="color:var(--tx3);padding:14px;text-align:center">Belum ada data rekap</td></tr>';
     return;
   }
   rekap.forEach((r,i)=>{
     const tr=document.createElement('tr');
-    tr.innerHTML=`<td>${i+1}</td>
-      <td class="td-nama" title="${r.nama}">${r.nama}</td>
-      <td>${r.kelas||'—'}</td>
-      <td>${r.benar}/50</td>
-      <td style="font-weight:700;color:var(--cyan)">${r.nilai!==null?r.nilai:'—'}</td>
-      <td><span class="grade-chip chip-${r.grade||'E'}">${r.grade||'—'}</span></td>`;
-    tbody.appendChild(tr);
+    const gc=r.grade?`<span class="gchip cg${r.grade}">${r.grade}</span>`:'—';
+    tr.innerHTML=`<td>${i+1}</td><td class="tdnama" title="${r.nama}">${r.nama}</td><td>${r.kelas||'—'}</td><td>${r.benar}/50</td><td style="font-weight:700;color:var(--cy)">${r.nilai!==null?r.nilai:'—'}</td><td>${gc}</td>`;
+    tb.appendChild(tr);
   });
 }
 
-function updateRekapStats(){
-  document.getElementById('rkJml').textContent=rekap.length;
-  if(rekap.length===0){
-    document.getElementById('rkRata').textContent='—';
-    document.getElementById('rkLulus').textContent='0%';
+function updateStats(){
+  document.getElementById('rJml').textContent=rekap.length;
+  const vals=rekap.filter(r=>r.nilai!==null).map(r=>r.nilai);
+  if(!vals.length){
+    document.getElementById('rRata').textContent='—';
+    document.getElementById('rLulus').textContent='0%';
+    document.getElementById('barChart').innerHTML='';
     return;
   }
-  const vals=rekap.filter(r=>r.nilai!==null).map(r=>r.nilai);
-  if(vals.length===0){document.getElementById('rkRata').textContent='—';return;}
-  const rata=Math.round(vals.reduce((a,b)=>a+b,0)/vals.length);
-  const lulus=rekap.filter(r=>r.nilai!==null&&r.nilai>=75).length;
-  document.getElementById('rkRata').textContent=rata;
-  document.getElementById('rkLulus').textContent=Math.round(lulus/rekap.length*100)+'%';
-  renderGrafik();
-}
-
-function renderGrafik(){
-  const el=document.getElementById('rkGrafik');
-  if(rekap.length===0){el.innerHTML='';return;}
-  // Bar chart sederhana
-  const grades={'A':0,'B':0,'C':0,'D':0,'E':0};
-  rekap.forEach(r=>{if(r.grade) grades[r.grade]++;});
-  const mx=Math.max(...Object.values(grades),1);
-  const cols={'A':'#00ff9d','B':'#76ff03','C':'#ffab00','D':'#ff9100','E':'#ff3d5a'};
-  let html='<div style="display:flex;align-items:flex-end;gap:6px;height:60px;margin-bottom:4px">';
-  Object.entries(grades).forEach(([g,n])=>{
-    const h=Math.round(n/mx*55)+5;
-    html+=`<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px">
-      <div style="font-size:10px;color:${cols[g]};font-family:'Share Tech Mono',monospace">${n}</div>
-      <div style="width:100%;height:${h}px;background:${cols[g]};border-radius:3px 3px 0 0;opacity:.8"></div>
-      <div style="font-size:10px;color:var(--text3);font-family:'Rajdhani',sans-serif;font-weight:700">${g}</div>
-    </div>`;
+  document.getElementById('rRata').textContent=Math.round(vals.reduce((a,b)=>a+b,0)/vals.length);
+  document.getElementById('rLulus').textContent=Math.round(rekap.filter(r=>r.nilai>=75).length/rekap.length*100)+'%';
+  const bc=document.getElementById('barChart');
+  bc.innerHTML='';
+  const gc={A:0,B:0,C:0,D:0,E:0};
+  rekap.forEach(r=>{if(r.grade)gc[r.grade]++;});
+  const mx=Math.max(...Object.values(gc),1);
+  const cols={A:'#00ff9d',B:'#76ff03',C:'#ffab00',D:'#ff9100',E:'#ff3d5a'};
+  Object.entries(gc).forEach(([g,n])=>{
+    const h=Math.round(n/mx*44)+4;
+    const col=document.createElement('div');
+    col.className='barcol';
+    col.innerHTML=`<div class="barnum" style="color:${cols[g]}">${n}</div><div class="barbg" style="height:${h}px;background:${cols[g]}"></div><div class="barlbl" style="color:${cols[g]}">${g}</div>`;
+    bc.appendChild(col);
   });
-  html+='</div>';
-  el.innerHTML=html;
 }
 
-function rekapDownloadTXT(){
-  if(rekap.length===0){toast('Rekap kosong!');return;}
-  let txt='REKAP NILAI KELAS
-=================
-
-';
-  txt+='No  Nama                    Kls   Benar  Nilai  Grade
-';
-  txt+='--  ----------------------  ----  -----  -----  -----
-';
-  rekap.forEach((r,i)=>{
-    txt+=`${String(i+1).padStart(2)}  ${r.nama.padEnd(22,' ')}  ${(r.kelas||'').padEnd(4,' ')}  ${String(r.benar).padEnd(5,' ')}  ${String(r.nilai!==null?r.nilai:'—').padEnd(5,' ')}  ${r.grade||'—'}
-`;
-  });
-  const vals=rekap.filter(r=>r.nilai!==null).map(r=>r.nilai);
-  if(vals.length){
-    const rata=Math.round(vals.reduce((a,b)=>a+b,0)/vals.length);
-    txt+=`
-Rata-rata: ${rata}
-`;
-    txt+=`Tertinggi: ${Math.max(...vals)}
-`;
-    txt+=`Terendah: ${Math.min(...vals)}
-`;
-  }
-  dlText(txt,`rekap_${Date.now()}.txt`);
-}
-
-function rekapDownloadPDF(){
-  if(rekap.length===0){toast('Rekap kosong!');return;}
+function rPDF(){
+  if(!rekap.length){toast('Rekap kosong!');return;}
   let rows='';
-  rekap.forEach((r,i)=>{
-    rows+=`<tr><td>${i+1}</td><td>${r.nama}</td><td>${r.kelas||'—'}</td>
-      <td>${r.absen||'—'}</td><td>${r.benar}/50</td>
-      <td style="font-weight:700">${r.nilai!==null?r.nilai:'—'}</td>
-      <td style="font-weight:700">${r.grade||'—'}</td></tr>`;
-  });
+  rekap.forEach((r,i)=>rows+=`<tr><td>${i+1}</td><td>${r.nama}</td><td>${r.kelas||'—'}</td><td>${r.absen||'—'}</td><td>${r.benar}/50</td><td style="font-weight:700">${r.nilai!==null?r.nilai:'—'}</td><td style="font-weight:700">${r.grade||'—'}</td></tr>`);
   const vals=rekap.filter(r=>r.nilai!==null).map(r=>r.nilai);
   const rata=vals.length?Math.round(vals.reduce((a,b)=>a+b,0)/vals.length):'—';
-  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8">
-  <title>Rekap Nilai</title>
-  <style>body{font-family:Arial;padding:20px;font-size:12px}
-  h1{font-size:15px}table{border-collapse:collapse;width:100%;margin-top:10px}
-  th,td{border:1px solid #ccc;padding:4px 6px}th{background:#0f3460;color:#fff}
-  .sum{margin-top:12px;font-size:12px}</style></head>
-  <body onload="window.print()">
-  <h1>REKAP NILAI — LJK PAVING BLOCK</h1>
-  <p>Dicetak: ${new Date().toLocaleString('id-ID')}</p>
-  <table><thead><tr><th>#</th><th>Nama</th><th>Kelas</th><th>Absen</th><th>Benar</th><th>Nilai</th><th>Grade</th></tr></thead>
-  <tbody>${rows}</tbody></table>
-  <div class="sum">Jumlah: ${rekap.length} siswa | Rata-rata: ${rata}</div>
-  </body></html>`;
+  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Rekap</title>
+<style>body{font-family:Arial;padding:16px;font-size:11px}table{border-collapse:collapse;width:100%}
+th,td{border:1px solid #ccc;padding:4px 6px}th{background:#0f3460;color:#fff}.sum{margin-top:10px}</style></head>
+<body onload="window.print()">
+<h2>REKAP NILAI — BENYAMIN BATAU LJK SCANNER APP</h2>
+<p>Dicetak: ${new Date().toLocaleString('id-ID')}</p>
+<table><thead><tr><th>#</th><th>Nama</th><th>Kelas</th><th>Absen</th><th>Benar</th><th>Nilai</th><th>Grade</th></tr></thead>
+<tbody>${rows}</tbody></table>
+<div class="sum">Jumlah: ${rekap.length} siswa | Rata-rata: ${rata}</div></body></html>`;
   const w=window.open('','_blank');
-  w.document.write(html); w.document.close();
+  if(w){w.document.write(html);w.document.close();}
+  else toast('⚠️ Aktifkan popup browser');
 }
 
-function rekapHapus(){
-  if(!confirm('Hapus semua data rekap?')) return;
-  rekap=[];
-  saveRekap();
-  renderRekap();
-  updateRekapStats();
-  toast('🗑 Rekap dihapus');
-}
-
-// ─── KUNCI ───────────────────────────────────────────────────
-function renderKunciGrid(){
-  const grid=document.getElementById('kunciGrid');
-  grid.innerHTML='';
-  for(let i=0;i<50;i++){
-    const div=document.createElement('div');
-    div.className='kunci-item';
-    div.innerHTML=`<div class="kunci-no">${i+1}</div>
-      <select class="kunci-sel" id="kSel${i}" onchange="kunciChange(${i},this.value)">
-        <option value="">-</option>
-        <option value="A">A</option><option value="B">B</option>
-        <option value="C">C</option><option value="D">D</option>
-        <option value="E">E</option>
-      </select>`;
-    grid.appendChild(div);
+function rTXT(){
+  if(!rekap.length){toast('Rekap kosong!');return;}
+  const ln=s=>s+'\n';
+  let t=ln('REKAP NILAI — BENYAMIN BATAU LJK SCANNER APP');
+  t+=ln('='.repeat(50));
+  t+=ln('No   Nama                    Kls    Benar  Nilai  Grade');
+  t+=ln('-'.repeat(55));
+  rekap.forEach((r,i)=>t+=ln(String(i+1).padStart(2)+'   '+r.nama.padEnd(22)+' '+(r.kelas||'').padEnd(6)+' '+String(r.benar).padEnd(6)+' '+String(r.nilai!==null?r.nilai:'—').padEnd(6)+' '+(r.grade||'—')));
+  const vals=rekap.filter(r=>r.nilai!==null).map(r=>r.nilai);
+  if(vals.length){
+    t+=ln('');t+=ln('Rata-rata : '+Math.round(vals.reduce((a,b)=>a+b,0)/vals.length));
+    t+=ln('Tertinggi : '+Math.max(...vals));t+=ln('Terendah  : '+Math.min(...vals));
+    t+=ln('Lulus ≥75 : '+rekap.filter(r=>r.nilai>=75).length+' siswa');
   }
-  loadKunciUI();
+  dlText(t,`rekap_${Date.now()}.txt`);
 }
 
-function kunciChange(i,val){
-  kunci[i]=val;
-  saveKunci();
+function rHapus(){
+  if(!confirm('Hapus semua data rekap kelas?')) return;
+  rekap=[];
+  try{localStorage.setItem('bb_rekap','[]');}catch{}
+  renderRekap();updateStats();toast('🗑 Rekap dihapus');
 }
 
-function kunciSave(){
+// ══════════════════════════════════════════════════════════════════
+// KUNCI JAWABAN — sepenuhnya dibangun ulang, tidak konflik
+// ══════════════════════════════════════════════════════════════════
+function buildKunci(){
+  const wrap=document.getElementById('kunciWrap');
+  wrap.innerHTML='';
   for(let i=0;i<50;i++){
-    const el=document.getElementById('kSel'+i);
+    const cell=document.createElement('div');
+    cell.className='kcell';
+
+    const num=document.createElement('div');
+    num.className='knum';
+    num.textContent=i+1;
+
+    const sel=document.createElement('select');
+    sel.className='ksel';
+    sel.id='ks'+i;
+    // Buat option manual agar tidak ada masalah innerHTML escaping
+    ['','A','B','C','D','E'].forEach(v=>{
+      const opt=document.createElement('option');
+      opt.value=v;
+      opt.textContent=v||'-';
+      sel.appendChild(opt);
+    });
+    sel.value=kunci[i]||'';
+    if(kunci[i]) sel.classList.add('isi');
+    sel.addEventListener('change',function(){
+      kunci[i]=this.value;
+      this.classList.toggle('isi',!!this.value);
+      updateKCount();
+      // Auto-save saat berubah
+      try{localStorage.setItem('bb_kunci',JSON.stringify(kunci));}catch{}
+    });
+
+    cell.appendChild(num);
+    cell.appendChild(sel);
+    wrap.appendChild(cell);
+  }
+  updateKCount();
+}
+
+function updateKCount(){
+  document.getElementById('kCount').textContent=kunci.filter(k=>!!k).length;
+}
+
+function kSyncFromDOM(){
+  for(let i=0;i<50;i++){
+    const el=document.getElementById('ks'+i);
     if(el) kunci[i]=el.value;
   }
-  saveKunci();
-  toast('✅ Kunci disimpan!');
 }
 
-function kunciRandom(){
-  const ops=['A','B','C','D','E'];
+function kSave(){
+  kSyncFromDOM();
+  try{localStorage.setItem('bb_kunci',JSON.stringify(kunci));}catch{}
+  updateKCount();
+  toast('✅ Kunci disimpan! ('+kunci.filter(k=>!!k).length+'/50 terisi)');
+}
+
+function kRandom(){
+  kunci=Array.from({length:50},()=>'ABCDE'[Math.floor(Math.random()*5)]);
   for(let i=0;i<50;i++){
-    kunci[i]=ops[Math.floor(Math.random()*5)];
-    const el=document.getElementById('kSel'+i);
-    if(el) el.value=kunci[i];
+    const el=document.getElementById('ks'+i);
+    if(el){el.value=kunci[i];el.classList.add('isi');}
   }
-  saveKunci();
-  toast('🎲 Kunci diacak');
+  try{localStorage.setItem('bb_kunci',JSON.stringify(kunci));}catch{}
+  updateKCount();
+  toast('🎲 Kunci diacak & disimpan!');
 }
 
-function kunciClear(){
+function kClear(){
   kunci=new Array(50).fill('');
   for(let i=0;i<50;i++){
-    const el=document.getElementById('kSel'+i);
-    if(el) el.value='';
+    const el=document.getElementById('ks'+i);
+    if(el){el.value='';el.classList.remove('isi');}
   }
-  saveKunci();
+  try{localStorage.setItem('bb_kunci',JSON.stringify(kunci));}catch{}
+  updateKCount();
   toast('🗑 Kunci dikosongkan');
 }
 
-function kunciImport(){
-  // Import dari clipboard atau prompt
-  const txt=prompt('Masukkan kunci (50 huruf A-E tanpa spasi, atau dipisah koma/spasi):');
-  if(!txt) return;
-  const clean=txt.toUpperCase().replace(/[^A-E,\s]/g,'');
-  const parts=clean.split(/[,\s]+/).filter(x=>x.match(/^[A-E]$/));
-  if(parts.length!==50){
-    alert(`Perlu 50 jawaban, ditemukan ${parts.length}`); return;
+function kImport(){
+  const raw=prompt('Ketik/paste 50 jawaban (A-E berurutan):\nContoh: ABCDEABCDE...');
+  if(!raw) return;
+  const parts=raw.toUpperCase().match(/[A-E]/g);
+  if(!parts||parts.length!==50){
+    alert('Perlu tepat 50 jawaban A-E, ditemukan: '+(parts?parts.length:0));
+    return;
   }
   kunci=parts;
-  loadKunciUI();
-  saveKunci();
-  toast('✅ Kunci diimport!');
-}
-
-function loadKunciUI(){
   for(let i=0;i<50;i++){
-    const el=document.getElementById('kSel'+i);
-    if(el) el.value=kunci[i]||'';
+    const el=document.getElementById('ks'+i);
+    if(el){el.value=kunci[i];el.classList.add('isi');}
   }
+  try{localStorage.setItem('bb_kunci',JSON.stringify(kunci));}catch{}
+  updateKCount();
+  toast('✅ Import berhasil! 50 kunci disimpan.');
 }
 
-// ─── KALIBRASI ───────────────────────────────────────────────
-function kalUpdate(){
-  const thr=parseInt(document.getElementById('kalThr').value);
-  const ratio=parseInt(document.getElementById('kalRatio').value)/100;
-  const ofsx=parseInt(document.getElementById('kalOfsX').value);
-  const ofsy=parseInt(document.getElementById('kalOfsY').value);
-  const sx=parseInt(document.getElementById('kalSX').value)/100;
-  const sy=parseInt(document.getElementById('kalSY').value)/100;
-  document.getElementById('kalThrVal').textContent=thr;
-  document.getElementById('kalRatioVal').textContent=ratio.toFixed(2);
-  document.getElementById('kalOfsXVal').textContent=ofsx+'px';
-  document.getElementById('kalOfsYVal').textContent=ofsy+'px';
-  document.getElementById('kalSXVal').textContent=sx.toFixed(2);
-  document.getElementById('kalSYVal').textContent=sy.toFixed(2);
-  KAL={thr,ratio,ofsx,ofsy,sx,sy};
+// ══════════════════════════════════════════════════════════════════
+// KALIBRASI
+// ══════════════════════════════════════════════════════════════════
+function kalSync(){
+  KAL.thr  =parseInt(document.getElementById('sThr').value);
+  KAL.ratio=parseInt(document.getElementById('sRatio').value)/100;
+  KAL.ofsx =parseInt(document.getElementById('sOfsX').value);
+  KAL.ofsy =parseInt(document.getElementById('sOfsY').value);
+  KAL.sx   =parseInt(document.getElementById('sSX').value)/100;
+  KAL.sy   =parseInt(document.getElementById('sSY').value)/100;
+  document.getElementById('vThr').textContent  =KAL.thr;
+  document.getElementById('vRatio').textContent=KAL.ratio.toFixed(2);
+  document.getElementById('vOfsX').textContent =KAL.ofsx;
+  document.getElementById('vOfsY').textContent =KAL.ofsy;
+  document.getElementById('vSX').textContent   =KAL.sx.toFixed(2);
+  document.getElementById('vSY').textContent   =KAL.sy.toFixed(2);
 }
-
-function kalLoadUI(){
-  const k=KAL;
-  document.getElementById('kalThr').value=k.thr||15;
-  document.getElementById('kalRatio').value=Math.round((k.ratio||0.20)*100);
-  document.getElementById('kalOfsX').value=k.ofsx||0;
-  document.getElementById('kalOfsY').value=k.ofsy||0;
-  document.getElementById('kalSX').value=Math.round((k.sx||1)*100);
-  document.getElementById('kalSY').value=Math.round((k.sy||1)*100);
-  if(k.mode) document.getElementById('kalMode').value=k.mode;
-  if(k.adaptif!==undefined) document.getElementById('kalAdaptif').value=k.adaptif?'1':'0';
-  if(k.gauss!==undefined) document.getElementById('kalGauss').value=k.gauss?'1':'0';
-  kalUpdate();
+function kalUI(){
+  document.getElementById('sThr').value  =KAL.thr||15;
+  document.getElementById('sRatio').value=Math.round((KAL.ratio||.20)*100);
+  document.getElementById('sOfsX').value =KAL.ofsx||0;
+  document.getElementById('sOfsY').value =KAL.ofsy||0;
+  document.getElementById('sSX').value   =Math.round((KAL.sx||1)*100);
+  document.getElementById('sSY').value   =Math.round((KAL.sy||1)*100);
+  if(KAL.mode) document.getElementById('sMode').value=KAL.mode;
+  if(KAL.adapt!==undefined) document.getElementById('sAdapt').value=KAL.adapt?'1':'0';
+  kalSync();
 }
-
 function kalSave(){
-  kalUpdate();
-  KAL.mode=document.getElementById('kalMode').value;
-  KAL.adaptif=document.getElementById('kalAdaptif').value==='1';
-  KAL.gauss=document.getElementById('kalGauss').value==='1';
-  localStorage.setItem('ljk_kal',JSON.stringify(KAL));
+  kalSync();
+  KAL.mode =document.getElementById('sMode').value;
+  KAL.adapt=document.getElementById('sAdapt').value==='1';
+  try{localStorage.setItem('bb_kal',JSON.stringify(KAL));}catch{}
   toast('✅ Kalibrasi disimpan!');
 }
-
 function kalReset(){
-  KAL={thr:15,ratio:0.20,ofsx:0,ofsy:0,sx:1,sy:1,mode:'hipx',adaptif:true,gauss:true};
-  kalLoadUI();
+  KAL={thr:15,ratio:.20,ofsx:0,ofsy:0,sx:1,sy:1,mode:'hipx',adapt:true};
+  kalUI();
   toast('🔄 Reset ke default');
 }
-
-function loadKal(){
-  try{
-    const s=localStorage.getItem('ljk_kal');
-    return s?JSON.parse(s):{thr:15,ratio:0.20,ofsx:0,ofsy:0,sx:1,sy:1,mode:'hipx',adaptif:true,gauss:true};
-  }catch{return{thr:15,ratio:0.20,ofsx:0,ofsy:0,sx:1,sy:1,mode:'hipx',adaptif:true,gauss:true};}
+function kalLoad(){
+  try{return JSON.parse(localStorage.getItem('bb_kal'))||{};}catch{return{};}
 }
 
-// ─── STORAGE ─────────────────────────────────────────────────
-function saveKunci(){
-  try{localStorage.setItem('ljk_kunci',JSON.stringify(kunci));}catch{}
-}
-function loadKunciUI_(){
-  try{
-    const s=localStorage.getItem('ljk_kunci');
-    if(s) kunci=JSON.parse(s);
-  }catch{}
-}
-// panggil saat init
-(function(){
-  try{const s=localStorage.getItem('ljk_kunci');if(s)kunci=JSON.parse(s);}catch{}
-})();
-
-function saveRekap(){
-  try{localStorage.setItem('ljk_rekap',JSON.stringify(rekap));}catch{}
-}
-function loadRekap(){
-  try{const s=localStorage.getItem('ljk_rekap');if(s)rekap=JSON.parse(s);}catch{}
-}
-
-// ─── UTILITY ─────────────────────────────────────────────────
-function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
-
-function resetScan(){
-  imgLoaded=null; imgCanvas=null;
-  const wrap=document.getElementById('previewWrap');
-  wrap.style.display='none';
-  document.getElementById('fileInput').value='';
+// ══════════════════════════════════════════════════════════════════
+// UTILITIES
+// ══════════════════════════════════════════════════════════════════
+function clearCanvas(){
+  document.getElementById('canvasWrap').style.display='none';
+  document.getElementById('pvPanel').style.display='none';
+  const ov=document.getElementById('cvOverlay');
+  ov.getContext('2d').clearRect(0,0,ov.width,ov.height);
+  hasROI=false;
+  document.getElementById('btnRoi').textContent ='👁 ROI';
+  document.getElementById('btnRoi').disabled =true;
+  document.getElementById('btnPrev').disabled=true;
   document.getElementById('btnScan').disabled=true;
-  setStatus('idle','Belum ada gambar — upload LJK dulu');
-  document.getElementById('roiInfo').style.display='none';
-  showROI=false;
 }
-
+function doReset(){
+  imgD=null;imgW=0;imgH=0;
+  clearCanvas();
+  document.getElementById('fileInput').value='';
+  setPbar(-1);
+  setSbar('idle','Upload LJK terlebih dahulu');
+}
 function dlText(txt,fname){
   const a=document.createElement('a');
   a.href='data:text/plain;charset=utf-8,'+encodeURIComponent(txt);
-  a.download=fname; a.click();
+  a.download=fname;document.body.appendChild(a);a.click();document.body.removeChild(a);
 }
 </script>
 </body>
