@@ -407,10 +407,10 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
     <div class="ibox">Sesuaikan jika deteksi kurang akurat. Default sudah optimal untuk LJK Paving Block.</div>
 
     <span class="lbl">Threshold Minimum (gelap piksel)</span>
-    <div class="slwrap"><input type="range" id="sThr"   min="5"  max="60"  value="15"  oninput="kalSync()"><span class="slval" id="vThr">15</span></div>
+    <div class="slwrap"><input type="range" id="sThr"   min="5"  max="60"  value="10"  oninput="kalSync()"><span class="slval" id="vThr">15</span></div>
 
     <span class="lbl">Ratio Dominansi Minimum</span>
-    <div class="slwrap"><input type="range" id="sRatio" min="10" max="50"  value="20"  oninput="kalSync()"><span class="slval" id="vRatio">0.20</span></div>
+    <div class="slwrap"><input type="range" id="sRatio" min="10" max="50"  value="25"  oninput="kalSync()"><span class="slval" id="vRatio">0.20</span></div>
 
     <span class="lbl">Offset X (geser kiri–kanan, px)</span>
     <div class="slwrap"><input type="range" id="sOfsX"  min="-40" max="40" value="0"  oninput="kalSync()"><span class="slval" id="vOfsX">0</span></div>
@@ -614,7 +614,7 @@ async function validate(){
   const mand=res.slice(0,8), str=res.slice(8);
   const mandOK=mand.every(r=>r.ok);
   const strOK =str.filter(r=>r.ok).length;
-  const valid =mandOK && strOK>=3;
+  const valid =mandOK && strOK>=2;
   const score =Math.round(mand.filter(r=>r.ok).length/8*50+strOK/5*50);
 
   if(!valid){
@@ -653,7 +653,7 @@ function lMargin(d,W,H){
   function avg(x0,y0,x1,y1){let s=0,c=0;const sx=Math.max(1,Math.floor((x1-x0)/40)),sy=Math.max(1,Math.floor((y1-y0)/8));for(let y=y0;y<y1;y+=sy)for(let x=x0;x<x1;x+=sx){s+=g(d,(y*W+x)*4);c++;}return c?s/c:0;}
   const m=Math.floor(H*.025),ml=Math.floor(W*.025);
   const sides={atas:avg(Math.floor(W*.05),0,Math.floor(W*.95),m),bawah:avg(Math.floor(W*.05),H-m,Math.floor(W*.95),H),kiri:avg(0,Math.floor(H*.1),ml,Math.floor(H*.9)),kanan:avg(W-ml,Math.floor(H*.1),W,Math.floor(H*.9))};
-  const fails=Object.entries(sides).filter(([,v])=>v<145).map(([k,v])=>`${k}:${v.toFixed(0)}`);
+  const fails=Object.entries(sides).filter(([,v])=>v<125).map(([k,v])=>`${k}:${v.toFixed(0)}`);
   return{ok:!fails.length,msg:fails.length?`Margin gelap: ${fails.join(', ')}`:'Margin 4 sisi OK ✓'};
 }
 function lSkew(d,W,H){
@@ -677,8 +677,8 @@ function lLight(d,W,H){
     for(let y=Math.floor(H*r/3);y<Math.floor(H*(r+1)/3);y+=st)for(let x=Math.floor(W*c/3);x<Math.floor(W*(c+1)/3);x+=st){s+=g(d,(y*W+x)*4);cnt++;}
     zn.push(cnt?s/cnt:128);
   }
-  const sp=Math.max(...zn)-Math.min(...zn),ok=sp<=115;
-  return{ok,msg:ok?`Merata (spread=${sp.toFixed(0)}) ✓`:`Tidak merata (spread=${sp.toFixed(0)}, maks 115)`};
+  const sp=Math.max(...zn)-Math.min(...zn),ok=sp<=145;
+  return{ok,msg:ok?`Merata (spread=${sp.toFixed(0)}) ✓`:`Tidak merata (spread=${sp.toFixed(0)}, maks 145)`};
 }
 function lBright(d,W,H){
   let s=0,br=0;for(let i=0;i<500;i++){const p=Math.floor(Math.random()*W*H)*4;const v=g(d,p);s+=v;if(v>160)br++;}
@@ -693,13 +693,19 @@ function lHeader(d,W,H){
   return{ok,msg:ok?`Header gelap (${(r*100).toFixed(0)}%) ✓`:`Header tidak ada (${(r*100).toFixed(0)}%, butuh ≥28%)`};
 }
 function lGrid(d,W,H){
-  const mx=Math.floor(W*.3),yS=Math.floor(H*.27),yE=Math.floor(H*.90),sw=Math.floor(W*.04),rH=Math.floor(H*.024);
-  let tr=0,prev=255;
-  for(let y=yS;y<yE;y+=Math.max(1,Math.floor(rH/3))){
-    let s=0,c=0;for(let x=mx;x<Math.min(W,mx+sw);x++){s+=g(d,(y*W+x)*4);c++;}
-    const avg=c?s/c:255;if(prev>180&&avg<140)tr++;prev=avg;
+  // Scan 3 kolom berbeda untuk deteksi lebih robust
+  const cols=[.25,.35,.45],yS=Math.floor(H*.27),yE=Math.floor(H*.90),rH=Math.floor(H*.024);
+  let totTr=0;
+  for(const cx of cols){
+    const mx=Math.floor(cx*W),sw=Math.floor(W*.05);
+    let tr=0,prev=255;
+    for(let y=yS;y<yE;y+=Math.max(1,Math.floor(rH/4))){
+      let s=0,c=0;for(let x=mx;x<Math.min(W,mx+sw);x++){s+=g(d,(y*W+x)*4);c++;}
+      const avg=c?s/c:255;if(prev>160&&avg<160)tr++;prev=avg;
+    }
+    totTr=Math.max(totTr,tr);
   }
-  const ok=tr>=10;return{ok,msg:ok?`Grid terdeteksi (${tr}) ✓`:`Grid tidak ada (${tr} transisi, butuh ≥10)`};
+  const ok=totTr>=6;return{ok,msg:ok?`Grid terdeteksi (${totTr}) ✓`:`Grid tidak ada (${totTr} transisi, butuh ≥6)`};
 }
 function lNomor(d,W,H){
   let dk=0;for(let i=0;i<120;i++){
@@ -785,7 +791,8 @@ async function doPreview(){
   setSbar('work','🔍 Preview deteksi...');
   await sleep(20);
 
-  const d=imgD.data, THR=KAL.thr||15, RATIO=KAL.ratio||.20, mode=KAL.mode||'hipx', adapt=KAL.adapt!==false;
+  const normImg=autoBrightNorm(imgD,imgW,imgH);
+  const d=normImg.data, THR=KAL.thr||10, RATIO=KAL.ratio||.25, mode=KAL.mode||'hipx', adapt=KAL.adapt!==false;
   const grid=document.getElementById('pvGrid');
   grid.innerHTML='';
   let det=0;
@@ -830,7 +837,8 @@ async function doScan(){
   setPbar(0);
   await sleep(20);
 
-  const d=imgD.data, THR=KAL.thr||15, RATIO=KAL.ratio||.20, mode=KAL.mode||'hipx', adapt=KAL.adapt!==false;
+  const normImg=autoBrightNorm(imgD,imgW,imgH);
+  const d=normImg.data, THR=KAL.thr||10, RATIO=KAL.ratio||.25, mode=KAL.mode||'hipx', adapt=KAL.adapt!==false;
   const hasil=[];
   let totConf=0;
 
@@ -880,7 +888,37 @@ async function doScan(){
   toast('✅ Scan selesai!');
 }
 
-// ── Hitung skor pixel satu ROI ──────────────────────────────────
+// ── Auto Brightness Normalization ───────────────────────────────
+// Koreksi gambar terlalu terang (flash) atau terlalu gelap
+// menggunakan percentile 85 dari area tengah sebagai referensi
+function autoBrightNorm(imgData, W, H) {
+  const d   = imgData.data;
+  const mid = {x0:Math.floor(W*.1), x1:Math.floor(W*.9), y0:Math.floor(H*.15), y1:Math.floor(H*.85)};
+  // Sample ~1000 piksel dari area tengah
+  const samples = [];
+  const step = Math.max(1, Math.floor((mid.x1-mid.x0)/30));
+  for (let y=mid.y0; y<mid.y1; y+=step) for (let x=mid.x0; x<mid.x1; x+=step) {
+    const i=(y*W+x)*4;
+    samples.push(0.299*d[i]+0.587*d[i+1]+0.114*d[i+2]);
+  }
+  samples.sort((a,b)=>a-b);
+  const p85 = samples[Math.floor(samples.length*0.85)] || 230;
+  const target = 230;
+  const scale  = target / Math.max(p85, 50);
+  // Jika gambar sudah normal (scale antara 0.9-1.1) → kembalikan asli
+  if (scale >= 0.9 && scale <= 1.1) return imgData;
+  const sc = Math.max(0.5, Math.min(1.8, scale));
+  const out = new ImageData(new Uint8ClampedArray(d.length), W, H);
+  for (let i=0; i<d.length; i+=4) {
+    out.data[i]   = Math.min(255, d[i]   * sc);
+    out.data[i+1] = Math.min(255, d[i+1] * sc);
+    out.data[i+2] = Math.min(255, d[i+2] * sc);
+    out.data[i+3] = d[i+3];
+  }
+  return out;
+}
+
+// ── Hitung skor pixel satu ROI ───────────────────────────────────
 function pixScore(d,W,H,roi,mode,thr){
   const x0=Math.max(0,Math.floor(roi.x)),y0=Math.max(0,Math.floor(roi.y));
   const x1=Math.min(W,Math.ceil(roi.x+roi.w)),y1=Math.min(H,Math.ceil(roi.y+roi.h));
@@ -1226,7 +1264,7 @@ function kalSave(){
   toast('✅ Kalibrasi disimpan!');
 }
 function kalReset(){
-  KAL={thr:15,ratio:.20,ofsx:0,ofsy:0,sx:1,sy:1,mode:'hipx',adapt:true};
+  KAL={thr:10,ratio:.25,ofsx:0,ofsy:0,sx:1,sy:1,mode:'hipx',adapt:true};
   kalUI();
   toast('🔄 Reset ke default');
 }
