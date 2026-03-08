@@ -306,8 +306,9 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
     <button class="btn btn-pu"  id="btnPrev" onclick="doPreview()"  disabled>🔍 Preview</button>
     <button class="btn btn-cy"  id="btnScan" onclick="doScan()"     disabled>⚡ Scan</button>
   </div>
-  <div class="mt8">
-    <button class="btn btn-gh" onclick="doReset()">🔄 Reset</button>
+  <div class="g2 mt8">
+    <button class="btn btn-gh"  id="btnBW"   onclick="toggleBW()"   disabled>🔲 Lihat Asli</button>
+    <button class="btn btn-gh"                onclick="doReset()">🔄 Reset</button>
   </div>
 
 </div><!-- end pg0 -->
@@ -455,10 +456,11 @@ const C = {"page_w":595.276,"page_h":841.89,"row_h":20.271,"opw":46.205,"bsize":
 // ══════════════════════════════════════════════════════════════════
 // STATE
 // ══════════════════════════════════════════════════════════════════
-let imgD   = null;   // ImageData pixel array
+let imgD   = null;   // ImageData pixel array — DATA ASLI, tidak pernah diubah
 let imgW   = 0;
 let imgH   = 0;
 let hasROI = false;
+let isBW   = false;  // status tampilan canvas (BW=true setelah valid)
 let last   = null;   // hasil scan terakhir
 let kunci  = new Array(50).fill('');
 let rekap  = [];
@@ -614,7 +616,7 @@ async function validate(){
   const mand=res.slice(0,8), str=res.slice(8);
   const mandOK=mand.every(r=>r.ok);
   const strOK =str.filter(r=>r.ok).length;
-  const valid =mandOK && strOK>=2;
+  const valid =mandOK && strOK>=1;
   const score =Math.round(mand.filter(r=>r.ok).length/8*50+strOK/5*50);
 
   if(!valid){
@@ -625,103 +627,156 @@ async function validate(){
   }
   setSbar('ok',`✅ LJK valid (skor ${score}/100) — pilih Preview atau langsung Scan`);
   toast(`✅ Gambar valid! Skor ${score}/100`);
+  // Terapkan efek BW + blur ke canvas TAMPILAN (bukan imgD — data asli tetap disimpan)
+  isBW = true;
+  applyBWBlur();
+  document.getElementById('btnBW').textContent = '🎨 Lihat Warna Asli';
   document.getElementById('btnRoi').disabled  = false;
   document.getElementById('btnPrev').disabled = false;
   document.getElementById('btnScan').disabled = false;
+  document.getElementById('btnBW').disabled   = false;
 }
 
 // ── Layer functions ─────────────────────────────────────────────
 function g(d,i){return .299*d[i]+.587*d[i+1]+.114*d[i+2];}
-function lAspect(d,W,H){const r=W/H,ok=Math.abs(r-1/Math.sqrt(2))<.16;return{ok,msg:ok?`Rasio ${r.toFixed(3)} ✓`:`Rasio ${r.toFixed(3)} bukan A4 (perlu ~0.707)`};}
-function lRes(d,W,H){const ok=W*H>=400*566;return{ok,msg:ok?`${W}×${H}px ✓`:`${W}×${H} terlalu kecil`};}
+// ── VALIDATOR LAYER — threshold longgar, ramah foto HP lapangan ──
+// Mandatory (8): wajib semua lulus
+// Structural (5): cukup 1/5 lulus (hanya cek konten LJK)
+function lAspect(d,W,H){
+  const r=W/H;
+  // Toleransi sangat longgar: portrait saja sudah cukup (r < 1)
+  // A4 ideal ~0.707, toleransi ±30% → 0.50–0.95
+  const ok=r>=0.45&&r<=1.05;
+  return{ok,msg:ok?`Rasio ${r.toFixed(3)} ✓`:`Rasio ${r.toFixed(3)} — foto terlalu landscape/aneh`};
+}
+function lRes(d,W,H){
+  // Minimal 300×400px saja (sangat longgar untuk HP lawas)
+  const ok=W>=300&&H>=400;
+  return{ok,msg:ok?`${W}×${H}px ✓`:`${W}×${H} terlalu kecil (min 300×400)`};
+}
 function lSharp(d,W,H){
-  const x0=Math.floor(W*.2),x1=Math.floor(W*.8),y0=Math.floor(H*.2),y1=Math.floor(H*.8);
-  const st=Math.max(2,Math.floor(W/80));let s=0,s2=0,n=0;
-  for(let y=y0+st;y<y1-st;y+=st) for(let x=x0+st;x<x1-st;x+=st){
+  // Laplacian variance — longgar: butuh ≥15 saja (sebelumnya 80)
+  const x0=Math.floor(W*.25),x1=Math.floor(W*.75),y0=Math.floor(H*.25),y1=Math.floor(H*.75);
+  const st=Math.max(3,Math.floor(W/60));let s=0,s2=0,n=0;
+  for(let y=y0+st;y<y1-st;y+=st*2) for(let x=x0+st;x<x1-st;x+=st*2){
     const i=(y*W+x)*4;
     const lap=Math.abs(4*g(d,i)-g(d,(y-st)*W*4+x*4)-g(d,(y+st)*W*4+x*4)-g(d,i-st*4)-g(d,i+st*4));
     s+=lap;s2+=lap*lap;n++;
   }
   const v=n?(s2/n-(s/n)**2):0;
-  const ok=v>=80;return{ok,msg:ok?`Tajam (var=${v.toFixed(0)}) ✓`:`Buram (var=${v.toFixed(0)}, butuh ≥80)`};
+  const ok=v>=15;
+  return{ok,msg:ok?`Tajam (var=${v.toFixed(0)}) ✓`:`Terlalu buram (var=${v.toFixed(0)}, min 15)`};
 }
 function lContrast(d,W,H){
-  let mn=255,mx=0;for(let i=0;i<600;i++){const p=Math.floor(Math.random()*W*H)*4;const v=g(d,p);if(v<mn)mn=v;if(v>mx)mx=v;}
-  const ok=(mx-mn)>=120;return{ok,msg:ok?`Kontras OK (${(mx-mn).toFixed(0)}) ✓`:`Kontras rendah (${(mx-mn).toFixed(0)}, butuh ≥120)`};
+  // Range min 60 saja (sebelumnya 120) — akomodasi foto mendung/redup
+  let mn=255,mx=0;
+  for(let i=0;i<400;i++){const p=Math.floor(Math.random()*W*H)*4;const v=g(d,p);if(v<mn)mn=v;if(v>mx)mx=v;}
+  const ok=(mx-mn)>=60;
+  return{ok,msg:ok?`Kontras OK (range=${(mx-mn).toFixed(0)}) ✓`:`Kontras terlalu rendah (${(mx-mn).toFixed(0)}, min 60)`};
 }
 function lMargin(d,W,H){
-  function avg(x0,y0,x1,y1){let s=0,c=0;const sx=Math.max(1,Math.floor((x1-x0)/40)),sy=Math.max(1,Math.floor((y1-y0)/8));for(let y=y0;y<y1;y+=sy)for(let x=x0;x<x1;x+=sx){s+=g(d,(y*W+x)*4);c++;}return c?s/c:0;}
-  const m=Math.floor(H*.025),ml=Math.floor(W*.025);
-  const sides={atas:avg(Math.floor(W*.05),0,Math.floor(W*.95),m),bawah:avg(Math.floor(W*.05),H-m,Math.floor(W*.95),H),kiri:avg(0,Math.floor(H*.1),ml,Math.floor(H*.9)),kanan:avg(W-ml,Math.floor(H*.1),W,Math.floor(H*.9))};
-  const fails=Object.entries(sides).filter(([,v])=>v<125).map(([k,v])=>`${k}:${v.toFixed(0)}`);
-  return{ok:!fails.length,msg:fails.length?`Margin gelap: ${fails.join(', ')}`:'Margin 4 sisi OK ✓'};
+  // Cek hanya 2 sisi (atas+bawah) dengan threshold 100 — longgar sekali
+  function avg(x0,y0,x1,y1){
+    let s=0,c=0;const sx=Math.max(1,Math.floor((x1-x0)/20)),sy=Math.max(1,Math.floor((y1-y0)/5));
+    for(let y=y0;y<y1;y+=sy)for(let x=x0;x<x1;x+=sx){s+=g(d,(y*W+x)*4);c++;}
+    return c?s/c:255;
+  }
+  const m=Math.floor(H*.02);
+  const atas =avg(Math.floor(W*.1),0,Math.floor(W*.9),m);
+  const bawah=avg(Math.floor(W*.1),H-m,Math.floor(W*.9),H);
+  // Cukup salah satu sisi terang saja berarti tidak terpotong total
+  const ok=atas>=100||bawah>=100;
+  return{ok,msg:ok?`Tidak terpotong ✓`:`Gambar terpotong habis (atas=${atas.toFixed(0)}, bawah=${bawah.toFixed(0)})`};
 }
 function lSkew(d,W,H){
-  const cols=[.15,.45,.75],yS=Math.floor(H*.26),yE=Math.floor(H*.32),pos=[];
-  for(const cx of cols){const x=Math.floor(cx*W);for(let y=yS;y<yE;y++){if(g(d,(y*W+x)*4)<130){pos.push(y);break;}}}
-  if(pos.length<2)return{ok:true,msg:'Lurus ✓'};
-  const diff=Math.max(...pos)-Math.min(...pos),maxD=Math.floor(H*.022);
+  // Longgar: maks ~8° (sebelumnya ~2°) — foto miring biasa masih OK
+  const cols=[.2,.5,.8],yS=Math.floor(H*.26),yE=Math.floor(H*.35),pos=[];
+  for(const cx of cols){
+    const x=Math.floor(cx*W);
+    for(let y=yS;y<yE;y++){if(g(d,(y*W+x)*4)<150){pos.push(y);break;}}
+  }
+  if(pos.length<2)return{ok:true,msg:'Kemiringan OK ✓'};
+  const diff=Math.max(...pos)-Math.min(...pos);
+  const maxD=Math.floor(H*.07); // ~7% tinggi ≈ 7-8°
   const ok=diff<=maxD;
-  return{ok,msg:ok?`Lurus (${(Math.atan2(diff,W*.6)*180/Math.PI).toFixed(1)}°) ✓`:`Miring (${(Math.atan2(diff,W*.6)*180/Math.PI).toFixed(1)}°, maks ~2°)`};
+  const deg=(Math.atan2(diff,W*.6)*180/Math.PI).toFixed(1);
+  return{ok,msg:ok?`Miring ${deg}° ✓`:`Terlalu miring (${deg}°, maks ~8°)`};
 }
 function lPersp(d,W,H){
-  function ex(sy,fromL){const y=Math.floor(sy*H),st=fromL?1:-1,s=fromL?Math.floor(W*.02):Math.floor(W*.98);for(let x=s;fromL?x<W*.5:x>W*.5;x+=st){if(g(d,(y*W+x)*4)<160)return x;}return fromL?Math.floor(W*.1):Math.floor(W*.9);}
-  const tL=ex(.05,true),tR=ex(.05,false),bL=ex(.92,true),bR=ex(.92,false);
-  const wT=tR-tL,wB=bR-bL;if(wT<=0||wB<=0)return{ok:true,msg:'Perspektif OK ✓'};
-  const r=Math.min(wT,wB)/Math.max(wT,wB),ok=r>=.82;
-  return{ok,msg:ok?`Perspektif OK (${r.toFixed(2)}) ✓`:`Distorsi perspektif (${r.toFixed(2)}, butuh ≥0.82)`};
+  // Longgar: ratio ≥0.60 (sebelumnya 0.82) — foto sedikit menyamping OK
+  function ex(sy,fromL){
+    const y=Math.floor(sy*H),st=fromL?1:-1,s=fromL?Math.floor(W*.01):Math.floor(W*.99);
+    for(let x=s;fromL?x<W*.5:x>W*.5;x+=st){if(g(d,(y*W+x)*4)<170)return x;}
+    return fromL?Math.floor(W*.05):Math.floor(W*.95);
+  }
+  const tL=ex(.05,true),tR=ex(.05,false),bL=ex(.9,true),bR=ex(.9,false);
+  const wT=tR-tL,wB=bR-bL;
+  if(wT<=10||wB<=10)return{ok:true,msg:'Perspektif OK ✓'};
+  const r=Math.min(wT,wB)/Math.max(wT,wB),ok=r>=0.55;
+  return{ok,msg:ok?`Perspektif OK (${r.toFixed(2)}) ✓`:`Terlalu menyamping (ratio ${r.toFixed(2)}, min 0.55)`};
 }
 function lLight(d,W,H){
+  // Spread ≤200 (sebelumnya 145) — bayangan besar pun masih lolos
   const zn=[];for(let r=0;r<3;r++)for(let c=0;c<3;c++){
-    let s=0,cnt=0;const st=Math.max(2,Math.floor(W/60));
-    for(let y=Math.floor(H*r/3);y<Math.floor(H*(r+1)/3);y+=st)for(let x=Math.floor(W*c/3);x<Math.floor(W*(c+1)/3);x+=st){s+=g(d,(y*W+x)*4);cnt++;}
+    let s=0,cnt=0;const st=Math.max(3,Math.floor(W/40));
+    for(let y=Math.floor(H*r/3);y<Math.floor(H*(r+1)/3);y+=st)
+      for(let x=Math.floor(W*c/3);x<Math.floor(W*(c+1)/3);x+=st){s+=g(d,(y*W+x)*4);cnt++;}
     zn.push(cnt?s/cnt:128);
   }
-  const sp=Math.max(...zn)-Math.min(...zn),ok=sp<=145;
-  return{ok,msg:ok?`Merata (spread=${sp.toFixed(0)}) ✓`:`Tidak merata (spread=${sp.toFixed(0)}, maks 145)`};
+  const sp=Math.max(...zn)-Math.min(...zn),ok=sp<=200;
+  return{ok,msg:ok?`Cahaya OK (spread=${sp.toFixed(0)}) ✓`:`Cahaya sangat tidak merata (spread=${sp.toFixed(0)}, maks 200)`};
 }
+// ── STRUCTURAL layers — hanya 1/5 yang harus lulus ─────────────
 function lBright(d,W,H){
-  let s=0,br=0;for(let i=0;i<500;i++){const p=Math.floor(Math.random()*W*H)*4;const v=g(d,p);s+=v;if(v>160)br++;}
-  const avg=s/500,ok=avg>130&&br/500>0.45;
-  return{ok,msg:ok?`Cerah (avg=${avg.toFixed(0)}) ✓`:`Gelap (avg=${avg.toFixed(0)})`};
+  // avg > 80 saja (sebelumnya 130) — foto gelap pun lolos
+  let s=0;for(let i=0;i<300;i++){const p=Math.floor(Math.random()*W*H)*4;s+=g(d,p);}
+  const avg=s/300,ok=avg>80;
+  return{ok,msg:ok?`Kecerahan OK (avg=${avg.toFixed(0)}) ✓`:`Gambar sangat gelap (avg=${avg.toFixed(0)})`};
 }
 function lHeader(d,W,H){
-  let dk=0,tot=0;const st=Math.max(1,Math.floor(W*.96/60));
-  for(let y=Math.floor(H*.012);y<Math.floor(H*.05);y+=Math.max(1,Math.floor(H*.038/8)))
-    for(let x=Math.floor(W*.04);x<Math.floor(W*.96);x+=st){if(g(d,(y*W+x)*4)<100)dk++;tot++;}
-  const r=tot?dk/tot:0,ok=r>=.28;
-  return{ok,msg:ok?`Header gelap (${(r*100).toFixed(0)}%) ✓`:`Header tidak ada (${(r*100).toFixed(0)}%, butuh ≥28%)`};
+  // Deteksi header gelap di bagian atas — threshold 18% (sebelumnya 28%)
+  let dk=0,tot=0;const st=Math.max(1,Math.floor(W*.8/40));
+  for(let y=Math.floor(H*.01);y<Math.floor(H*.06);y+=Math.max(1,Math.floor(H*.05/6)))
+    for(let x=Math.floor(W*.05);x<Math.floor(W*.95);x+=st){if(g(d,(y*W+x)*4)<120)dk++;tot++;}
+  const r=tot?dk/tot:0,ok=r>=0.15;
+  return{ok,msg:ok?`Header gelap (${(r*100).toFixed(0)}%) ✓`:`Header tidak terdeteksi (${(r*100).toFixed(0)}%)`};
 }
 function lGrid(d,W,H){
-  // Scan 3 kolom berbeda untuk deteksi lebih robust
-  const cols=[.25,.35,.45],yS=Math.floor(H*.27),yE=Math.floor(H*.90),rH=Math.floor(H*.024);
+  // Deteksi garis grid di area tengah — threshold 3 transisi (sebelumnya 6)
+  const cols=[.2,.3,.4,.5],yS=Math.floor(H*.27),yE=Math.floor(H*.90),rH=Math.floor(H*.024);
   let totTr=0;
   for(const cx of cols){
-    const mx=Math.floor(cx*W),sw=Math.floor(W*.05);
+    const mx=Math.floor(cx*W),sw=Math.floor(W*.06);
     let tr=0,prev=255;
-    for(let y=yS;y<yE;y+=Math.max(1,Math.floor(rH/4))){
+    for(let y=yS;y<yE;y+=Math.max(1,Math.floor(rH/3))){
       let s=0,c=0;for(let x=mx;x<Math.min(W,mx+sw);x++){s+=g(d,(y*W+x)*4);c++;}
-      const avg=c?s/c:255;if(prev>160&&avg<160)tr++;prev=avg;
+      const avg=c?s/c:255;if(prev>155&&avg<155)tr++;prev=avg;
     }
     totTr=Math.max(totTr,tr);
   }
-  const ok=totTr>=6;return{ok,msg:ok?`Grid terdeteksi (${totTr}) ✓`:`Grid tidak ada (${totTr} transisi, butuh ≥6)`};
+  const ok=totTr>=3;
+  return{ok,msg:ok?`Grid terdeteksi (${totTr}) ✓`:`Grid tidak ada (${totTr} transisi)`};
 }
 function lNomor(d,W,H){
-  let dk=0;for(let i=0;i<120;i++){
-    const x=Math.floor(W*.053)+Math.floor(Math.random()*Math.floor(W*.037));
-    const y=Math.floor(H*.3)+Math.floor(Math.random()*Math.floor(H*.58));
-    if(g(d,(y*W+x)*4)<120)dk++;
+  // Kolom nomor — threshold 15% (sebelumnya 22%)
+  let dk=0;for(let i=0;i<80;i++){
+    const x=Math.floor(W*.04)+Math.floor(Math.random()*Math.floor(W*.06));
+    const y=Math.floor(H*.28)+Math.floor(Math.random()*Math.floor(H*.62));
+    if(g(d,(y*W+x)*4)<130)dk++;
   }
-  const r=dk/120,ok=r>=.22;return{ok,msg:ok?`Nomor kolom (${(r*100).toFixed(0)}%) ✓`:`Kolom nomor tidak ada (${(r*100).toFixed(0)}%)`};
+  const r=dk/80,ok=r>=0.15;
+  return{ok,msg:ok?`Nomor kolom OK (${(r*100).toFixed(0)}%) ✓`:`Kolom nomor tidak ada (${(r*100).toFixed(0)}%)`};
 }
 function lBubble(d,W,H){
-  let wh=0,tot=0;const sx=Math.max(1,Math.floor(W*.033/15)),sy=Math.max(1,Math.floor(H*.088/15));
-  for(let y=Math.floor(H*.292);y<Math.floor(H*.38);y+=sy)for(let x=Math.floor(W*.122);x<Math.floor(W*.155);x+=sx){
-    if(g(d,(y*W+x)*4)>180)wh++;tot++;
-  }
-  const r=tot?wh/tot:0,ok=r>=.32;
-  return{ok,msg:ok?`Bubble ada (${(r*100).toFixed(0)}% putih) ✓`:`Bubble tidak ada (${(r*100).toFixed(0)}%)`};
+  // Zona bubble — threshold putih 20% (sebelumnya 32%)
+  let wh=0,tot=0;
+  const sx=Math.max(1,Math.floor(W*.04/10)),sy=Math.max(1,Math.floor(H*.1/10));
+  for(let y=Math.floor(H*.28);y<Math.floor(H*.40);y+=sy)
+    for(let x=Math.floor(W*.11);x<Math.floor(W*.16);x+=sx){
+      if(g(d,(y*W+x)*4)>160)wh++;tot++;
+    }
+  const r=tot?wh/tot:0,ok=r>=0.20;
+  return{ok,msg:ok?`Bubble ada (${(r*100).toFixed(0)}% putih) ✓`:`Bubble tidak terdeteksi (${(r*100).toFixed(0)}%)`};
 }
 
 // ── Modal reject ────────────────────────────────────────────────
@@ -916,6 +971,75 @@ function autoBrightNorm(imgData, W, H) {
     out.data[i+3] = d[i+3];
   }
   return out;
+}
+
+// ── Tampilan BW + Blur di canvas (data pixel asli TIDAK berubah) ──
+// imgD tetap menyimpan warna asli untuk proses scan
+function applyBWBlur(){
+  const cv  = document.getElementById('cvMain');
+  const ctx = cv.getContext('2d');
+  // Ambil pixel dari imgD (data asli berwarna)
+  const src = imgD.data;
+  const W   = imgW, H = imgH;
+
+  // Step 1: Konversi ke grayscale
+  const gray = new Float32Array(W * H);
+  for(let i = 0; i < W * H; i++){
+    const p = i * 4;
+    gray[i] = 0.299*src[p] + 0.587*src[p+1] + 0.114*src[p+2];
+  }
+
+  // Step 2: Gaussian blur 3×3 ringan pada grayscale
+  const blurred = new Float32Array(W * H);
+  const kernel  = [1,2,1, 2,4,2, 1,2,1]; // Gaussian 3×3 (sum=16)
+  for(let y = 1; y < H-1; y++){
+    for(let x = 1; x < W-1; x++){
+      let s = 0;
+      let k = 0;
+      for(let dy = -1; dy <= 1; dy++){
+        for(let dx = -1; dx <= 1; dx++){
+          s += gray[(y+dy)*W+(x+dx)] * kernel[k++];
+        }
+      }
+      blurred[y*W+x] = s / 16;
+    }
+  }
+  // Tepi: copy langsung
+  for(let x = 0; x < W; x++){ blurred[x] = gray[x]; blurred[(H-1)*W+x] = gray[(H-1)*W+x]; }
+  for(let y = 0; y < H; y++){ blurred[y*W] = gray[y*W]; blurred[y*W+W-1] = gray[y*W+W-1]; }
+
+  // Step 3: Tulis ke canvas sebagai grayscale (R=G=B=nilai abu)
+  const out = ctx.createImageData(W, H);
+  for(let i = 0; i < W * H; i++){
+    const v  = Math.round(blurred[i]);
+    const p  = i * 4;
+    out.data[p]   = v;
+    out.data[p+1] = v;
+    out.data[p+2] = v;
+    out.data[p+3] = 255;
+  }
+  ctx.putImageData(out, 0, 0);
+
+  // Tampilkan keterangan di overlay canvas (teks kecil)
+  const ov  = document.getElementById('cvOverlay');
+  const ovCtx = ov.getContext('2d');
+  ovCtx.clearRect(0, 0, ov.width, ov.height);
+  const fs = Math.max(12, Math.floor(W * 0.022));
+  ovCtx.font = `bold ${fs}px monospace`;
+  ovCtx.fillStyle = 'rgba(0,229,255,0.85)';
+  ovCtx.fillRect(0, 0, W, fs * 1.6);
+  ovCtx.fillStyle = '#060c1a';
+  ovCtx.fillText('  🔲 MODE SCAN: Hitam-Putih + Blur  (data asli tersimpan)', 4, fs * 1.2);
+}
+
+// ── Reset canvas ke tampilan asli (berwarna, tidak buram) ────────
+function restoreCanvas(){
+  if(!imgD) return;
+  const cv  = document.getElementById('cvMain');
+  const ctx = cv.getContext('2d');
+  ctx.putImageData(imgD, 0, 0);
+  const ov = document.getElementById('cvOverlay');
+  ov.getContext('2d').clearRect(0, 0, ov.width, ov.height);
 }
 
 // ── Hitung skor pixel satu ROI ───────────────────────────────────
@@ -1280,18 +1404,30 @@ function clearCanvas(){
   document.getElementById('pvPanel').style.display='none';
   const ov=document.getElementById('cvOverlay');
   ov.getContext('2d').clearRect(0,0,ov.width,ov.height);
-  hasROI=false;
-  document.getElementById('btnRoi').textContent ='👁 ROI';
-  document.getElementById('btnRoi').disabled =true;
-  document.getElementById('btnPrev').disabled=true;
-  document.getElementById('btnScan').disabled=true;
+  hasROI=false; isBW=false;
+  document.getElementById('btnRoi').textContent  = '👁 ROI';
+  document.getElementById('btnBW').textContent   = '🔲 Hitam-Putih';
+  document.getElementById('btnRoi').disabled  = true;
+  document.getElementById('btnPrev').disabled = true;
+  document.getElementById('btnScan').disabled = true;
+  document.getElementById('btnBW').disabled   = true;
 }
 function doReset(){
-  imgD=null;imgW=0;imgH=0;
+  imgD=null; imgW=0; imgH=0;
   clearCanvas();
   document.getElementById('fileInput').value='';
   setPbar(-1);
   setSbar('idle','Upload LJK terlebih dahulu');
+}
+
+// ── Toggle tampilan BW ↔ Asli ────────────────────────────────────
+function toggleBW(){
+  if(!imgD) return;
+  isBW = !isBW;
+  const btn = document.getElementById('btnBW');
+  if(isBW){ applyBWBlur(); btn.textContent='🎨 Lihat Warna Asli'; }
+  else     { restoreCanvas(); btn.textContent='🔲 Hitam-Putih'; }
+  if(hasROI){ hasROI=false; toggleROI(); }
 }
 function dlText(txt,fname){
   const a=document.createElement('a');
