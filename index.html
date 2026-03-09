@@ -2,12 +2,11 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#060c1a">
-<title>BB LJK Scanner v4</title>
-<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&family=Exo+2:wght@400;600;700&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="theme-color" content="#050b18">
+<title>LJK Scanner v5 — Benyamin Batau</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
@@ -158,17 +157,26 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .cnt{font-size:11px;color:var(--cy);font-family:'Share Tech Mono',monospace;font-weight:700}
 /* Simbol warna mini */
 .sym-A{color:#1565c0}.sym-B{color:#1b5e20}.sym-C{color:#f57f17}.sym-D{color:#b71c1c}.sym-E{color:#6a1b9a}
+
+/* v5 additions */
+.flat-info{padding:7px 10px;border-radius:6px;font-size:10px;
+  font-family:'Share Tech Mono',monospace;margin-bottom:8px;
+  border:1px solid rgba(255,255,255,.08);display:none;}
+.fmt-badge{display:inline-block;padding:2px 8px;border-radius:10px;
+  font-size:10px;font-weight:700;margin-left:6px;}
+.fmt-v4{background:rgba(21,101,192,.25);color:#64b5f6;border:1px solid #1565c0;}
+.fmt-kotak{background:rgba(0,150,136,.25);color:#4db6ac;border:1px solid #00897b;}
+.fmt-unk{background:rgba(255,171,0,.18);color:#ffcc02;border:1px solid #ff9100;}
+.fmt-sel{background:var(--bg2);border:1px solid var(--bd);color:var(--tx1);
+  padding:4px 8px;border-radius:6px;font-size:11px;cursor:pointer;}
+.upzone-sub2{font-size:9px;color:var(--tx3);margin-top:3px;}
 </style>
 </head>
 <body>
 
 <div class="hdr">
-  <div class="hdr-logo">📐</div>
-  <div class="hdr-info">
-    <h1>BENYAMIN BATAU LJK SCANNER</h1>
-    <p>DETEKSI 2 LAPIS: BANGUN DATAR → ARSIRAN  ·  v4.1</p>
-  </div>
-  <div class="badge">v4.1</div>
+  <div class="hdr-logo">📋 LJK Scanner</div>
+  <div class="hdr-info">Benyamin Batau <span style="color:var(--cy)">v5.0</span></div>
 </div>
 
 <div class="tabs">
@@ -179,188 +187,198 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
   <div class="tab"    onclick="goTab(4)"><i>⚙️</i>KALIBR</div>
 </div>
 
-<div class="toast" id="toast"></div>
-
-<div class="modal" id="mReject">
-  <div class="mbox">
-    <span class="micon">🚫</span>
-    <div class="mtitle">GAMBAR DITOLAK</div>
-    <div class="mmsg" id="mMsg">Gambar tidak dikenali sebagai LJK v4.</div>
-    <div class="vlist" id="mList"></div>
-    <div class="mdet"  id="mDet"></div>
-    <div class="mhint" id="mHint"></div>
-    <div class="mt8"><button class="btn btn-gh" onclick="closeModal()">↩ Upload Ulang</button></div>
+<div id="toast" class="toast"></div>
+<div id="mReject" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-title">❌ Gambar Ditolak</div>
+    <div class="modal-msg"  id="mMsg"></div>
+    <div class="modal-det"  id="mDet"></div>
+    <div id="mList" class="modal-list"></div>
+    <div id="mHint" class="ibox mt8" style="font-size:10px"></div>
+    <button class="btn btn-cy mt8" onclick="closeModal()">Tutup</button>
   </div>
 </div>
 
-<!-- TAB 0: SCAN -->
+<!-- ══ TAB 0: SCAN ══════════════════════════════════════════ -->
 <div class="pg on" id="pg0">
   <div class="card">
     <div class="ctitle">Identitas Siswa</div>
     <span class="lbl">Nama Lengkap</span>
     <input class="fi" type="text" id="inNama" placeholder="Nama siswa..." autocomplete="off">
     <div class="g2 mt8">
-      <div><span class="lbl">No. Absen</span><input class="fi" type="number" id="inAbsen" placeholder="01" min="1" max="99"></div>
-      <div><span class="lbl">Kelas</span><input class="fi" type="text" id="inKelas" placeholder="X-TKJ-1"></div>
+      <div><span class="lbl">No. Absen</span>
+           <input class="fi" type="number" id="inAbsen" placeholder="01" min="1" max="99"></div>
+      <div><span class="lbl">Kelas</span>
+           <input class="fi" type="text" id="inKelas" placeholder="X-TKJ-1"></div>
     </div>
   </div>
 
   <div class="card">
-    <div class="ctitle">Upload Lembar Jawaban</div>
-    <div class="ibox">
-      Deteksi 2 lapis: <b>① Bangun datar</b> (▲=A ●=B ■=C ★=D ⬡=E) → <b>② Arsiran lingkaran tengah</b><br>
-      Hanya LJK <b>Benyamin Batau v4</b> yang diterima.
+    <div class="ctitle">Upload Lembar Jawaban
+      <span class="fmt-badge fmt-unk" id="fmtBadge">auto</span>
     </div>
+    <div class="ibox" style="font-size:10px">
+      ✅ <b>Dual format:</b> LJK Simbol v4 (▲●■★⬡) &amp; LJK Kotak/Silang (SMKN)<br>
+      📐 <b>Auto-flatten:</b> luruskan perspektif → crop → normalize → center
+    </div>
+
+    <div class="g2 mt4" style="align-items:center">
+      <span class="lbl" style="margin:0">Format override:</span>
+      <select class="fmt-sel" id="fmtOverride" onchange="onFormatOverride()">
+        <option value="auto">🔍 Otomatis</option>
+        <option value="v4">▲ Simbol v4</option>
+        <option value="kotak">☒ Kotak/Silang</option>
+      </select>
+    </div>
+
     <div class="upzone" id="dropZone">
-      <input type="file" id="fileInput" accept="image/*,application/pdf" capture="environment" onchange="onFile(event)">
+      <input type="file" id="fileInput" accept="image/*,application/pdf"
+             capture="environment" onchange="onFile(event)">
       <div class="upzone-icon">📄</div>
-      <div class="upzone-txt">Foto / Upload LJK v4</div>
+      <div class="upzone-txt">Foto / Upload LJK</div>
       <div class="upzone-sub">JPG · PNG · HEIC · PDF · Maks 20MB</div>
+      <div class="upzone-sub2">Foto dari HP boleh miring/gelap/kuning — akan dikoreksi otomatis</div>
     </div>
   </div>
 
-  <div id="canvasWrap">
-    <canvas id="cvMain"></canvas>
-    <canvas id="cvOverlay"></canvas>
+  <div id="flatInfo" class="flat-info"></div>
+
+  <div id="canvasWrap" style="display:none;position:relative;margin:8px 0">
+    <canvas id="cvMain"   style="width:100%;border-radius:8px;display:block"></canvas>
+    <canvas id="cvOverlay" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none"></canvas>
   </div>
 
-  <div class="ibox" id="warpInfo" style="margin-bottom:8px;display:none;font-size:10px"></div>
-  <div class="sbar idle" id="sbar"><div class="sdot"></div><span id="sbarTxt">Upload LJK v4 terlebih dahulu</span></div>
+  <div class="sbar idle" id="sbar"><div class="sdot"></div><span id="sbarTxt">Upload LJK terlebih dahulu</span></div>
   <div class="pbar-wrap" id="pbarWrap"><div class="pbar-inner" id="pbar" style="width:0%"></div></div>
 
-  <div id="pvPanel">
-    <div class="pv-title">🔍 Preview — Deteksi Bangun &amp; Arsiran</div>
-    <div class="sm">🔵▲ = Bangun terdeteksi &nbsp;|&nbsp; <b>CYAN</b> = ada arsiran &nbsp;|&nbsp; 🟡? = ambigus</div>
+  <div id="pvPanel" style="display:none">
+    <div class="pv-title">🔍 Preview Deteksi</div>
+    <div class="sm"><b>CYAN</b>=terdeteksi &nbsp;|&nbsp; 🟡=ambigus &nbsp;|&nbsp; —=kosong</div>
     <div class="pv-grid" id="pvGrid"></div>
     <div class="sm mt8" id="pvInfo"></div>
-    <div class="mt8" id="pvDetail" style="font-size:9px;color:var(--tx3);font-family:Share Tech Mono,monospace;white-space:pre-wrap;line-height:1.6;max-height:120px;overflow-y:auto"></div>
+    <div class="mt8" id="pvDetail"
+         style="font-size:9px;color:var(--tx3);font-family:Share Tech Mono,monospace;
+                white-space:pre-wrap;line-height:1.6;max-height:120px;overflow-y:auto"></div>
   </div>
 
   <div class="g3 mt8">
-    <button class="btn btn-gh"  id="btnRoi"  onclick="toggleROI()"  disabled>👁 ROI</button>
-    <button class="btn btn-pu"  id="btnPrev" onclick="doPreview()"  disabled>🔍 Preview</button>
-    <button class="btn btn-cy"  id="btnScan" onclick="doScan()"     disabled>⚡ Scan</button>
+    <button class="btn btn-gh" id="btnRoi"  onclick="toggleROI()"  disabled>👁 ROI</button>
+    <button class="btn btn-pu" id="btnPrev" onclick="doPreview()"  disabled>🔍 Preview</button>
+    <button class="btn btn-cy" id="btnScan" onclick="doScan()"     disabled>⚡ Scan</button>
   </div>
   <div class="g2 mt8">
-    <button class="btn btn-gh"  id="btnBW"   onclick="toggleBW()"   disabled>🔲 BW Mode</button>
-    <button class="btn btn-gh"               onclick="doReset()">🔄 Reset</button>
+    <button class="btn btn-gh" id="btnBW"   onclick="toggleBW()"   disabled>🔲 BW Mode</button>
+    <button class="btn btn-gh"              onclick="doReset()">🔄 Reset</button>
   </div>
 </div>
 
-<!-- TAB 1: KUNCI -->
+<!-- ══ TAB 1: KUNCI ══════════════════════════════════════════ -->
 <div class="pg" id="pg1">
   <div class="card">
     <div class="ctitle">Kunci Jawaban — 50 Soal</div>
-    <div class="ibox">▲=A &nbsp; ●=B &nbsp; ■=C &nbsp; ★=D &nbsp; ⬡=E</div>
-    <div class="sm">Terisi: <span class="cnt" id="kCount">0</span>/50</div>
-    <div id="kunciWrap"></div>
-    <div class="sep"></div>
-    <div class="g2">
-      <button class="btn btn-gh" onclick="kRandom()">🎲 Acak</button>
-      <button class="btn btn-gh" onclick="kClear()">🗑 Kosong</button>
+    <div class="ibox" style="font-size:10px">
+      ▲=A &nbsp; ●=B &nbsp; ■=C &nbsp; ★=D &nbsp; ⬡=E
+      &nbsp;|&nbsp; Format kotak: A B C D E
     </div>
-    <div class="mt8"><button class="btn btn-gh" onclick="kImport()">📥 Import 50 sekaligus</button></div>
-    <div class="mt8"><button class="btn btn-am" onclick="kSave()">💾 Simpan</button></div>
+    <div class="sm">Terisi: <span class="cnt" id="kCount">0</span>/50</div>
+    <div class="kunci-wrap" id="kunciWrap"></div>
+    <div class="g3 mt8">
+      <button class="btn btn-gh" onclick="kClear()">🗑 Hapus</button>
+      <button class="btn btn-gh" onclick="kRandom()">🎲 Acak</button>
+      <button class="btn btn-cy" onclick="kImport()">📋 Import</button>
+    </div>
+    <button class="btn btn-am mt8" onclick="kSave()" style="width:100%">💾 Simpan Kunci</button>
   </div>
 </div>
 
-<!-- TAB 2: HASIL -->
+<!-- ══ TAB 2: HASIL ═══════════════════════════════════════════ -->
 <div class="pg" id="pg2">
   <div class="ibox" id="hEmpty">Belum ada hasil. Scan LJK di tab SCAN.</div>
   <div id="hContent" style="display:none">
     <div class="skorbig">
       <div class="sval"   id="hNilai">—</div>
       <div class="sgrade" id="hGrade">—</div>
-      <div class="sdet"   id="hDet">—</div>
-      <div style="font-size:10px;color:var(--tx3);margin-top:4px" id="hConf">—</div>
     </div>
-    <div class="card">
-      <div class="ctitle">Detail 50 Jawaban</div>
-      <div class="sm mb4">▲=A ●=B ■=C ★=D ⬡=E &nbsp;|&nbsp; 🟢=benar 🔴=salah 🟡=kosong</div>
-      <div class="hgrid" id="hGrid"></div>
-    </div>
-    <div class="card">
-      <div class="ctitle">Peta Hasil</div>
-      <div class="ibar" id="ibar"></div>
-      <div class="sm mt8" id="hConf2"></div>
-    </div>
-    <div class="card">
-      <div class="ctitle">Export</div>
-      <div class="g2">
-        <button class="btn btn-gn" onclick="hSimpan()">💾 Simpan</button>
-        <button class="btn btn-cy" onclick="hPDF()">🖨 PDF</button>
-      </div>
-      <div class="mt8"><button class="btn btn-gh" onclick="hTXT()">📝 TXT</button></div>
+    <div class="sm tc"  id="hDet"></div>
+    <div class="sm tc"  id="hConf" style="font-size:9px;color:var(--tx3)"></div>
+    <div class="ibar"   id="ibar"></div>
+    <div class="sm tc"  id="hConf2" style="margin:6px 0"></div>
+    <div class="hgrid"  id="hGrid"></div>
+    <div class="g3 mt8">
+      <button class="btn btn-gh" onclick="hTXT()">📄 TXT</button>
+      <button class="btn btn-gh" onclick="hPDF()">🖨 PDF</button>
+      <button class="btn btn-am" onclick="hSimpan()">💾 Rekap</button>
     </div>
   </div>
 </div>
 
-<!-- TAB 3: REKAP -->
+<!-- ══ TAB 3: REKAP ═══════════════════════════════════════════ -->
 <div class="pg" id="pg3">
   <div class="card">
     <div class="ctitle">Statistik</div>
     <div class="stat3">
-      <div class="stcard"><div class="stval" id="rJml" style="color:var(--cy)">0</div><div class="stlbl">Siswa</div></div>
-      <div class="stcard"><div class="stval" id="rRata" style="color:var(--gn)">—</div><div class="stlbl">Rata-rata</div></div>
-      <div class="stcard"><div class="stval" id="rLulus" style="color:var(--am)">0%</div><div class="stlbl">Lulus ≥75</div></div>
+      <div class="stcard"><div class="stval" id="rJml" style="color:var(--cy)">0</div>
+        <div class="stlbl">Siswa</div></div>
+      <div class="stcard"><div class="stval" id="rRata" style="color:var(--gn)">—</div>
+        <div class="stlbl">Rata-rata</div></div>
+      <div class="stcard"><div class="stval" id="rLulus" style="color:var(--ye)">0%</div>
+        <div class="stlbl">Lulus ≥75</div></div>
     </div>
     <div class="barchart" id="barChart"></div>
-    <div class="g2"><button class="btn btn-cy" onclick="rPDF()">🖨 Rekap PDF</button><button class="btn btn-gh" onclick="rTXT()">📝 TXT</button></div>
-    <div class="mt8"><button class="btn btn-rd" onclick="rHapus()">🗑 Hapus Semua</button></div>
   </div>
   <div class="card">
-    <div class="ctitle">Daftar Nilai</div>
-    <div style="overflow-x:auto">
-      <table class="rtbl"><thead><tr><th>#</th><th>Nama</th><th>Kls</th><th>Benar</th><th>Nilai</th><th>Grade</th></tr></thead>
-      <tbody id="rBody"></tbody></table>
+    <div class="ctitle">Daftar Hasil</div>
+    <table class="rtable">
+      <thead><tr><th>#</th><th>Nama</th><th>Kelas</th><th>Benar</th><th>Nilai</th><th>Grade</th></tr></thead>
+      <tbody id="rBody"></tbody>
+    </table>
+    <div class="g3 mt8">
+      <button class="btn btn-gh" onclick="rTXT()">📄 TXT</button>
+      <button class="btn btn-gh" onclick="rPDF()">🖨 PDF</button>
+      <button class="btn btn-rd" onclick="rHapus()">🗑 Hapus</button>
     </div>
   </div>
 </div>
 
-<!-- TAB 4: KALIBRASI -->
+<!-- ══ TAB 4: KALIBRASI ══════════════════════════════════════ -->
 <div class="pg" id="pg4">
   <div class="card">
-    <div class="ctitle">Parameter Deteksi 2 Lapis</div>
-    <div class="ibox">
-      <b>Layer 1 (Bangun):</b> threshold warna untuk verifikasi simbol ada<br>
-      <b>Layer 2 (Arsiran):</b> threshold gelap untuk deteksi isian lingkaran
+    <div class="ctitle">Parameter Deteksi</div>
+    <div class="ibox" style="font-size:10px">
+      <b>Relative Scoring</b> — akurat untuk semua kondisi foto HP.<br>
+      Deteksi berdasarkan kontras lokal sel vs background, bukan nilai absolut.
     </div>
 
-    <span class="lbl">🔵 L1 — Min saturasi warna bangun (0–60)</span>
-    <div class="slwrap"><input type="range" id="sWarnaThr" min="0" max="60" value="8" oninput="kalSync()"><span class="slval" id="vWarnaThr">8</span></div>
+    <span class="lbl">⬤ Threshold gelap arsiran / tanda (gray &lt; X)</span>
+    <div class="slwrap"><input type="range" id="sArsirThr" min="80" max="220" value="170" oninput="kalSync()">
+      <span class="slval" id="vArsirThr">170</span></div>
 
-    <span class="lbl">⬤ L2 — Threshold gelap arsiran (gray &lt; X)</span>
-    <div class="slwrap"><input type="range" id="sArsirThr" min="80" max="220" value="170" oninput="kalSync()"><span class="slval" id="vArsirThr">170</span></div>
+    <span class="lbl">📐 Min Gap Skor antar opsi (makin besar = makin ketat)</span>
+    <div class="slwrap"><input type="range" id="sMinDiff" min="3" max="40" value="12" oninput="kalSync()">
+      <span class="slval" id="vMinDiff">12</span></div>
 
-    <span class="lbl">⬤ L2 — Min % piksel gelap (arsiran valid)</span>
-    <div class="slwrap"><input type="range" id="sArsirMin" min="3" max="50" value="8" oninput="kalSync()"><span class="slval" id="vArsirMin">8%</span></div>
+    <span class="lbl">📐 Min Skor Absolut (batas ada tanda)</span>
+    <div class="slwrap"><input type="range" id="sMinScore" min="1" max="30" value="5" oninput="kalSync()">
+      <span class="slval" id="vMinScore">5</span></div>
 
-    <span class="lbl">⬤ L2 — Rasio dominansi (jawaban vs rata-rata)</span>
-    <div class="slwrap"><input type="range" id="sRatio" min="10" max="60" value="25" oninput="kalSync()"><span class="slval" id="vRatio">1.25×</span></div>
+    <div class="sep"></div>
+    <span class="lbl">🔧 Offset X grid (kiri−kanan)</span>
+    <div class="slwrap"><input type="range" id="sOfsX" min="-50" max="50" value="0" oninput="kalSync()">
+      <span class="slval" id="vOfsX">0px</span></div>
 
-    <span class="lbl">🔧 Offset X (geser grid kiri-kanan)</span>
-    <div class="slwrap"><input type="range" id="sOfsX" min="-50" max="50" value="0" oninput="kalSync()"><span class="slval" id="vOfsX">0px</span></div>
-
-    <span class="lbl">🔧 Offset Y (geser grid atas-bawah)</span>
-    <div class="slwrap"><input type="range" id="sOfsY" min="-50" max="50" value="0" oninput="kalSync()"><span class="slval" id="vOfsY">0px</span></div>
+    <span class="lbl">🔧 Offset Y grid (atas−bawah)</span>
+    <div class="slwrap"><input type="range" id="sOfsY" min="-50" max="50" value="0" oninput="kalSync()">
+      <span class="slval" id="vOfsY">0px</span></div>
 
     <span class="lbl">🔧 Skala X</span>
-    <div class="slwrap"><input type="range" id="sSX" min="80" max="120" value="100" oninput="kalSync()"><span class="slval" id="vSX">1.00</span></div>
+    <div class="slwrap"><input type="range" id="sSX" min="80" max="120" value="100" oninput="kalSync()">
+      <span class="slval" id="vSX">1.00</span></div>
 
     <span class="lbl">🔧 Skala Y</span>
-    <div class="slwrap"><input type="range" id="sSY" min="80" max="120" value="100" oninput="kalSync()"><span class="slval" id="vSY">1.00</span></div>
+    <div class="slwrap"><input type="range" id="sSY" min="80" max="120" value="100" oninput="kalSync()">
+      <span class="slval" id="vSY">1.00</span></div>
 
     <div class="sep"></div>
-     <span class="lbl">📐 Min Gap Skor — relative scoring (foto HP)</span>
-    <div class="slwrap"><input type="range" id="sMinDiff" min="3" max="40" value="12" oninput="kalSync()"><span class="slval" id="vMinDiff">12</span></div>
-
-    <span class="lbl">📐 Min Skor — batas ada arsiran</span>
-    <div class="slwrap"><input type="range" id="sMinScore" min="1" max="30" value="5" oninput="kalSync()"><span class="slval" id="vMinScore">5</span></div>
-
-    <div class="sep"></div>
-    <div class="ibox" style="font-size:10px">
-      <b>Relative Scoring:</b> deteksi arsiran berdasarkan kontras lokal (background vs inner circle) — akurat untuk foto HP berbagai kondisi cahaya &amp; perspektif.
-    </div>
     <div class="g2">
       <button class="btn btn-gh" onclick="kalReset()">🔄 Default</button>
       <button class="btn btn-am" onclick="kalSave()">💾 Simpan</button>
@@ -369,13 +387,30 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 </div>
 
 <script>
+function onFormatOverride(){
+  const v=document.getElementById('fmtOverride').value;
+  const badge=document.getElementById('fmtBadge');
+  badge.className='fmt-badge '+(v==='v4'?'fmt-v4':v==='kotak'?'fmt-kotak':'fmt-unk');
+  badge.textContent=v==='auto'?'auto':v==='v4'?'Simbol v4':'Kotak';
+  if(imgD)runPipeline(); // re-detect jika gambar sudah ada
+}
+
+// ═══════════════════════════════════════════════════════════════
+// LJK SCANNER v5.0 — Benyamin Batau
+// Dual format: v4 (simbol ▲●■★⬡) + Kotak/Silang (SMKN)
+// Pre-processing: auto-flatten + perspective warp + normalize
+// ═══════════════════════════════════════════════════════════════
+
 const C    = {"page_w":595.276,"page_h":841.89,"outer_r":0.01488,"inner_r":0.00595,"grid":[{"nomor":1,"opsi":[{"opsi":"A","rx":0.12179,"ry":0.18144,"rw":0.01904,"rh":0.01346,"cx":0.13131,"cy":0.18817},{"opsi":"B","rx":0.20297,"ry":0.18144,"rw":0.01904,"rh":0.01346,"cx":0.21249,"cy":0.18817},{"opsi":"C","rx":0.28416,"ry":0.18144,"rw":0.01904,"rh":0.01346,"cx":0.29368,"cy":0.18817},{"opsi":"D","rx":0.36534,"ry":0.18144,"rw":0.01904,"rh":0.01346,"cx":0.37486,"cy":0.18817},{"opsi":"E","rx":0.44653,"ry":0.18144,"rw":0.01904,"rh":0.01346,"cx":0.45605,"cy":0.18817}]},{"nomor":2,"opsi":[{"opsi":"A","rx":0.12179,"ry":0.21331,"rw":0.01904,"rh":0.01346,"cx":0.13131,"cy":0.22004},{"opsi":"B","rx":0.20297,"ry":0.21331,"rw":0.01904,"rh":0.01346,"cx":0.21249,"cy":0.22004},{"opsi":"C","rx":0.28416,"ry":0.21331,"rw":0.01904,"rh":0.01346,"cx":0.29368,"cy":0.22004},{"opsi":"D","rx":0.36534,"ry":0.21331,"rw":0.01904,"rh":0.01346,"cx":0.37486,"cy":0.22004},{"opsi":"E","rx":0.44653,"ry":0.21331,"rw":0.01904,"rh":0.01346,"cx":0.45605,"cy":0.22004}]},{"nomor":3,"opsi":[{"opsi":"A","rx":0.12179,"ry":0.24519,"rw":0.01904,"rh":0.01346,"cx":0.13131,"cy":0.25192},{"opsi":"B","rx":0.20297,"ry":0.24519,"rw":0.01904,"rh":0.01346,"cx":0.21249,"cy":0.25192},{"opsi":"C","rx":0.28416,"ry":0.24519,"rw":0.01904,"rh":0.01346,"cx":0.29368,"cy":0.25192},{"opsi":"D","rx":0.36534,"ry":0.24519,"rw":0.01904,"rh":0.01346,"cx":0.37486,"cy":0.25192},{"opsi":"E","rx":0.44653,"ry":0.24519,"rw":0.01904,"rh":0.01346,"cx":0.45605,"cy":0.25192}]},{"nomor":4,"opsi":[{"opsi":"A","rx":0.12179,"ry":0.27706,"rw":0.01904,"rh":0.01346,"cx":0.13131,"cy":0.2838},{"opsi":"B","rx":0.20297,"ry":0.27706,"rw":0.01904,"rh":0.01346,"cx":0.21249,"cy":0.2838},{"opsi":"C","rx":0.28416,"ry":0.27706,"rw":0.01904,"rh":0.01346,"cx":0.29368,"cy":0.2838},{"opsi":"D","rx":0.36534,"ry":0.27706,"rw":0.01904,"rh":0.01346,"cx":0.37486,"cy":0.2838},{"opsi":"E","rx":0.44653,"ry":0.27706,"rw":0.01904,"rh":0.01346,"cx":0.45605,"cy":0.2838}]},{"nomor":5,"opsi":[{"opsi":"A","rx":0.12179,"ry":0.30894,"rw":0.01904,"rh":0.01346,"cx":0.13131,"cy":0.31567},{"opsi":"B","rx":0.20297,"ry":0.30894,"rw":0.01904,"rh":0.01346,"cx":0.21249,"cy":0.31567},{"opsi":"C","rx":0.28416,"ry":0.30894,"rw":0.01904,"rh":0.01346,"cx":0.29368,"cy":0.31567},{"opsi":"D","rx":0.36534,"ry":0.30894,"rw":0.01904,"rh":0.01346,"cx":0.37486,"cy":0.31567},{"opsi":"E","rx":0.44653,"ry":0.30894,"rw":0.01904,"rh":0.01346,"cx":0.45605,"cy":0.31567}]},{"nomor":6,"opsi":[{"opsi":"A","rx":0.12179,"ry":0.34081,"rw":0.01904,"rh":0.01346,"cx":0.13131,"cy":0.34755},{"opsi":"B","rx":0.20297,"ry":0.34081,"rw":0.01904,"rh":0.01346,"cx":0.21249,"cy":0.34755},{"opsi":"C","rx":0.28416,"ry":0.34081,"rw":0.01904,"rh":0.01346,"cx":0.29368,"cy":0.34755},{"opsi":"D","rx":0.36534,"ry":0.34081,"rw":0.01904,"rh":0.01346,"cx":0.37486,"cy":0.34755},{"opsi":"E","rx":0.44653,"ry":0.34081,"rw":0.01904,"rh":0.01346,"cx":0.45605,"cy":0.34755}]},{"nomor":7,"opsi":[{"opsi":"A","rx":0.12179,"ry":0.37269,"rw":0.01904,"rh":0.01346,"cx":0.13131,"cy":0.37942},{"opsi":"B","rx":0.20297,"ry":0.37269,"rw":0.01904,"rh":0.01346,"cx":0.21249,"cy":0.37942},{"opsi":"C","rx":0.28416,"ry":0.37269,"rw":0.01904,"rh":0.01346,"cx":0.29368,"cy":0.37942},{"opsi":"D","rx":0.36534,"ry":0.37269,"rw":0.01904,"rh":0.01346,"cx":0.37486,"cy":0.37942},{"opsi":"E","rx":0.44653,"ry":0.37269,"rw":0.01904,"rh":0.01346,"cx":0.45605,"cy":0.37942}]},{"nomor":8,"opsi":[{"opsi":"A","rx":0.12179,"ry":0.40457,"rw":0.01904,"rh":0.01346,"cx":0.13131,"cy":0.4113},{"opsi":"B","rx":0.20297,"ry":0.40457,"rw":0.01904,"rh":0.01346,"cx":0.21249,"cy":0.4113},{"opsi":"C","rx":0.28416,"ry":0.40457,"rw":0.01904,"rh":0.01346,"cx":0.29368,"cy":0.4113},{"opsi":"D","rx":0.36534,"ry":0.40457,"rw":0.01904,"rh":0.01346,"cx":0.37486,"cy":0.4113},{"opsi":"E","rx":0.44653,"ry":0.40457,"rw":0.01904,"rh":0.01346,"cx":0.45605,"cy":0.4113}]},{"nomor":9,"opsi":[{"opsi":"A","rx":0.12179,"ry":0.43644,"rw":0.01904,"rh":0.01346,"cx":0.13131,"cy":0.44317},{"opsi":"B","rx":0.20297,"ry":0.43644,"rw":0.01904,"rh":0.01346,"cx":0.21249,"cy":0.44317},{"opsi":"C","rx":0.28416,"ry":0.43644,"rw":0.01904,"rh":0.01346,"cx":0.29368,"cy":0.44317},{"opsi":"D","rx":0.36534,"ry":0.43644,"rw":0.01904,"rh":0.01346,"cx":0.37486,"cy":0.44317},{"opsi":"E","rx":0.44653,"ry":0.43644,"rw":0.01904,"rh":0.01346,"cx":0.45605,"cy":0.44317}]},{"nomor":10,"opsi":[{"opsi":"A","rx":0.12179,"ry":0.46832,"rw":0.01904,"rh":0.01346,"cx":0.13131,"cy":0.47505},{"opsi":"B","rx":0.20297,"ry":0.46832,"rw":0.01904,"rh":0.01346,"cx":0.21249,"cy":0.47505},{"opsi":"C","rx":0.28416,"ry":0.46832,"rw":0.01904,"rh":0.01346,"cx":0.29368,"cy":0.47505},{"opsi":"D","rx":0.36534,"ry":0.46832,"rw":0.01904,"rh":0.01346,"cx":0.37486,"cy":0.47505},{"opsi":"E","rx":0.44653,"ry":0.46832,"rw":0.01904,"rh":0.01346,"cx":0.45605,"cy":0.47505}]},{"nomor":11,"opsi":[{"opsi":"A","rx":0.12179,"ry":0.50019,"rw":0.01904,"rh":0.01346,"cx":0.13131,"cy":0.50692},{"opsi":"B","rx":0.20297,"ry":0.50019,"rw":0.01904,"rh":0.01346,"cx":0.21249,"cy":0.50692},{"opsi":"C","rx":0.28416,"ry":0.50019,"rw":0.01904,"rh":0.01346,"cx":0.29368,"cy":0.50692},{"opsi":"D","rx":0.36534,"ry":0.50019,"rw":0.01904,"rh":0.01346,"cx":0.37486,"cy":0.50692},{"opsi":"E","rx":0.44653,"ry":0.50019,"rw":0.01904,"rh":0.01346,"cx":0.45605,"cy":0.50692}]},{"nomor":12,"opsi":[{"opsi":"A","rx":0.12179,"ry":0.53207,"rw":0.01904,"rh":0.01346,"cx":0.13131,"cy":0.5388},{"opsi":"B","rx":0.20297,"ry":0.53207,"rw":0.01904,"rh":0.01346,"cx":0.21249,"cy":0.5388},{"opsi":"C","rx":0.28416,"ry":0.53207,"rw":0.01904,"rh":0.01346,"cx":0.29368,"cy":0.5388},{"opsi":"D","rx":0.36534,"ry":0.53207,"rw":0.01904,"rh":0.01346,"cx":0.37486,"cy":0.5388},{"opsi":"E","rx":0.44653,"ry":0.53207,"rw":0.01904,"rh":0.01346,"cx":0.45605,"cy":0.5388}]},{"nomor":13,"opsi":[{"opsi":"A","rx":0.12179,"ry":0.56394,"rw":0.01904,"rh":0.01346,"cx":0.13131,"cy":0.57067},{"opsi":"B","rx":0.20297,"ry":0.56394,"rw":0.01904,"rh":0.01346,"cx":0.21249,"cy":0.57067},{"opsi":"C","rx":0.28416,"ry":0.56394,"rw":0.01904,"rh":0.01346,"cx":0.29368,"cy":0.57067},{"opsi":"D","rx":0.36534,"ry":0.56394,"rw":0.01904,"rh":0.01346,"cx":0.37486,"cy":0.57067},{"opsi":"E","rx":0.44653,"ry":0.56394,"rw":0.01904,"rh":0.01346,"cx":0.45605,"cy":0.57067}]},{"nomor":14,"opsi":[{"opsi":"A","rx":0.12179,"ry":0.59582,"rw":0.01904,"rh":0.01346,"cx":0.13131,"cy":0.60255},{"opsi":"B","rx":0.20297,"ry":0.59582,"rw":0.01904,"rh":0.01346,"cx":0.21249,"cy":0.60255},{"opsi":"C","rx":0.28416,"ry":0.59582,"rw":0.01904,"rh":0.01346,"cx":0.29368,"cy":0.60255},{"opsi":"D","rx":0.36534,"ry":0.59582,"rw":0.01904,"rh":0.01346,"cx":0.37486,"cy":0.60255},{"opsi":"E","rx":0.44653,"ry":0.59582,"rw":0.01904,"rh":0.01346,"cx":0.45605,"cy":0.60255}]},{"nomor":15,"opsi":[{"opsi":"A","rx":0.12179,"ry":0.62769,"rw":0.01904,"rh":0.01346,"cx":0.13131,"cy":0.63443},{"opsi":"B","rx":0.20297,"ry":0.62769,"rw":0.01904,"rh":0.01346,"cx":0.21249,"cy":0.63443},{"opsi":"C","rx":0.28416,"ry":0.62769,"rw":0.01904,"rh":0.01346,"cx":0.29368,"cy":0.63443},{"opsi":"D","rx":0.36534,"ry":0.62769,"rw":0.01904,"rh":0.01346,"cx":0.37486,"cy":0.63443},{"opsi":"E","rx":0.44653,"ry":0.62769,"rw":0.01904,"rh":0.01346,"cx":0.45605,"cy":0.63443}]},{"nomor":16,"opsi":[{"opsi":"A","rx":0.12179,"ry":0.65957,"rw":0.01904,"rh":0.01346,"cx":0.13131,"cy":0.6663},{"opsi":"B","rx":0.20297,"ry":0.65957,"rw":0.01904,"rh":0.01346,"cx":0.21249,"cy":0.6663},{"opsi":"C","rx":0.28416,"ry":0.65957,"rw":0.01904,"rh":0.01346,"cx":0.29368,"cy":0.6663},{"opsi":"D","rx":0.36534,"ry":0.65957,"rw":0.01904,"rh":0.01346,"cx":0.37486,"cy":0.6663},{"opsi":"E","rx":0.44653,"ry":0.65957,"rw":0.01904,"rh":0.01346,"cx":0.45605,"cy":0.6663}]},{"nomor":17,"opsi":[{"opsi":"A","rx":0.12179,"ry":0.69144,"rw":0.01904,"rh":0.01346,"cx":0.13131,"cy":0.69818},{"opsi":"B","rx":0.20297,"ry":0.69144,"rw":0.01904,"rh":0.01346,"cx":0.21249,"cy":0.69818},{"opsi":"C","rx":0.28416,"ry":0.69144,"rw":0.01904,"rh":0.01346,"cx":0.29368,"cy":0.69818},{"opsi":"D","rx":0.36534,"ry":0.69144,"rw":0.01904,"rh":0.01346,"cx":0.37486,"cy":0.69818},{"opsi":"E","rx":0.44653,"ry":0.69144,"rw":0.01904,"rh":0.01346,"cx":0.45605,"cy":0.69818}]},{"nomor":18,"opsi":[{"opsi":"A","rx":0.12179,"ry":0.72332,"rw":0.01904,"rh":0.01346,"cx":0.13131,"cy":0.73005},{"opsi":"B","rx":0.20297,"ry":0.72332,"rw":0.01904,"rh":0.01346,"cx":0.21249,"cy":0.73005},{"opsi":"C","rx":0.28416,"ry":0.72332,"rw":0.01904,"rh":0.01346,"cx":0.29368,"cy":0.73005},{"opsi":"D","rx":0.36534,"ry":0.72332,"rw":0.01904,"rh":0.01346,"cx":0.37486,"cy":0.73005},{"opsi":"E","rx":0.44653,"ry":0.72332,"rw":0.01904,"rh":0.01346,"cx":0.45605,"cy":0.73005}]},{"nomor":19,"opsi":[{"opsi":"A","rx":0.12179,"ry":0.75519,"rw":0.01904,"rh":0.01346,"cx":0.13131,"cy":0.76193},{"opsi":"B","rx":0.20297,"ry":0.75519,"rw":0.01904,"rh":0.01346,"cx":0.21249,"cy":0.76193},{"opsi":"C","rx":0.28416,"ry":0.75519,"rw":0.01904,"rh":0.01346,"cx":0.29368,"cy":0.76193},{"opsi":"D","rx":0.36534,"ry":0.75519,"rw":0.01904,"rh":0.01346,"cx":0.37486,"cy":0.76193},{"opsi":"E","rx":0.44653,"ry":0.75519,"rw":0.01904,"rh":0.01346,"cx":0.45605,"cy":0.76193}]},{"nomor":20,"opsi":[{"opsi":"A","rx":0.12179,"ry":0.78707,"rw":0.01904,"rh":0.01346,"cx":0.13131,"cy":0.7938},{"opsi":"B","rx":0.20297,"ry":0.78707,"rw":0.01904,"rh":0.01346,"cx":0.21249,"cy":0.7938},{"opsi":"C","rx":0.28416,"ry":0.78707,"rw":0.01904,"rh":0.01346,"cx":0.29368,"cy":0.7938},{"opsi":"D","rx":0.36534,"ry":0.78707,"rw":0.01904,"rh":0.01346,"cx":0.37486,"cy":0.7938},{"opsi":"E","rx":0.44653,"ry":0.78707,"rw":0.01904,"rh":0.01346,"cx":0.45605,"cy":0.7938}]},{"nomor":21,"opsi":[{"opsi":"A","rx":0.12179,"ry":0.81895,"rw":0.01904,"rh":0.01346,"cx":0.13131,"cy":0.82568},{"opsi":"B","rx":0.20297,"ry":0.81895,"rw":0.01904,"rh":0.01346,"cx":0.21249,"cy":0.82568},{"opsi":"C","rx":0.28416,"ry":0.81895,"rw":0.01904,"rh":0.01346,"cx":0.29368,"cy":0.82568},{"opsi":"D","rx":0.36534,"ry":0.81895,"rw":0.01904,"rh":0.01346,"cx":0.37486,"cy":0.82568},{"opsi":"E","rx":0.44653,"ry":0.81895,"rw":0.01904,"rh":0.01346,"cx":0.45605,"cy":0.82568}]},{"nomor":22,"opsi":[{"opsi":"A","rx":0.12179,"ry":0.85082,"rw":0.01904,"rh":0.01346,"cx":0.13131,"cy":0.85755},{"opsi":"B","rx":0.20297,"ry":0.85082,"rw":0.01904,"rh":0.01346,"cx":0.21249,"cy":0.85755},{"opsi":"C","rx":0.28416,"ry":0.85082,"rw":0.01904,"rh":0.01346,"cx":0.29368,"cy":0.85755},{"opsi":"D","rx":0.36534,"ry":0.85082,"rw":0.01904,"rh":0.01346,"cx":0.37486,"cy":0.85755},{"opsi":"E","rx":0.44653,"ry":0.85082,"rw":0.01904,"rh":0.01346,"cx":0.45605,"cy":0.85755}]},{"nomor":23,"opsi":[{"opsi":"A","rx":0.12179,"ry":0.8827,"rw":0.01904,"rh":0.01346,"cx":0.13131,"cy":0.88943},{"opsi":"B","rx":0.20297,"ry":0.8827,"rw":0.01904,"rh":0.01346,"cx":0.21249,"cy":0.88943},{"opsi":"C","rx":0.28416,"ry":0.8827,"rw":0.01904,"rh":0.01346,"cx":0.29368,"cy":0.88943},{"opsi":"D","rx":0.36534,"ry":0.8827,"rw":0.01904,"rh":0.01346,"cx":0.37486,"cy":0.88943},{"opsi":"E","rx":0.44653,"ry":0.8827,"rw":0.01904,"rh":0.01346,"cx":0.45605,"cy":0.88943}]},{"nomor":24,"opsi":[{"opsi":"A","rx":0.12179,"ry":0.91457,"rw":0.01904,"rh":0.01346,"cx":0.13131,"cy":0.9213},{"opsi":"B","rx":0.20297,"ry":0.91457,"rw":0.01904,"rh":0.01346,"cx":0.21249,"cy":0.9213},{"opsi":"C","rx":0.28416,"ry":0.91457,"rw":0.01904,"rh":0.01346,"cx":0.29368,"cy":0.9213},{"opsi":"D","rx":0.36534,"ry":0.91457,"rw":0.01904,"rh":0.01346,"cx":0.37486,"cy":0.9213},{"opsi":"E","rx":0.44653,"ry":0.91457,"rw":0.01904,"rh":0.01346,"cx":0.45605,"cy":0.9213}]},{"nomor":25,"opsi":[{"opsi":"A","rx":0.12179,"ry":0.94645,"rw":0.01904,"rh":0.01346,"cx":0.13131,"cy":0.95318},{"opsi":"B","rx":0.20297,"ry":0.94645,"rw":0.01904,"rh":0.01346,"cx":0.21249,"cy":0.95318},{"opsi":"C","rx":0.28416,"ry":0.94645,"rw":0.01904,"rh":0.01346,"cx":0.29368,"cy":0.95318},{"opsi":"D","rx":0.36534,"ry":0.94645,"rw":0.01904,"rh":0.01346,"cx":0.37486,"cy":0.95318},{"opsi":"E","rx":0.44653,"ry":0.94645,"rw":0.01904,"rh":0.01346,"cx":0.45605,"cy":0.95318}]},{"nomor":26,"opsi":[{"opsi":"A","rx":0.57139,"ry":0.18144,"rw":0.01904,"rh":0.01346,"cx":0.58091,"cy":0.18817},{"opsi":"B","rx":0.65257,"ry":0.18144,"rw":0.01904,"rh":0.01346,"cx":0.6621,"cy":0.18817},{"opsi":"C","rx":0.73376,"ry":0.18144,"rw":0.01904,"rh":0.01346,"cx":0.74328,"cy":0.18817},{"opsi":"D","rx":0.81494,"ry":0.18144,"rw":0.01904,"rh":0.01346,"cx":0.82447,"cy":0.18817},{"opsi":"E","rx":0.89613,"ry":0.18144,"rw":0.01904,"rh":0.01346,"cx":0.90565,"cy":0.18817}]},{"nomor":27,"opsi":[{"opsi":"A","rx":0.57139,"ry":0.21331,"rw":0.01904,"rh":0.01346,"cx":0.58091,"cy":0.22004},{"opsi":"B","rx":0.65257,"ry":0.21331,"rw":0.01904,"rh":0.01346,"cx":0.6621,"cy":0.22004},{"opsi":"C","rx":0.73376,"ry":0.21331,"rw":0.01904,"rh":0.01346,"cx":0.74328,"cy":0.22004},{"opsi":"D","rx":0.81494,"ry":0.21331,"rw":0.01904,"rh":0.01346,"cx":0.82447,"cy":0.22004},{"opsi":"E","rx":0.89613,"ry":0.21331,"rw":0.01904,"rh":0.01346,"cx":0.90565,"cy":0.22004}]},{"nomor":28,"opsi":[{"opsi":"A","rx":0.57139,"ry":0.24519,"rw":0.01904,"rh":0.01346,"cx":0.58091,"cy":0.25192},{"opsi":"B","rx":0.65257,"ry":0.24519,"rw":0.01904,"rh":0.01346,"cx":0.6621,"cy":0.25192},{"opsi":"C","rx":0.73376,"ry":0.24519,"rw":0.01904,"rh":0.01346,"cx":0.74328,"cy":0.25192},{"opsi":"D","rx":0.81494,"ry":0.24519,"rw":0.01904,"rh":0.01346,"cx":0.82447,"cy":0.25192},{"opsi":"E","rx":0.89613,"ry":0.24519,"rw":0.01904,"rh":0.01346,"cx":0.90565,"cy":0.25192}]},{"nomor":29,"opsi":[{"opsi":"A","rx":0.57139,"ry":0.27706,"rw":0.01904,"rh":0.01346,"cx":0.58091,"cy":0.2838},{"opsi":"B","rx":0.65257,"ry":0.27706,"rw":0.01904,"rh":0.01346,"cx":0.6621,"cy":0.2838},{"opsi":"C","rx":0.73376,"ry":0.27706,"rw":0.01904,"rh":0.01346,"cx":0.74328,"cy":0.2838},{"opsi":"D","rx":0.81494,"ry":0.27706,"rw":0.01904,"rh":0.01346,"cx":0.82447,"cy":0.2838},{"opsi":"E","rx":0.89613,"ry":0.27706,"rw":0.01904,"rh":0.01346,"cx":0.90565,"cy":0.2838}]},{"nomor":30,"opsi":[{"opsi":"A","rx":0.57139,"ry":0.30894,"rw":0.01904,"rh":0.01346,"cx":0.58091,"cy":0.31567},{"opsi":"B","rx":0.65257,"ry":0.30894,"rw":0.01904,"rh":0.01346,"cx":0.6621,"cy":0.31567},{"opsi":"C","rx":0.73376,"ry":0.30894,"rw":0.01904,"rh":0.01346,"cx":0.74328,"cy":0.31567},{"opsi":"D","rx":0.81494,"ry":0.30894,"rw":0.01904,"rh":0.01346,"cx":0.82447,"cy":0.31567},{"opsi":"E","rx":0.89613,"ry":0.30894,"rw":0.01904,"rh":0.01346,"cx":0.90565,"cy":0.31567}]},{"nomor":31,"opsi":[{"opsi":"A","rx":0.57139,"ry":0.34081,"rw":0.01904,"rh":0.01346,"cx":0.58091,"cy":0.34755},{"opsi":"B","rx":0.65257,"ry":0.34081,"rw":0.01904,"rh":0.01346,"cx":0.6621,"cy":0.34755},{"opsi":"C","rx":0.73376,"ry":0.34081,"rw":0.01904,"rh":0.01346,"cx":0.74328,"cy":0.34755},{"opsi":"D","rx":0.81494,"ry":0.34081,"rw":0.01904,"rh":0.01346,"cx":0.82447,"cy":0.34755},{"opsi":"E","rx":0.89613,"ry":0.34081,"rw":0.01904,"rh":0.01346,"cx":0.90565,"cy":0.34755}]},{"nomor":32,"opsi":[{"opsi":"A","rx":0.57139,"ry":0.37269,"rw":0.01904,"rh":0.01346,"cx":0.58091,"cy":0.37942},{"opsi":"B","rx":0.65257,"ry":0.37269,"rw":0.01904,"rh":0.01346,"cx":0.6621,"cy":0.37942},{"opsi":"C","rx":0.73376,"ry":0.37269,"rw":0.01904,"rh":0.01346,"cx":0.74328,"cy":0.37942},{"opsi":"D","rx":0.81494,"ry":0.37269,"rw":0.01904,"rh":0.01346,"cx":0.82447,"cy":0.37942},{"opsi":"E","rx":0.89613,"ry":0.37269,"rw":0.01904,"rh":0.01346,"cx":0.90565,"cy":0.37942}]},{"nomor":33,"opsi":[{"opsi":"A","rx":0.57139,"ry":0.40457,"rw":0.01904,"rh":0.01346,"cx":0.58091,"cy":0.4113},{"opsi":"B","rx":0.65257,"ry":0.40457,"rw":0.01904,"rh":0.01346,"cx":0.6621,"cy":0.4113},{"opsi":"C","rx":0.73376,"ry":0.40457,"rw":0.01904,"rh":0.01346,"cx":0.74328,"cy":0.4113},{"opsi":"D","rx":0.81494,"ry":0.40457,"rw":0.01904,"rh":0.01346,"cx":0.82447,"cy":0.4113},{"opsi":"E","rx":0.89613,"ry":0.40457,"rw":0.01904,"rh":0.01346,"cx":0.90565,"cy":0.4113}]},{"nomor":34,"opsi":[{"opsi":"A","rx":0.57139,"ry":0.43644,"rw":0.01904,"rh":0.01346,"cx":0.58091,"cy":0.44317},{"opsi":"B","rx":0.65257,"ry":0.43644,"rw":0.01904,"rh":0.01346,"cx":0.6621,"cy":0.44317},{"opsi":"C","rx":0.73376,"ry":0.43644,"rw":0.01904,"rh":0.01346,"cx":0.74328,"cy":0.44317},{"opsi":"D","rx":0.81494,"ry":0.43644,"rw":0.01904,"rh":0.01346,"cx":0.82447,"cy":0.44317},{"opsi":"E","rx":0.89613,"ry":0.43644,"rw":0.01904,"rh":0.01346,"cx":0.90565,"cy":0.44317}]},{"nomor":35,"opsi":[{"opsi":"A","rx":0.57139,"ry":0.46832,"rw":0.01904,"rh":0.01346,"cx":0.58091,"cy":0.47505},{"opsi":"B","rx":0.65257,"ry":0.46832,"rw":0.01904,"rh":0.01346,"cx":0.6621,"cy":0.47505},{"opsi":"C","rx":0.73376,"ry":0.46832,"rw":0.01904,"rh":0.01346,"cx":0.74328,"cy":0.47505},{"opsi":"D","rx":0.81494,"ry":0.46832,"rw":0.01904,"rh":0.01346,"cx":0.82447,"cy":0.47505},{"opsi":"E","rx":0.89613,"ry":0.46832,"rw":0.01904,"rh":0.01346,"cx":0.90565,"cy":0.47505}]},{"nomor":36,"opsi":[{"opsi":"A","rx":0.57139,"ry":0.50019,"rw":0.01904,"rh":0.01346,"cx":0.58091,"cy":0.50692},{"opsi":"B","rx":0.65257,"ry":0.50019,"rw":0.01904,"rh":0.01346,"cx":0.6621,"cy":0.50692},{"opsi":"C","rx":0.73376,"ry":0.50019,"rw":0.01904,"rh":0.01346,"cx":0.74328,"cy":0.50692},{"opsi":"D","rx":0.81494,"ry":0.50019,"rw":0.01904,"rh":0.01346,"cx":0.82447,"cy":0.50692},{"opsi":"E","rx":0.89613,"ry":0.50019,"rw":0.01904,"rh":0.01346,"cx":0.90565,"cy":0.50692}]},{"nomor":37,"opsi":[{"opsi":"A","rx":0.57139,"ry":0.53207,"rw":0.01904,"rh":0.01346,"cx":0.58091,"cy":0.5388},{"opsi":"B","rx":0.65257,"ry":0.53207,"rw":0.01904,"rh":0.01346,"cx":0.6621,"cy":0.5388},{"opsi":"C","rx":0.73376,"ry":0.53207,"rw":0.01904,"rh":0.01346,"cx":0.74328,"cy":0.5388},{"opsi":"D","rx":0.81494,"ry":0.53207,"rw":0.01904,"rh":0.01346,"cx":0.82447,"cy":0.5388},{"opsi":"E","rx":0.89613,"ry":0.53207,"rw":0.01904,"rh":0.01346,"cx":0.90565,"cy":0.5388}]},{"nomor":38,"opsi":[{"opsi":"A","rx":0.57139,"ry":0.56394,"rw":0.01904,"rh":0.01346,"cx":0.58091,"cy":0.57067},{"opsi":"B","rx":0.65257,"ry":0.56394,"rw":0.01904,"rh":0.01346,"cx":0.6621,"cy":0.57067},{"opsi":"C","rx":0.73376,"ry":0.56394,"rw":0.01904,"rh":0.01346,"cx":0.74328,"cy":0.57067},{"opsi":"D","rx":0.81494,"ry":0.56394,"rw":0.01904,"rh":0.01346,"cx":0.82447,"cy":0.57067},{"opsi":"E","rx":0.89613,"ry":0.56394,"rw":0.01904,"rh":0.01346,"cx":0.90565,"cy":0.57067}]},{"nomor":39,"opsi":[{"opsi":"A","rx":0.57139,"ry":0.59582,"rw":0.01904,"rh":0.01346,"cx":0.58091,"cy":0.60255},{"opsi":"B","rx":0.65257,"ry":0.59582,"rw":0.01904,"rh":0.01346,"cx":0.6621,"cy":0.60255},{"opsi":"C","rx":0.73376,"ry":0.59582,"rw":0.01904,"rh":0.01346,"cx":0.74328,"cy":0.60255},{"opsi":"D","rx":0.81494,"ry":0.59582,"rw":0.01904,"rh":0.01346,"cx":0.82447,"cy":0.60255},{"opsi":"E","rx":0.89613,"ry":0.59582,"rw":0.01904,"rh":0.01346,"cx":0.90565,"cy":0.60255}]},{"nomor":40,"opsi":[{"opsi":"A","rx":0.57139,"ry":0.62769,"rw":0.01904,"rh":0.01346,"cx":0.58091,"cy":0.63443},{"opsi":"B","rx":0.65257,"ry":0.62769,"rw":0.01904,"rh":0.01346,"cx":0.6621,"cy":0.63443},{"opsi":"C","rx":0.73376,"ry":0.62769,"rw":0.01904,"rh":0.01346,"cx":0.74328,"cy":0.63443},{"opsi":"D","rx":0.81494,"ry":0.62769,"rw":0.01904,"rh":0.01346,"cx":0.82447,"cy":0.63443},{"opsi":"E","rx":0.89613,"ry":0.62769,"rw":0.01904,"rh":0.01346,"cx":0.90565,"cy":0.63443}]},{"nomor":41,"opsi":[{"opsi":"A","rx":0.57139,"ry":0.65957,"rw":0.01904,"rh":0.01346,"cx":0.58091,"cy":0.6663},{"opsi":"B","rx":0.65257,"ry":0.65957,"rw":0.01904,"rh":0.01346,"cx":0.6621,"cy":0.6663},{"opsi":"C","rx":0.73376,"ry":0.65957,"rw":0.01904,"rh":0.01346,"cx":0.74328,"cy":0.6663},{"opsi":"D","rx":0.81494,"ry":0.65957,"rw":0.01904,"rh":0.01346,"cx":0.82447,"cy":0.6663},{"opsi":"E","rx":0.89613,"ry":0.65957,"rw":0.01904,"rh":0.01346,"cx":0.90565,"cy":0.6663}]},{"nomor":42,"opsi":[{"opsi":"A","rx":0.57139,"ry":0.69144,"rw":0.01904,"rh":0.01346,"cx":0.58091,"cy":0.69818},{"opsi":"B","rx":0.65257,"ry":0.69144,"rw":0.01904,"rh":0.01346,"cx":0.6621,"cy":0.69818},{"opsi":"C","rx":0.73376,"ry":0.69144,"rw":0.01904,"rh":0.01346,"cx":0.74328,"cy":0.69818},{"opsi":"D","rx":0.81494,"ry":0.69144,"rw":0.01904,"rh":0.01346,"cx":0.82447,"cy":0.69818},{"opsi":"E","rx":0.89613,"ry":0.69144,"rw":0.01904,"rh":0.01346,"cx":0.90565,"cy":0.69818}]},{"nomor":43,"opsi":[{"opsi":"A","rx":0.57139,"ry":0.72332,"rw":0.01904,"rh":0.01346,"cx":0.58091,"cy":0.73005},{"opsi":"B","rx":0.65257,"ry":0.72332,"rw":0.01904,"rh":0.01346,"cx":0.6621,"cy":0.73005},{"opsi":"C","rx":0.73376,"ry":0.72332,"rw":0.01904,"rh":0.01346,"cx":0.74328,"cy":0.73005},{"opsi":"D","rx":0.81494,"ry":0.72332,"rw":0.01904,"rh":0.01346,"cx":0.82447,"cy":0.73005},{"opsi":"E","rx":0.89613,"ry":0.72332,"rw":0.01904,"rh":0.01346,"cx":0.90565,"cy":0.73005}]},{"nomor":44,"opsi":[{"opsi":"A","rx":0.57139,"ry":0.75519,"rw":0.01904,"rh":0.01346,"cx":0.58091,"cy":0.76193},{"opsi":"B","rx":0.65257,"ry":0.75519,"rw":0.01904,"rh":0.01346,"cx":0.6621,"cy":0.76193},{"opsi":"C","rx":0.73376,"ry":0.75519,"rw":0.01904,"rh":0.01346,"cx":0.74328,"cy":0.76193},{"opsi":"D","rx":0.81494,"ry":0.75519,"rw":0.01904,"rh":0.01346,"cx":0.82447,"cy":0.76193},{"opsi":"E","rx":0.89613,"ry":0.75519,"rw":0.01904,"rh":0.01346,"cx":0.90565,"cy":0.76193}]},{"nomor":45,"opsi":[{"opsi":"A","rx":0.57139,"ry":0.78707,"rw":0.01904,"rh":0.01346,"cx":0.58091,"cy":0.7938},{"opsi":"B","rx":0.65257,"ry":0.78707,"rw":0.01904,"rh":0.01346,"cx":0.6621,"cy":0.7938},{"opsi":"C","rx":0.73376,"ry":0.78707,"rw":0.01904,"rh":0.01346,"cx":0.74328,"cy":0.7938},{"opsi":"D","rx":0.81494,"ry":0.78707,"rw":0.01904,"rh":0.01346,"cx":0.82447,"cy":0.7938},{"opsi":"E","rx":0.89613,"ry":0.78707,"rw":0.01904,"rh":0.01346,"cx":0.90565,"cy":0.7938}]},{"nomor":46,"opsi":[{"opsi":"A","rx":0.57139,"ry":0.81895,"rw":0.01904,"rh":0.01346,"cx":0.58091,"cy":0.82568},{"opsi":"B","rx":0.65257,"ry":0.81895,"rw":0.01904,"rh":0.01346,"cx":0.6621,"cy":0.82568},{"opsi":"C","rx":0.73376,"ry":0.81895,"rw":0.01904,"rh":0.01346,"cx":0.74328,"cy":0.82568},{"opsi":"D","rx":0.81494,"ry":0.81895,"rw":0.01904,"rh":0.01346,"cx":0.82447,"cy":0.82568},{"opsi":"E","rx":0.89613,"ry":0.81895,"rw":0.01904,"rh":0.01346,"cx":0.90565,"cy":0.82568}]},{"nomor":47,"opsi":[{"opsi":"A","rx":0.57139,"ry":0.85082,"rw":0.01904,"rh":0.01346,"cx":0.58091,"cy":0.85755},{"opsi":"B","rx":0.65257,"ry":0.85082,"rw":0.01904,"rh":0.01346,"cx":0.6621,"cy":0.85755},{"opsi":"C","rx":0.73376,"ry":0.85082,"rw":0.01904,"rh":0.01346,"cx":0.74328,"cy":0.85755},{"opsi":"D","rx":0.81494,"ry":0.85082,"rw":0.01904,"rh":0.01346,"cx":0.82447,"cy":0.85755},{"opsi":"E","rx":0.89613,"ry":0.85082,"rw":0.01904,"rh":0.01346,"cx":0.90565,"cy":0.85755}]},{"nomor":48,"opsi":[{"opsi":"A","rx":0.57139,"ry":0.8827,"rw":0.01904,"rh":0.01346,"cx":0.58091,"cy":0.88943},{"opsi":"B","rx":0.65257,"ry":0.8827,"rw":0.01904,"rh":0.01346,"cx":0.6621,"cy":0.88943},{"opsi":"C","rx":0.73376,"ry":0.8827,"rw":0.01904,"rh":0.01346,"cx":0.74328,"cy":0.88943},{"opsi":"D","rx":0.81494,"ry":0.8827,"rw":0.01904,"rh":0.01346,"cx":0.82447,"cy":0.88943},{"opsi":"E","rx":0.89613,"ry":0.8827,"rw":0.01904,"rh":0.01346,"cx":0.90565,"cy":0.88943}]},{"nomor":49,"opsi":[{"opsi":"A","rx":0.57139,"ry":0.91457,"rw":0.01904,"rh":0.01346,"cx":0.58091,"cy":0.9213},{"opsi":"B","rx":0.65257,"ry":0.91457,"rw":0.01904,"rh":0.01346,"cx":0.6621,"cy":0.9213},{"opsi":"C","rx":0.73376,"ry":0.91457,"rw":0.01904,"rh":0.01346,"cx":0.74328,"cy":0.9213},{"opsi":"D","rx":0.81494,"ry":0.91457,"rw":0.01904,"rh":0.01346,"cx":0.82447,"cy":0.9213},{"opsi":"E","rx":0.89613,"ry":0.91457,"rw":0.01904,"rh":0.01346,"cx":0.90565,"cy":0.9213}]},{"nomor":50,"opsi":[{"opsi":"A","rx":0.57139,"ry":0.94645,"rw":0.01904,"rh":0.01346,"cx":0.58091,"cy":0.95318},{"opsi":"B","rx":0.65257,"ry":0.94645,"rw":0.01904,"rh":0.01346,"cx":0.6621,"cy":0.95318},{"opsi":"C","rx":0.73376,"ry":0.94645,"rw":0.01904,"rh":0.01346,"cx":0.74328,"cy":0.95318},{"opsi":"D","rx":0.81494,"ry":0.94645,"rw":0.01904,"rh":0.01346,"cx":0.82447,"cy":0.95318},{"opsi":"E","rx":0.89613,"ry":0.94645,"rw":0.01904,"rh":0.01346,"cx":0.90565,"cy":0.95318}]}],"header":{"y_top":0.9703,"y_bot":0.8658,"x_l":0.0504,"x_r":0.9496},"grid_area":{"y_top":0.1722,"y_bot":0.9739,"x_l":0.0504,"x_r":0.9496},"mid_x":0.5,"opt_w":0.08119,"row_h":0.03188,"num_w":0.03696};
 const SYM  = ['▲','●','■','★','⬡'];
 const SCOL = ['#1565c0','#1b5e20','#f57f17','#b71c1c','#6a1b9a'];
 
 // ── STATE ────────────────────────────────────────────────────
-let imgD=null,imgW=0,imgH=0,warpedD=null,warpW=0,warpH=0;
+let imgD=null,imgW=0,imgH=0;
+let flatD=null,flatW=0,flatH=0;   // hasil autoFlatten
 let hasROI=false,isBW=false,last=null;
+let detectedFormat='unknown';      // 'v4' | 'kotak' | 'unknown'
+let flatCorners=null;              // untuk overlay
 let kunci=new Array(50).fill('');
 let rekap=[];
 let KAL=kalLoad();
@@ -387,7 +422,10 @@ document.addEventListener('DOMContentLoaded',()=>{
   const dz=document.getElementById('dropZone');
   dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag');});
   dz.addEventListener('dragleave',()=>dz.classList.remove('drag'));
-  dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('drag');if(e.dataTransfer.files[0])processFile(e.dataTransfer.files[0]);});
+  dz.addEventListener('drop',e=>{
+    e.preventDefault();dz.classList.remove('drag');
+    if(e.dataTransfer.files[0])processFile(e.dataTransfer.files[0]);
+  });
 });
 
 // ── TABS ─────────────────────────────────────────────────────
@@ -400,9 +438,28 @@ function goTab(n){
 
 // ── UI HELPERS ────────────────────────────────────────────────
 let _tt;
-function toast(m,d=2500){const e=document.getElementById('toast');e.textContent=m;e.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>e.classList.remove('show'),d);}
-function setSbar(t,m){document.getElementById('sbar').className='sbar '+t;document.getElementById('sbarTxt').textContent=m;}
-function setPbar(p){const w=document.getElementById('pbarWrap');w.style.display=(p>=0&&p<100)?'block':'none';document.getElementById('pbar').style.width=p+'%';}
+function toast(m,d=2500){
+  const e=document.getElementById('toast');
+  e.textContent=m;e.classList.add('show');
+  clearTimeout(_tt);_tt=setTimeout(()=>e.classList.remove('show'),d);
+}
+function setSbar(t,m){
+  document.getElementById('sbar').className='sbar '+t;
+  document.getElementById('sbarTxt').textContent=m;
+}
+function setPbar(p){
+  const w=document.getElementById('pbarWrap');
+  w.style.display=(p>=0&&p<100)?'block':'none';
+  document.getElementById('pbar').style.width=p+'%';
+}
+function setFlatInfo(msg,type='ok'){
+  const el=document.getElementById('flatInfo');
+  if(!el)return;
+  el.textContent=msg;
+  el.style.display=msg?'block':'none';
+  el.style.background=type==='ok'?'rgba(0,229,255,.12)':type==='warn'?'rgba(255,171,0,.15)':'rgba(255,61,90,.12)';
+  el.style.color=type==='ok'?'#00e5ff':type==='warn'?'#ffab00':'#ff3d5a';
+}
 function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
 
 // ── FILE LOAD ─────────────────────────────────────────────────
@@ -418,349 +475,703 @@ async function loadPDF(f){
   setSbar('work','⏳ Render PDF...');
   if(!window.pdfjsLib){
     await loadScript('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js');
-    pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    pdfjsLib.GlobalWorkerOptions.workerSrc=
+      'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
   }
   const buf=await f.arrayBuffer();
   const pdf=await pdfjsLib.getDocument({data:buf}).promise;
   const pg=await pdf.getPage(1);
   const vp=pg.getViewport({scale:2.5});
-  const tmp=document.createElement('canvas');tmp.width=vp.width;tmp.height=vp.height;
+  const tmp=document.createElement('canvas');
+  tmp.width=vp.width;tmp.height=vp.height;
   await pg.render({canvasContext:tmp.getContext('2d'),viewport:vp}).promise;
   await loadImage(tmp.toDataURL());
 }
-function loadScript(src){return new Promise((ok,fail)=>{const s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=()=>fail(new Error('Gagal load '+src));document.head.appendChild(s);});}
+function loadScript(src){
+  return new Promise((ok,fail)=>{
+    const s=document.createElement('script');
+    s.src=src;s.onload=ok;
+    s.onerror=()=>fail(new Error('Gagal load '+src));
+    document.head.appendChild(s);
+  });
+}
 async function loadImage(src){
   return new Promise((ok,fail)=>{
     const img=new Image();
     img.onload=async()=>{
       const cv=document.getElementById('cvMain'),ov=document.getElementById('cvOverlay');
-      cv.width=ov.width=img.naturalWidth;cv.height=ov.height=img.naturalHeight;
-      const ctx=cv.getContext('2d');ctx.drawImage(img,0,0);
-      imgD=ctx.getImageData(0,0,cv.width,cv.height);imgW=cv.width;imgH=cv.height;
+      cv.width=ov.width=img.naturalWidth;
+      cv.height=ov.height=img.naturalHeight;
+      const ctx=cv.getContext('2d');
+      ctx.drawImage(img,0,0);
+      imgD=ctx.getImageData(0,0,cv.width,cv.height);
+      imgW=cv.width;imgH=cv.height;
       document.getElementById('canvasWrap').style.display='block';
-      setSbar('work','⚙️ Validasi + koreksi perspektif...');await sleep(20);
-      await validate();ok();
+      setSbar('work','🔧 Auto-flatten...');await sleep(20);
+      await runPipeline();ok();
     };
     img.onerror=()=>fail(new Error('File gambar tidak valid'));
     img.src=src;
   });
 }
 
-// ── VALIDASI ──────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════
+// PIPELINE UTAMA
+// ══════════════════════════════════════════════════════════════
+async function runPipeline(){
+  // STEP 1 — Auto-flatten: perspective + crop + normalize
+  setSbar('work','📐 Meluruskan perspektif...');await sleep(10);
+  const flatResult=autoFlatten(imgD,imgW,imgH);
+  flatD=flatResult.data;flatW=flatResult.w;flatH=flatResult.h;
+  flatCorners=flatResult.corners;
+
+  // Tampilkan overlay corners di canvas asli
+  if(flatCorners)drawCornersOverlay(flatCorners,imgW,imgH);
+
+  // STEP 2 — Deteksi format
+  setSbar('work','🔍 Mendeteksi format LJK...');await sleep(10);
+  const fmt=detectFormat(flatD,flatW,flatH);
+  const override=document.getElementById('fmtOverride');
+  detectedFormat = override&&override.value!=='auto' ? override.value : fmt;
+
+  // Update info badge
+  const fmtNames={'v4':'Simbol v4 (▲●■★⬡)','kotak':'Kotak/Silang (X)','unknown':'Tidak dikenal'};
+  setFlatInfo(
+    `📐 Flatten: ${flatResult.msg}  |  🔍 Format: ${fmtNames[detectedFormat]||detectedFormat}`,
+    detectedFormat==='unknown'?'warn':'ok'
+  );
+
+  // STEP 3 — Validasi dasar
+  setSbar('work','⚙️ Validasi...');await sleep(10);
+  const valid=await validate(flatD,flatW,flatH,detectedFormat);
+  if(!valid)return;
+
+  // STEP 4 — Enable tombol
+  setSbar('ok',`✅ Siap — ${fmtNames[detectedFormat]} | ${flatW}×${flatH}`);
+  toast(`✅ ${fmtNames[detectedFormat]}`);
+  isBW=true;applyBWBlur();
+  document.getElementById('btnBW').textContent='🎨 Lihat Asli';
+  ['btnRoi','btnPrev','btnScan','btnBW'].forEach(id=>
+    document.getElementById(id).disabled=false);
+}
+
+// ══════════════════════════════════════════════════════════════
+// AUTO-FLATTEN — Luruskan + Crop + Normalize + Center
+// ══════════════════════════════════════════════════════════════
+function autoFlatten(imgData,W,H){
+  const d=imgData.data;
+
+  // ── 1. Grayscale ──────────────────────────────────────────
+  const gray=new Uint8Array(W*H);
+  for(let i=0;i<W*H;i++){const p=i*4;gray[i]=Math.round(0.299*d[p]+0.587*d[p+1]+0.114*d[p+2]);}
+
+  // ── 2. Deteksi tepi kertas ─────────────────────────────────
+  const corners=detectPaperCorners(gray,W,H);
+
+  let outData,outW,outH,msg;
+
+  if(corners){
+    // ── 3a. Perspective warp ke standar A4 ──────────────────
+    const TW=1000,TH=1414;
+    const warped=bilinearWarp(d,W,H,corners,TW,TH);
+
+    // ── 4. Contrast normalize ────────────────────────────────
+    const normed=stretchContrast(warped,TW,TH);
+
+    // ── 5. Add symmetric margin 2% ───────────────────────────
+    const mx=Math.round(TW*0.02),my=Math.round(TH*0.02);
+    const out=cropCenter(normed,TW,TH,mx,my);
+    outData=out;outW=TW;outH=TH;
+    msg=`Warp ✓ (TL:${corners[0].x},${corners[0].y})`;
+  } else {
+    // ── 3b. Fallback: normalize saja ─────────────────────────
+    const normed=stretchContrast(imgData,W,H);
+    outData=normed;outW=W;outH=H;
+    msg='Fallback (no warp)';
+  }
+
+  return{data:outData,w:outW,h:outH,corners,msg};
+}
+
+// ── Deteksi 4 sudut kertas ────────────────────────────────────
+function detectPaperCorners(gray,W,H){
+  const STEP=Math.max(1,Math.floor(Math.min(W,H)/150));
+  const MRG =Math.floor(Math.min(W,H)*0.04);
+
+  // Hitung threshold adaptif: kertas putih = top 30% brightness
+  const samp=[];
+  for(let i=0;i<gray.length;i+=STEP*3)samp.push(gray[i]);
+  samp.sort((a,b)=>a-b);
+  const paperThr=samp[Math.floor(samp.length*0.65)]||180;
+  const edgeThr =Math.max(40,paperThr-60);
+
+  // Scan 4 tepi → temukan batas kertas
+  // Strategi: per-column/row, hitung jumlah piksel cerah
+  // Tepi kertas = transisi dari gelap/abu ke cerah
+
+  function scanEdge(axis,from,to,dir){
+    // axis='x' scan kolom kiri-kanan, axis='y' scan baris atas-bawah
+    let found=-1;
+    const start=from+(dir>0?0:0),end=to;
+    const stride=dir>0?STEP:-STEP;
+    for(let pos=start;pos!==end+stride;pos+=stride){
+      let bright=0,total=0;
+      if(axis==='x'){
+        for(let y=Math.floor(H*0.15);y<Math.floor(H*0.85);y+=STEP*2){
+          if(gray[y*W+pos]>paperThr)bright++;total++;
+        }
+      } else {
+        for(let x=Math.floor(W*0.15);x<Math.floor(W*0.85);x+=STEP*2){
+          if(gray[pos*W+x]>paperThr)bright++;total++;
+        }
+      }
+      if(total>0&&bright/total>0.55){found=pos;break;}
+    }
+    return found;
+  }
+
+  const left  =scanEdge('x',MRG,Math.floor(W*0.45),1);
+  const right =scanEdge('x',W-MRG,Math.floor(W*0.55),-1);
+  const top   =scanEdge('y',MRG,Math.floor(H*0.40),1);
+  const bottom=scanEdge('y',H-MRG,Math.floor(H*0.60),-1);
+
+  if(left<0||right<0||top<0||bottom<0)return null;
+  if((right-left)<W*0.35||(bottom-top)<H*0.35)return null;
+
+  // Refine corners dengan local edge scan
+  function refine(ax,ay,dx,dy){
+    // Cari piksel terang paling dekat dari arah (dx,dy) ke pusat
+    let bx=ax,by=ay;
+    for(let t=0;t<30;t++){
+      const nx=Math.round(ax+dx*t),ny=Math.round(ay+dy*t);
+      if(nx<0||nx>=W||ny<0||ny>=H)break;
+      if(gray[ny*W+nx]>edgeThr){bx=nx;by=ny;break;}
+    }
+    return{x:bx,y:by};
+  }
+
+  // Pad keluar sedikit (jangan crop konten)
+  const pad=Math.round(STEP*1.5);
+  return[
+    {x:Math.max(0,left-pad),   y:Math.max(0,top-pad)},     // TL
+    {x:Math.min(W-1,right+pad),y:Math.max(0,top-pad)},     // TR
+    {x:Math.min(W-1,right+pad),y:Math.min(H-1,bottom+pad)},// BR
+    {x:Math.max(0,left-pad),   y:Math.min(H-1,bottom+pad)} // BL
+  ];
+}
+
+// ── Bilinear warp (inverse mapping) ──────────────────────────
+function bilinearWarp(src,SW,SH,corners,TW,TH){
+  const[tl,tr,br,bl]=corners;
+  const out=new ImageData(new Uint8ClampedArray(TW*TH*4),TW,TH);
+  for(let ty=0;ty<TH;ty++){
+    const v=ty/TH;
+    for(let tx=0;tx<TW;tx++){
+      const u=tx/TW;
+      // Bilinear interpolation of corners
+      const sx=(1-v)*((1-u)*tl.x+u*tr.x)+v*((1-u)*bl.x+u*br.x);
+      const sy=(1-v)*((1-u)*tl.y+u*tr.y)+v*((1-u)*bl.y+u*br.y);
+      // Bilinear sample dari source
+      const x0=Math.floor(sx),y0=Math.floor(sy);
+      const x1=Math.min(x0+1,SW-1),y1=Math.min(y0+1,SH-1);
+      const fx=sx-x0,fy=sy-y0;
+      const di=(ty*TW+tx)*4;
+      for(let c=0;c<3;c++){
+        const v00=src[(y0*SW+x0)*4+c],v10=src[(y0*SW+x1)*4+c];
+        const v01=src[(y1*SW+x0)*4+c],v11=src[(y1*SW+x1)*4+c];
+        out.data[di+c]=Math.round(
+          v00*(1-fx)*(1-fy)+v10*fx*(1-fy)+v01*(1-fx)*fy+v11*fx*fy);
+      }
+      out.data[di+3]=255;
+    }
+  }
+  return out;
+}
+
+// ── Contrast stretch 3rd-97th percentile ──────────────────────
+function stretchContrast(imgData,W,H){
+  const d=imgData.data;
+  // Hitung histogram grayscale
+  const hist=new Int32Array(256);
+  const step=Math.max(1,Math.floor(W*H/8000));
+  for(let i=0;i<W*H;i+=step){
+    const p=i*4;
+    hist[Math.round(0.299*d[p]+0.587*d[p+1]+0.114*d[p+2])]++;
+  }
+  const total=W*H/step;
+  let lo=0,hi=255,cum=0;
+  for(let v=0;v<256;v++){cum+=hist[v];if(cum/total>0.03){lo=v;break;}}
+  cum=0;
+  for(let v=255;v>=0;v--){cum+=hist[v];if(cum/total>0.03){hi=v;break;}}
+  const rng=Math.max(1,hi-lo);
+  if(rng>220)return imgData; // sudah bagus, skip
+
+  const out=new ImageData(new Uint8ClampedArray(d.length),W,H);
+  for(let i=0;i<d.length;i+=4){
+    for(let c=0;c<3;c++)
+      out.data[i+c]=Math.min(255,Math.max(0,Math.round((d[i+c]-lo)/rng*255)));
+    out.data[i+3]=255;
+  }
+  return out;
+}
+
+// ── Crop center (remove margin px dari tiap sisi) ─────────────
+function cropCenter(imgData,W,H,mx,my){
+  // Buat ulang dengan meluaskan margin (isi putih di luar)
+  const out=new ImageData(new Uint8ClampedArray(W*H*4),W,H);
+  out.data.fill(255); // putih
+  const d=imgData.data;
+  // Copy area dalam (mx..W-mx, my..H-my) ke posisi (mx..W-mx, my..H-my)
+  // Sebenarnya yang perlu dilakukan: recenter — potong sisi, re-scale
+  // Pendekatan: scale up sedikit agar content full-frame setelah trim
+  const srcX0=mx,srcY0=my,srcX1=W-mx,srcY1=H-my;
+  const srcW=srcX1-srcX0,srcH=srcY1-srcY0;
+  for(let ty=0;ty<H;ty++){
+    const sy=Math.round(srcY0+ty/H*srcH);
+    if(sy<0||sy>=H)continue;
+    for(let tx=0;tx<W;tx++){
+      const sx=Math.round(srcX0+tx/W*srcW);
+      if(sx<0||sx>=W)continue;
+      const di=(ty*W+tx)*4,si=(sy*W+sx)*4;
+      out.data[di]=d[si];out.data[di+1]=d[si+1];
+      out.data[di+2]=d[si+2];out.data[di+3]=255;
+    }
+  }
+  return out;
+}
+
+// ── Draw corners overlay ──────────────────────────────────────
+function drawCornersOverlay(corners,W,H){
+  const ov=document.getElementById('cvOverlay'),ctx=ov.getContext('2d');
+  ctx.clearRect(0,0,ov.width,ov.height);
+  if(!corners)return;
+  const lw=Math.max(2,W/500);
+  ctx.strokeStyle='#00e5ff';ctx.lineWidth=lw;ctx.setLineDash([8,4]);
+  ctx.beginPath();ctx.moveTo(corners[0].x,corners[0].y);
+  corners.forEach(c=>ctx.lineTo(c.x,c.y));
+  ctx.closePath();ctx.stroke();ctx.setLineDash([]);
+  const r=Math.max(7,W/100);
+  corners.forEach((c,i)=>{
+    ctx.fillStyle=i===0?'#00ff9d':'#00e5ff';
+    ctx.beginPath();ctx.arc(c.x,c.y,r,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#050b18';
+    ctx.font=`bold ${Math.max(10,r)}px monospace`;
+    ctx.fillText(['TL','TR','BR','BL'][i],c.x+r+2,c.y+r/2);
+  });
+}
+
+// ══════════════════════════════════════════════════════════════
+// FORMAT DETECTION — v4 (simbol warna) vs kotak (silang)
+// ══════════════════════════════════════════════════════════════
+function detectFormat(d_obj,W,H){
+  const d=d_obj.data;
+  // Sample area grid (tengah dokumen)
+  const x0=Math.floor(W*0.08),x1=Math.floor(W*0.92);
+  const y0=Math.floor(H*0.18),y1=Math.floor(H*0.96);
+  const step=Math.max(1,Math.floor((x1-x0)/60));
+  let colorPx=0,total=0;
+  for(let y=y0;y<y1;y+=step)for(let x=x0;x<x1;x+=step){
+    const i=(y*W+x)*4;
+    const r=d[i],g=d[i+1],b=d[i+2];
+    const mx=Math.max(r,g,b),mn=Math.min(r,g,b);
+    if(mx-mn>35&&mx>80)colorPx++; // piksel berwarna
+    total++;
+  }
+  const colorRatio=colorPx/Math.max(total,1);
+  // v4: ada simbol berwarna → colorRatio tinggi
+  // kotak: hitam putih → colorRatio rendah
+  if(colorRatio>0.04)return'v4';
+  if(colorRatio<0.02)return'kotak';
+  return'unknown';
+}
+
+// ══════════════════════════════════════════════════════════════
+// VALIDASI
+// ══════════════════════════════════════════════════════════════
 function gv(d,i){return 0.299*d[i]+0.587*d[i+1]+0.114*d[i+2];}
 function roiStats(d,W,H,rx0,ry0,rx1,ry1){
-  const x0=Math.floor(rx0*W),y0=Math.floor(ry0*H),x1=Math.floor(rx1*W),y1=Math.floor(ry1*H);
-  const stx=Math.max(1,Math.floor((x1-x0)/40)),sty=Math.max(1,Math.floor((y1-y0)/30));
+  const x0=Math.floor(rx0*W),y0=Math.floor(ry0*H),
+        x1=Math.floor(rx1*W),y1=Math.floor(ry1*H);
+  const stx=Math.max(1,Math.floor((x1-x0)/40)),
+        sty=Math.max(1,Math.floor((y1-y0)/30));
   let s=0,dk=0,col=0,c=0;
   for(let y=y0;y<y1;y+=sty)for(let x=x0;x<x1;x+=stx){
-    const i=(y*W+x)*4,g=gv(d,i);s+=g;if(g<140)dk++;
+    const i=(y*W+x)*4,g=gv(d,i);
+    s+=g;if(g<140)dk++;
     const mx=Math.max(d[i],d[i+1],d[i+2]),mn=Math.min(d[i],d[i+1],d[i+2]);
     if(mx-mn>30)col++;c++;
   }
   return c?{avg:s/c,dark:dk/c,colored:col/c}:{avg:200,dark:0,colored:0};
 }
-async function validate(){
-  const d=imgD.data,W=imgW,H=imgH,R=[];
+async function validate(d_obj,W,H,fmt){
+  const d=d_obj.data,R=[];
   const rat=W/H;
-  R.push({n:'Orientasi portrait',ok:rat<=1.1,msg:rat<=1.1?`Rasio ${rat.toFixed(2)} ✓`:'Landscape — putar HP'});
-  R.push({n:'Resolusi',ok:W>=300&&H>=400,msg:W>=300&&H>=400?`${W}×${H} ✓`:'Terlalu kecil'});
-  await sleep(10);
-  const h1=roiStats(d,W,H,0.05,0.02,0.95,0.20);
-  R.push({n:'Header LJK',ok:h1.dark>=0.02||h1.avg<230,msg:`dark=${(h1.dark*100).toFixed(1)}%`});
-  const g1=roiStats(d,W,H,0.05,0.17,0.95,0.97);
-  R.push({n:'Area grid',ok:g1.dark>=0.04,msg:`dark=${(g1.dark*100).toFixed(1)}%`});
-  await sleep(10);
-  const cL=roiStats(d,W,H,0.11,0.17,0.48,0.97),cR=roiStats(d,W,H,0.56,0.17,0.93,0.97);
-  const colMax=Math.max(cL.colored,cR.colored);
-  R.push({n:'Simbol warna',ok:colMax>=0.02,msg:`warna=${(colMax*100).toFixed(1)}%`});
-  const mid=roiStats(d,W,H,0.485,0.17,0.515,0.97);
-  R.push({n:'Garis tengah',ok:mid.dark>=0.02,msg:`dark=${(mid.dark*100).toFixed(1)}%`});
-  await sleep(10);
-  let mn=255,mx=0;
-  for(let i=0;i<600;i++){const p=Math.floor(Math.random()*W*H)*4,v=gv(d,p);if(v<mn)mn=v;if(v>mx)mx=v;}
-  R.push({n:'Kontras',ok:(mx-mn)>=40,msg:`range=${(mx-mn).toFixed(0)}`});
-  const bOK=R[0].ok&&R[1].ok&&R[6].ok;
-  const fpOK=R.slice(2,6).filter(r=>r.ok).length;
-  const valid=bOK&&fpOK>=2;
-  const score=Math.round((R[0].ok+R[1].ok+R[6].ok)/3*40+fpOK/4*60);
-  if(!valid){showReject(R,bOK,fpOK,score);imgD=null;clearCanvas();return;}
-
-  // PERSPECTIVE CORRECTION
-  setSbar('work','🔧 Koreksi perspektif...');await sleep(20);
-  const warpResult=await doPerspectiveWarp();
-  const warpMsg=warpResult.ok?` + warp ✓`:'';
-
-  setSbar('ok',`✅ Valid (${score}/100)${warpMsg} — siap scan`);
-  toast(`✅ Valid! ${score}/100${warpMsg}`);
-  isBW=true;applyBWBlur();
-  document.getElementById('btnBW').textContent='🎨 Lihat Asli';
-  ['btnRoi','btnPrev','btnScan','btnBW'].forEach(id=>document.getElementById(id).disabled=false);
-  updateWarpInfo(warpResult);
+  R.push({n:'Orientasi portrait',ok:rat<=1.15,msg:`Rasio ${rat.toFixed(2)}`});
+  R.push({n:'Resolusi',ok:W>=400&&H>=500,msg:`${W}×${H}`});
+  const g1=roiStats(d,W,H,0.05,0.15,0.95,0.97);
+  R.push({n:'Area grid',ok:g1.dark>=0.02,msg:`dark=${(g1.dark*100).toFixed(1)}%`});
+  let mn2=255,mx2=0;
+  for(let i=0;i<800;i++){const p=Math.floor(Math.random()*W*H)*4,v=gv(d,p);if(v<mn2)mn2=v;if(v>mx2)mx2=v;}
+  R.push({n:'Kontras',ok:(mx2-mn2)>=40,msg:`range=${(mx2-mn2).toFixed(0)}`});
+  if(fmt==='v4'){
+    const cL=roiStats(d,W,H,0.08,0.15,0.48,0.97),cR=roiStats(d,W,H,0.52,0.15,0.94,0.97);
+    R.push({n:'Simbol warna',ok:Math.max(cL.colored,cR.colored)>=0.02,
+      msg:`warna=${(Math.max(cL.colored,cR.colored)*100).toFixed(1)}%`});
+  }
+  const bOK=R[0].ok&&R[1].ok&&R[3].ok;
+  const fpOK=R.filter(r=>r.ok).length;
+  const score=Math.round(fpOK/R.length*100);
+  const valid=bOK&&fpOK>=R.length-1;
+  if(!valid){showReject(R,score);return false;}
+  return true;
 }
-function updateWarpInfo(r){
-  const el=document.getElementById('warpInfo');
-  if(!el)return;
-  if(r.ok) el.innerHTML=`✅ Perspektif terkoreksi — sudut: TL(${r.corners[0].x.toFixed(0)},${r.corners[0].y.toFixed(0)}) TR BR BL`;
-  else     el.innerHTML=`⚠️ Warp tidak terdeteksi — pakai mode langsung (akurasi mungkin berkurang)`;
-}
-function showReject(R,bOK,fpOK,score){
+function showReject(R,score){
   const list=document.getElementById('mList');list.innerHTML='';
   const mkH=t=>{const d=document.createElement('div');d.style='font-size:9px;color:var(--tx3);margin:5px 0 2px';d.textContent=t;return d;};
-  const mkR=(r,ok)=>{const d=document.createElement('div');d.className='vrow '+(ok?'vok':'vng');d.innerHTML=`<div class="vdot"></div><span>${r.n}: ${r.msg}</span>`;return d;};
+  const mkR=(r,ok)=>{const d=document.createElement('div');d.className='vrow '+(ok?'vok':'vng');
+    d.innerHTML=`<div class="vdot"></div><span>${r.n}: ${r.msg}</span>`;return d;};
   const fails=R.filter(r=>!r.ok),oks=R.filter(r=>r.ok);
   if(fails.length){list.appendChild(mkH('❌ GAGAL:'));fails.forEach(r=>list.appendChild(mkR(r,false)));}
-  if(oks.length){list.appendChild(mkH('✅ LULUS:'));oks.forEach(r=>list.appendChild(mkR(r,true)));}
-  let msg='Gambar tidak dikenali sebagai LJK v4.';
-  if(!R[0].ok)msg='📱 Putar HP — foto harus portrait.';
-  else if(!R[1].ok)msg='📷 Resolusi terlalu kecil.';
-  else if(fpOK<2)msg='📄 Bukan LJK v4 — gunakan lembar Benyamin Batau v4 (▲●■★⬡).';
-  document.getElementById('mMsg').textContent=msg;
-  document.getElementById('mDet').textContent=`Skor ${score}/100 | Fingerprint ${fpOK}/4`;
-  document.getElementById('mHint').innerHTML='💡 <b>Tips foto HP:</b><br>① Seluruh lembar terlihat, lurus<br>② Cahaya merata, hindari bayangan<br>③ Jarak 20–40 cm, HP tegak lurus<br>④ Hindari kilas/flash langsung';
+  if(oks.length)  {list.appendChild(mkH('✅ LULUS:'));oks.forEach(r=>list.appendChild(mkR(r,true)));}
+  document.getElementById('mMsg').textContent='Gambar tidak memenuhi syarat minimum.';
+  document.getElementById('mDet').textContent=`Skor ${score}/100`;
+  document.getElementById('mHint').innerHTML=
+    '💡 <b>Tips foto HP:</b><br>① Seluruh lembar terlihat<br>② Cahaya merata, tidak bayangan<br>③ HP tegak lurus, jarak 20–40 cm<br>④ Tidak blur/goyang';
   document.getElementById('mReject').classList.add('show');
 }
-function closeModal(){document.getElementById('mReject').classList.remove('show');setSbar('idle','Upload LJK v4 terlebih dahulu');}
+function closeModal(){document.getElementById('mReject').classList.remove('show');setSbar('idle','Upload LJK terlebih dahulu');}
 
 // ══════════════════════════════════════════════════════════════
-// PERSPECTIVE CORRECTION — Pure JS, tanpa library eksternal
-// ══════════════════════════════════════════════════════════════
-async function doPerspectiveWarp(){
-  // Target ukuran standar (rasio A4)
-  const TW=1000, TH=1414;
-  const d=imgD.data, W=imgW, H=imgH;
-
-  // Step 1: Buat grayscale + threshold
-  const gray=new Uint8Array(W*H);
-  for(let i=0;i<W*H;i++){const p=i*4;gray[i]=Math.round(gv(d,p));}
-
-  // Step 2: Temukan batas dokumen
-  // Scan dari tepi untuk temukan garis tepi dokumen
-  const corners=detectDocumentCorners(gray,W,H);
-  if(!corners){
-    // Fallback: gunakan full image, normalize saja
-    warpedD=normBrightness(imgD,W,H);
-    warpW=W;warpH=H;
-    return{ok:false};
-  }
-
-  // Step 3: Bilinear perspective warp
-  const warped=perspectiveWarp(d,W,H,corners,TW,TH);
-  warpedD=warped;warpW=TW;warpH=TH;
-
-  // Tampilkan preview canvas overlay corners
-  drawCornersOverlay(corners);
-  return{ok:true,corners};
-}
-
-function detectDocumentCorners(gray,W,H){
-  // Cari tepi dokumen: scan dari luar ke dalam
-  // Strategi: temukan transisi gelap->terang yang signifikan
-  const MARGIN=Math.floor(Math.min(W,H)*0.05);
-  const STEP=Math.max(1,Math.floor(Math.min(W,H)/100));
-
-  // Threshold otomatis: histogram percentile
-  const hist=new Int32Array(256);
-  for(let i=0;i<gray.length;i+=STEP)hist[gray[i]]++;
-  let cum=0,total=gray.length/STEP;
-  let darkThr=80;
-  for(let v=0;v<256;v++){cum+=hist[v];if(cum/total>0.15){darkThr=v;break;}}
-  const docThr=Math.min(220,darkThr+80);
-
-  // Scan 4 tepi untuk garis dokumen
-  // Kiri → kanan
-  let left=MARGIN;
-  outer:for(let x=MARGIN;x<W/2;x+=STEP){
-    let bright=0;
-    for(let y=Math.floor(H*0.2);y<Math.floor(H*0.8);y+=STEP*3)
-      if(gray[y*W+x]>docThr)bright++;
-    if(bright>5){left=x;break outer;}
-  }
-  // Kanan → kiri
-  let right=W-MARGIN;
-  outer:for(let x=W-MARGIN;x>W/2;x-=STEP){
-    let bright=0;
-    for(let y=Math.floor(H*0.2);y<Math.floor(H*0.8);y+=STEP*3)
-      if(gray[y*W+x]>docThr)bright++;
-    if(bright>5){right=x;break outer;}
-  }
-  // Atas → bawah
-  let top=MARGIN;
-  outer:for(let y=MARGIN;y<H/3;y+=STEP){
-    let bright=0;
-    for(let x=Math.floor(W*0.2);x<Math.floor(W*0.8);x+=STEP*3)
-      if(gray[y*W+x]>docThr)bright++;
-    if(bright>5){top=y;break outer;}
-  }
-  // Bawah → atas
-  let bottom=H-MARGIN;
-  outer:for(let y=H-MARGIN;y>H*2/3;y-=STEP){
-    let bright=0;
-    for(let x=Math.floor(W*0.2);x<Math.floor(W*0.8);x+=STEP*3)
-      if(gray[y*W+x]>docThr)bright++;
-    if(bright>5){bottom=y;break outer;}
-  }
-
-  // Validasi: harus menutupi setidaknya 50% dimensi
-  const docW=right-left, docH=bottom-top;
-  if(docW<W*0.4||docH<H*0.4)return null;
-
-  // Refine corners dengan edge detection lebih presisi
-  const tl=refineCorner(gray,W,H, left,top,   'tl',STEP);
-  const tr=refineCorner(gray,W,H, right,top,  'tr',STEP);
-  const br=refineCorner(gray,W,H, right,bottom,'br',STEP);
-  const bl=refineCorner(gray,W,H, left,bottom, 'bl',STEP);
-
-  return[tl,tr,br,bl];
-}
-
-function refineCorner(gray,W,H, sx,sy, pos,step){
-  // Fine-tune corner position dalam radius kecil
-  const r=step*4;
-  const x0=Math.max(0,sx-r),x1=Math.min(W-1,sx+r);
-  const y0=Math.max(0,sy-r),y1=Math.min(H-1,sy+r);
-  let bestX=sx,bestY=sy,bestScore=-1;
-  for(let y=y0;y<=y1;y+=step)for(let x=x0;x<=x1;x+=step){
-    const g=gray[y*W+x];
-    // Corner should be bright (paper), penalize center
-    const score=g - Math.abs(x-sx)/r*30 - Math.abs(y-sy)/r*30;
-    if(score>bestScore){bestScore=score;bestX=x;bestY=y;}
-  }
-  return{x:bestX,y:bestY};
-}
-
-// Bilinear perspective warp (inverse mapping)
-function perspectiveWarp(srcData,SW,SH,corners,TW,TH){
-  const out=new ImageData(new Uint8ClampedArray(TW*TH*4),TW,TH);
-  const[tl,tr,br,bl]=corners;
-
-  for(let ty=0;ty<TH;ty++){
-    const v=ty/TH;
-    for(let tx=0;tx<TW;tx++){
-      const u=tx/TW;
-      // Bilinear interpolation sudut
-      const sx=Math.round(
-        (1-v)*((1-u)*tl.x+u*tr.x)+v*((1-u)*bl.x+u*br.x));
-      const sy=Math.round(
-        (1-v)*((1-u)*tl.y+u*tr.y)+v*((1-u)*bl.y+u*br.y));
-      if(sx<0||sx>=SW||sy<0||sy>=SH)continue;
-      const si=(sy*SW+sx)*4,di=(ty*TW+tx)*4;
-      out.data[di]  =srcData[si];
-      out.data[di+1]=srcData[si+1];
-      out.data[di+2]=srcData[si+2];
-      out.data[di+3]=255;
-    }
-  }
-  return normBrightness(out,TW,TH);
-}
-
-function drawCornersOverlay(corners){
-  if(!corners)return;
-  const ov=document.getElementById('cvOverlay'),ctx=ov.getContext('2d');
-  ctx.clearRect(0,0,ov.width,ov.height);
-  // Gambar polygon sudut dokumen
-  ctx.strokeStyle='#00e5ff';ctx.lineWidth=Math.max(2,imgW/400);ctx.setLineDash([8,4]);
-  ctx.beginPath();ctx.moveTo(corners[0].x,corners[0].y);
-  corners.forEach(c=>ctx.lineTo(c.x,c.y));ctx.closePath();ctx.stroke();
-  // Titik sudut
-  corners.forEach((c,i)=>{
-    ctx.fillStyle=i===0?'#00ff9d':'#00e5ff';
-    ctx.beginPath();ctx.arc(c.x,c.y,Math.max(6,imgW/120),0,Math.PI*2);ctx.fill();
-  });
-  ctx.setLineDash([]);
-}
-
-// ══════════════════════════════════════════════════════════════
-// DETEKSI 2 LAPIS — IMPROVED
+// SCAN FORMAT v4 — Simbol ▲●■★⬡ + arsiran lingkaran
 // ══════════════════════════════════════════════════════════════
 function getRoiCenter(op,W,H){
-  const sx=KAL.sx||1,sy=KAL.sy||1;
-  const ox=KAL.ofsx||0,oy=KAL.ofsy||0;
-  return{
-    cx:op.cx*W*sx+ox,
-    cy:op.cy*H*sy+oy,
-    outerPx:C.outer_r*W*sx,
-    innerPx:C.inner_r*W*sx
-  };
+  const sx=KAL.sx||1,sy=KAL.sy||1,ox=KAL.ofsx||0,oy=KAL.ofsy||0;
+  return{cx:op.cx*W*sx+ox,cy:op.cy*H*sy+oy,
+         outerPx:C.outer_r*W*sx,innerPx:C.inner_r*W*sx};
 }
-
-// LOCAL CONTRAST SCORE — kunci akurasi foto HP
-// Score = bg_avg - inner_avg (makin besar = makin gelap vs background)
 function localContrastScore(d,W,H,cx,cy,outerPx,innerPx){
-  const rIn   = innerPx*1.1;   // inner circle (area arsiran)
-  const rBgIn = outerPx*1.0;   // ring mulai (luar simbol)
-  const rBgOut= outerPx*1.5;   // ring akhir (luar simbol, background bersih)
-
-  const x0=Math.max(0,Math.floor(cx-rBgOut));
-  const x1=Math.min(W,Math.ceil(cx+rBgOut)+1);
-  const y0=Math.max(0,Math.floor(cy-rBgOut));
-  const y1=Math.min(H,Math.ceil(cy+rBgOut)+1);
-
+  const rIn=innerPx*1.1,rBgIn=outerPx*1.0,rBgOut=outerPx*1.6;
+  const x0=Math.max(0,Math.floor(cx-rBgOut)),x1=Math.min(W,Math.ceil(cx+rBgOut)+1);
+  const y0=Math.max(0,Math.floor(cy-rBgOut)),y1=Math.min(H,Math.ceil(cy+rBgOut)+1);
   let inSum=0,inCnt=0,bgSum=0,bgCnt=0;
   for(let py=y0;py<y1;py++)for(let px=x0;px<x1;px++){
-    const dx=px-cx,dy=(py-cy)*(W/H);
-    const dist=Math.sqrt(dx*dx+dy*dy);
-    const gray=gv(d,(py*W+px)*4);
-    if(dist<=rIn){inSum+=gray;inCnt++;}
-    else if(dist>=rBgIn&&dist<=rBgOut){bgSum+=gray;bgCnt++;}
+    const dx=px-cx,dy=py-cy,dist=Math.sqrt(dx*dx+dy*dy);
+    const g=gv(d,(py*W+px)*4);
+    if(dist<=rIn){inSum+=g;inCnt++;}
+    else if(dist>=rBgIn&&dist<=rBgOut){bgSum+=g;bgCnt++;}
   }
-  const inAvg =inCnt ?inSum/inCnt :200;
-  const bgAvg =bgCnt ?bgSum/bgCnt :200;
-  // Score: seberapa lebih gelap inner vs background
-  // Nilai positif = diarsir; nilai negatif = tidak diarsir
-  return{
-    score: bgAvg-inAvg,   // KUNCI: relative, bukan absolute!
-    inAvg, bgAvg,
-    darkPct: inCnt?[...Array(inCnt)].filter((_,k)=>
-      gv(d,((y0+Math.floor(k/((x1-x0)||1)))*W+(x0+(k%((x1-x0)||1))))*4)<(KAL.arsirThr||170)
-    ).length/inCnt:0  // legacy
-  };
+  const inAvg=inCnt?inSum/inCnt:200,bgAvg=bgCnt?bgSum/bgCnt:220;
+  return{score:bgAvg-inAvg,inAvg,bgAvg};
+}
+function scanSoalV4(d,W,H,soal){
+  const scores=[];
+  for(let oi=0;oi<5;oi++){
+    const{cx,cy,outerPx,innerPx}=getRoiCenter(soal.opsi[oi],W,H);
+    scores.push(localContrastScore(d,W,H,cx,cy,outerPx,innerPx).score);
+  }
+  return decideFromScores(scores,'ABCDE');
 }
 
-// SCAN SATU SOAL — pakai relative scoring
-function scanSoal(d,W,H,soal){
-  const scores=[],fills=[];
-  for(let oi=0;oi<5;oi++){
-    const op=soal.opsi[oi];
-    const{cx,cy,outerPx,innerPx}=getRoiCenter(op,W,H);
-    const lc=localContrastScore(d,W,H,cx,cy,outerPx,innerPx);
-    scores.push(lc.score);
-    fills.push(lc);
+// ══════════════════════════════════════════════════════════════
+// SCAN FORMAT KOTAK — Silang X / Centang / Garis
+// ══════════════════════════════════════════════════════════════
+// Grid kotak: deteksi otomatis dari garis-garis tabel
+
+let kotakGrid=null; // cache grid koordinat kotak
+
+function detectKotakGrid(d,W,H){
+  // Cari garis vertikal & horizontal dari flatD
+  const step=Math.max(1,Math.floor(Math.min(W,H)/200));
+  const grayRow=new Float32Array(H),grayCol=new Float32Array(W);
+
+  // Rata-rata tiap baris dan kolom
+  for(let y=0;y<H;y+=step){
+    let s=0;for(let x=0;x<W;x+=step)s+=gv(d,(y*W+x)*4);
+    grayRow[y]=s/(W/step);
+  }
+  for(let x=0;x<W;x+=step){
+    let s=0;for(let y=0;y<H;y+=step)s+=gv(d,(y*W+x)*4);
+    grayCol[x]=s/(H/step);
   }
 
-  // RELATIVE SCORING — tidak peduli absolute brightness
-  const maxScore  =Math.max(...scores);
-  const secMax    =scores.filter(s=>s!==maxScore).reduce((a,b)=>Math.max(a,b),-999);
-  const scoreDiff =maxScore-secMax;         // gap antara terbaik dan kedua
-  const minDiff   =KAL.minDiff||12;         // minimum gap yg dianggap jelas
-  const minScore  =KAL.minScore||5;         // harus > 5 untuk dianggap ada arsiran
+  // Temukan garis gelap (piksel rata-rata rendah = ada banyak tinta hitam)
+  // Garis tabel: nilai rata-rata rendah dibanding tetangga
+  function findLines(arr,size,minGap){
+    const lines=[];
+    for(let i=1;i<size-1;i+=step){
+      const v=arr[i];
+      if(v<180&&(v<arr[Math.max(0,i-step)]-8||v<arr[Math.min(size-1,i+step)]-8)){
+        if(!lines.length||i-lines[lines.length-1]>minGap)
+          lines.push(i);
+      }
+    }
+    return lines;
+  }
 
-  // Semua skor rendah = tidak dijawab
+  const hLines=findLines(grayRow,H,Math.floor(H/60));
+  const vLines=findLines(grayCol,W,Math.floor(W/20));
+
+  if(hLines.length<5||vLines.length<4)return null;
+
+  // Kolom: No, A, B, C, D, E  (kiri), No, A, B, C, D, E (kanan)
+  // Cari 2 cluster kolom (kiri dan kanan dari garis tengah)
+  const midX=W*0.5;
+  const leftCols =vLines.filter(x=>x<midX);
+  const rightCols=vLines.filter(x=>x>midX);
+
+  if(leftCols.length<4||rightCols.length<4)return null;
+
+  // Ambil 6 kolom pertama dari kiri dan kanan
+  const LC=leftCols.slice(0,7);
+  const RC=rightCols.slice(0,7);
+
+  // Baris data: skip header rows
+  const avgRowGap=(hLines[hLines.length-1]-hLines[0])/Math.max(hLines.length-1,1);
+  const dataRows=hLines.filter(y=>y>H*0.12); // skip header
+
+  // Hitung pusat sel
+  const grid=[];
+  const sides=[
+    {cols:LC,   nomor_start:1,  nomor_end:Math.floor(dataRows.length/2)+1},
+    {cols:RC,   nomor_start:Math.floor(dataRows.length/2)+1, nomor_end:dataRows.length+1}
+  ];
+
+  for(const side of sides){
+    if(side.cols.length<6)continue;
+    const cxA=Math.round((side.cols[1]+side.cols[2])/2);
+    const cxB=Math.round((side.cols[2]+side.cols[3])/2);
+    const cxC=Math.round((side.cols[3]+side.cols[4])/2);
+    const cxD=Math.round((side.cols[4]+side.cols[5])/2);
+    const cxE=side.cols[6]?Math.round((side.cols[5]+side.cols[6])/2):side.cols[5]+Math.round(avgRowGap*0.8);
+    const opsiCX={'A':cxA,'B':cxB,'C':cxC,'D':cxD,'E':cxE};
+    const opsiW =Math.round((side.cols[2]-side.cols[1])*0.7);
+    const opsiH =Math.round(avgRowGap*0.65);
+
+    for(let ri=0;ri<dataRows.length&&grid.filter(g=>g.side===side.cols[0]).length<20;ri++){
+      const y0r=dataRows[ri];
+      const y1r=dataRows[ri+1]||y0r+Math.round(avgRowGap);
+      const cy =Math.round((y0r+y1r)/2);
+      const nomor=side.nomor_start+ri;
+      if(nomor>50)break;
+      grid.push({
+        nomor,
+        cy,opsiCX,opsiW,opsiH,
+        side:side.cols[0]
+      });
+    }
+  }
+
+  if(grid.length<10)return null;
+
+  return{grid,avgCellW:Math.round(avgRowGap*0.8),avgCellH:Math.round(avgRowGap*0.65)};
+}
+
+function sampleCell(d,W,H,cx,cy,cw,ch){
+  const x0=Math.max(0,Math.floor(cx-cw/2)),x1=Math.min(W,Math.ceil(cx+cw/2));
+  const y0=Math.max(0,Math.floor(cy-ch/2)),y1=Math.min(H,Math.ceil(cy+ch/2));
+  let dark=0,total=0,sum=0;
+  for(let py=y0;py<y1;py++)for(let px=x0;px<x1;px++){
+    const g=gv(d,(py*W+px)*4);
+    sum+=g;if(g<170)dark++;total++;
+  }
+  const avg=total?sum/total:200;
+  const darkPct=total?dark/total:0;
+  return{score:200-avg,darkPct,avg}; // score: makin gelap makin tinggi
+}
+
+function scanSoalKotak(d,W,H,soal,kg){
+  const scores=[];
+  for(const op of 'ABCDE'){
+    const cx=soal.opsiCX[op];
+    if(!cx){scores.push(0);continue;}
+    const s=sampleCell(d,W,H,cx,soal.cy,kg.avgCellW,kg.avgCellH);
+    scores.push(s.score);
+  }
+  return decideFromScores(scores,'ABCDE');
+}
+
+// ── Shared scoring logic ──────────────────────────────────────
+function decideFromScores(scores,opsiStr){
+  const maxScore=Math.max(...scores);
+  const minDiff=KAL.minDiff||12;
+  const minScore=KAL.minScore||5;
   if(maxScore<minScore)
-    return{jaw:'',scores,fills,conf:0,reason:'kosong',darkPcts:scores.map(s=>Math.max(0,s)/100)};
-
+    return{jaw:'',scores,conf:0,reason:'kosong',darkPcts:scores.map(s=>Math.max(0,s)/100)};
   const domIdx=scores.indexOf(maxScore);
-
-  // Ambigus: 2 skor hampir sama
+  const sorted=[...scores].sort((a,b)=>b-a);
+  const scoreDiff=sorted[0]-sorted[1];
   const closeCount=scores.filter(s=>s>=maxScore-minDiff*0.5&&s>=minScore).length;
   if(closeCount>=2&&scoreDiff<minDiff)
-    return{jaw:'?',scores,fills,conf:20,reason:`ambigus (diff=${scoreDiff.toFixed(1)})`,darkPcts:scores.map(s=>Math.max(0,s)/100)};
-
-  // Hitung confidence: makin besar gap, makin yakin
-  const conf=Math.min(99,Math.round(30+Math.min(scoreDiff,40)*1.5+Math.min(maxScore,30)));
-  return{
-    jaw:'ABCDE'[domIdx],scores,fills,conf,reason:'ok',
-    darkPcts:scores.map(s=>Math.max(0,s)/100),
-    scoreDiff,maxScore,domIdx
-  };
+    return{jaw:'?',scores,conf:20,reason:`ambigus(diff=${scoreDiff.toFixed(1)})`,darkPcts:scores.map(s=>Math.max(0,s)/100)};
+  const conf=Math.min(99,Math.round(30+Math.min(scoreDiff,50)*1.2+Math.min(maxScore,30)));
+  return{jaw:opsiStr[domIdx],scores,conf,reason:'ok',darkPcts:scores.map(s=>Math.max(0,s)/100),scoreDiff,maxScore,domIdx};
 }
 
-// Normalisasi brightness global + per-strip vignetting correction
+// ── getBestData ───────────────────────────────────────────────
+function getBestData(){
+  return flatD?{d:flatD.data,W:flatW,H:flatH}
+              :{d:imgD.data,W:imgW,H:imgH};
+}
+
+// ══════════════════════════════════════════════════════════════
+// PREVIEW
+// ══════════════════════════════════════════════════════════════
+async function doPreview(){
+  if(!imgD){toast('Upload gambar dulu!');return;}
+  document.getElementById('btnPrev').disabled=true;
+  setSbar('work','🔍 Preview...');await sleep(20);
+
+  const{d,W,H}=getBestData();
+  const fmt=detectedFormat;
+
+  // Siapkan grid kotak jika perlu
+  let kg=null;
+  if(fmt==='kotak'){
+    kg=detectKotakGrid(flatD,flatW,flatH);
+    kotakGrid=kg;
+    if(!kg){
+      setSbar('err','❌ Grid kotak tidak terdeteksi. Coba adjust kalibrasi atau upload ulang.');
+      document.getElementById('btnPrev').disabled=false;return;
+    }
+  }
+
+  const grid_=document.getElementById('pvGrid');grid_.innerHTML='';
+  const detLog=[];let detCnt=0,ambCnt=0;
+
+  const soalList=fmt==='v4'?C.grid:((kg&&kg.grid)||[]);
+
+  for(let si=0;si<soalList.length;si++){
+    const soal=soalList[si];
+    const res=fmt==='v4'
+      ?scanSoalV4(d,W,H,soal)
+      :scanSoalKotak(d,W,H,soal,kg);
+
+    if(res.jaw&&res.jaw!=='?')detCnt++;
+    if(res.jaw==='?')ambCnt++;
+
+    const symIdx=(res.jaw&&res.jaw!=='?')
+      ?'ABCDE'.indexOf(res.jaw):-1;
+    const cell=document.createElement('div');
+    cell.className='pvcell'+(res.jaw&&res.jaw!=='?'?' hit':res.jaw==='?'?' amb':'');
+    cell.innerHTML=
+      `<span class="pvn">${soal.nomor}</span>`+
+      `<span class="pvsym" style="color:${symIdx>=0?SCOL[symIdx]:'var(--tx3)'}">`+
+      `${fmt==='v4'?(symIdx>=0?SYM[symIdx]:'○'):(symIdx>=0?res.jaw:'—')}</span>`+
+      `<span class="pva">${res.jaw||'—'}</span>`;
+    cell.title=`Q${soal.nomor}: ${res.jaw||'kosong'} conf=${res.conf}% ${res.reason}`;
+    grid_.appendChild(cell);
+
+    if(res.scores){
+      const sStr=res.scores.map(s=>s.toFixed(1)).join('|');
+      detLog.push(`Q${String(soal.nomor).padStart(2)}: ${res.jaw||'-'} [${sStr}] ${res.reason}`);
+    }
+    if(si%8===0)await sleep(0);
+  }
+
+  document.getElementById('pvInfo').textContent=
+    `Format: ${fmt} | Terdeteksi: ${detCnt}/${soalList.length} | Ambigus: ${ambCnt}`;
+  document.getElementById('pvDetail').textContent=
+    detLog.slice(0,20).join('\n')+(detLog.length>20?'\n...':'');
+  document.getElementById('pvPanel').style.display='block';
+  document.getElementById('btnPrev').disabled=false;
+  setSbar('ok',`🔍 Preview: ${detCnt}/${soalList.length}`);
+  toast(`Preview: ${detCnt}/${soalList.length}`);
+
+  // Gambar ROI overlay di flat canvas jika kotak
+  if(fmt==='kotak'&&kg)drawKotakROI(kg);
+}
+
+function drawKotakROI(kg){
+  const ov=document.getElementById('cvOverlay'),ctx=ov.getContext('2d');
+  ctx.clearRect(0,0,ov.width,ov.height);
+  const sx=ov.width/flatW,sy=ov.height/flatH;
+  ctx.strokeStyle='rgba(0,229,255,0.5)';ctx.lineWidth=1;
+  for(const soal of kg.grid){
+    for(const op of 'ABCDE'){
+      const cx=soal.opsiCX[op];if(!cx)continue;
+      const x=(cx-kg.avgCellW/2)*sx,y=(soal.cy-kg.avgCellH/2)*sy;
+      ctx.strokeRect(x,y,kg.avgCellW*sx,kg.avgCellH*sy);
+    }
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+// SCAN PENUH
+// ══════════════════════════════════════════════════════════════
+async function doScan(){
+  if(!imgD){toast('Upload gambar dulu!');return;}
+  const noKey=kunci.every(k=>!k);
+  if(noKey&&!confirm('Kunci belum diisi. Scan tanpa penilaian?'))return;
+
+  document.getElementById('btnScan').disabled=true;
+  setSbar('work','⚡ Scanning...');setPbar(0);await sleep(20);
+
+  const{d,W,H}=getBestData();
+  const fmt=detectedFormat;
+  let kg=kotakGrid;
+  if(fmt==='kotak'&&!kg){
+    kg=detectKotakGrid(flatD,flatW,flatH);
+    kotakGrid=kg;
+  }
+
+  const soalList=fmt==='v4'?C.grid:(kg?kg.grid:[]);
+  if(!soalList.length){
+    setSbar('err','❌ Grid tidak terdeteksi');
+    document.getElementById('btnScan').disabled=false;return;
+  }
+
+  const hasil=[];let totConf=0;
+  for(let si=0;si<soalList.length;si++){
+    setPbar(Math.round(si/soalList.length*90));
+    const soal=soalList[si];
+    const res=fmt==='v4'
+      ?scanSoalV4(d,W,H,soal)
+      :scanSoalKotak(d,W,H,soal,kg);
+
+    const jaw=res.jaw==='?'?'?':res.jaw;
+    const kj=kunci[soal.nomor-1]||'';
+    const correct=kj===''?null
+      :kj.split(',').map(k=>k.trim()).includes(jaw);
+    hasil.push({
+      nomor:soal.nomor,jaw,kunci:kj,correct,
+      conf:res.conf,reason:res.reason,
+      symIdx:'ABCDE'.indexOf(jaw)
+    });
+    totConf+=res.conf;
+    if(si%5===0)await sleep(0);
+  }
+
+  setPbar(100);await sleep(60);setPbar(-1);
+  const n=soalList.length;
+  const benar=hasil.filter(h=>h.correct===true).length;
+  const salah=hasil.filter(h=>h.correct===false).length;
+  const kosong=hasil.filter(h=>h.jaw===''||h.jaw==='?').length;
+  const nilai=noKey?null:Math.round(benar/n*100);
+  const grade=nilai===null?null:nilai>=90?'A':nilai>=80?'B':nilai>=70?'C':nilai>=60?'D':'E';
+
+  last={
+    nama:document.getElementById('inNama').value||'—',
+    absen:document.getElementById('inAbsen').value||'—',
+    kelas:document.getElementById('inKelas').value||'—',
+    waktu:new Date().toLocaleString('id-ID'),
+    hasil,benar,salah,kosong,nilai,grade,
+    avgConf:Math.round(totConf/n),
+    format:fmt,totalSoal:n
+  };
+  document.getElementById('btnScan').disabled=false;
+  setSbar('ok',`✅ Selesai! ${benar}/${n} benar`);
+  renderHasil();goTab(2);toast('✅ Scan selesai!');
+}
+
+// ══════════════════════════════════════════════════════════════
+// BW / ROI OVERLAY
+// ══════════════════════════════════════════════════════════════
 function normBrightness(imgData,W,H){
   const d=imgData.data,samples=[];
   const st=Math.max(1,Math.floor(W/20));
   for(let y=Math.floor(H*.2);y<Math.floor(H*.8);y+=st)
     for(let x=Math.floor(W*.1);x<Math.floor(W*.9);x+=st)
-      samples.push(0.299*d[(y*W+x)*4]+0.587*d[(y*W+x)*4+1]+0.114*d[(y*W+x)*4+2]);
+      samples.push(gv(d,(y*W+x)*4));
   samples.sort((a,b)=>a-b);
   const p80=samples[Math.floor(samples.length*.80)]||230;
   const sc=Math.max(0.6,Math.min(1.8,220/Math.max(p80,30)));
@@ -774,93 +1185,25 @@ function normBrightness(imgData,W,H){
   }
   return out;
 }
-
-// Pilih data terbaik: warped (koreksi perspektif) atau original
-function getBestData(){
-  return warpedD
-    ? {d:warpedD.data,W:warpW,H:warpH}
-    : {d:normBrightness(imgD,imgW,imgH).data,W:imgW,H:imgH};
-}
-
-// ── PREVIEW ───────────────────────────────────────────────────
-async function doPreview(){
-  if(!imgD){toast('Upload gambar dulu!');return;}
-  document.getElementById('btnPrev').disabled=true;
-  setSbar('work','🔍 Preview deteksi 2 lapis...');await sleep(20);
-  const{d,W,H}=getBestData();
-  const grid=document.getElementById('pvGrid');grid.innerHTML='';
-  const detLog=[];let detCnt=0,ambCnt=0;
-  for(let si=0;si<C.grid.length;si++){
-    const soal=C.grid[si];
-    const res=scanSoal(d,W,H,soal);
-    if(res.jaw&&res.jaw!=='?')detCnt++;
-    if(res.jaw==='?')ambCnt++;
-    const symIdx=(res.jaw&&res.jaw!=='?')?'ABCDE'.indexOf(res.jaw):-1;
-    const cell=document.createElement('div');
-    cell.className='pvcell'+(res.jaw&&res.jaw!=='?'?' hit':res.jaw==='?'?' amb':'');
-    cell.innerHTML=`<span class="pvn">${soal.nomor}</span>`+
-      `<span class="pvsym" style="color:${symIdx>=0?SCOL[symIdx]:'var(--tx3)'}">${symIdx>=0?SYM[symIdx]:'○'}</span>`+
-      `<span class="pva">${res.jaw||'—'}</span>`;
-    cell.title=`Q${soal.nomor}: ${res.jaw||'kosong'} conf=${res.conf}% ${res.reason}`;
-    grid.appendChild(cell);
-    if(res.scores){
-      const sStr=res.scores.map(s=>s.toFixed(1)).join('|');
-      detLog.push(`Q${String(soal.nomor).padStart(2)}: ${res.jaw||'-'} [${sStr}] ${res.reason}`);
-    }
-    if(si%8===0)await sleep(0);
-  }
-  document.getElementById('pvInfo').textContent=`Terdeteksi: ${detCnt}/50 | Ambigus: ${ambCnt} | Mode: ${warpedD?'Warp':'Direct'}`;
-  document.getElementById('pvDetail').textContent=detLog.slice(0,20).join('\n')+(detLog.length>20?'\n...':'');
-  document.getElementById('pvPanel').style.display='block';
-  document.getElementById('btnPrev').disabled=false;
-  setSbar('ok',`🔍 Preview: ${detCnt}/50 terdeteksi`);
-  toast(`Preview: ${detCnt}/50`);
-}
-
-// ── SCAN PENUH ────────────────────────────────────────────────
-async function doScan(){
-  if(!imgD){toast('Upload gambar dulu!');return;}
-  const noKey=kunci.every(k=>!k);
-  if(noKey&&!confirm('Kunci belum diisi. Scan tanpa penilaian?'))return;
-  document.getElementById('btnScan').disabled=true;
-  setSbar('work','⚡ Scanning...');setPbar(0);await sleep(20);
-  const{d,W,H}=getBestData();
-  const hasil=[];let totConf=0;
-  for(let si=0;si<C.grid.length;si++){
-    setPbar(Math.round(si/50*90));
-    const soal=C.grid[si];
-    const res=scanSoal(d,W,H,soal);
-    const jaw=res.jaw==='?'?'?':res.jaw;
-    const kj=kunci[soal.nomor-1]||'';
-    const correct=kj===''?null:kj.split(',').map(k=>k.trim()).includes(jaw);
-    hasil.push({nomor:soal.nomor,jaw,kunci:kj,correct,conf:res.conf,reason:res.reason,symIdx:'ABCDE'.indexOf(jaw)});
-    totConf+=res.conf;
-    if(si%5===0)await sleep(0);
-  }
-  setPbar(100);await sleep(60);setPbar(-1);
-  const benar=hasil.filter(h=>h.correct===true).length;
-  const salah=hasil.filter(h=>h.correct===false).length;
-  const kosong=hasil.filter(h=>h.jaw===''||h.jaw==='?').length;
-  const nilai=noKey?null:Math.round(benar/50*100);
-  const grade=nilai===null?null:nilai>=90?'A':nilai>=80?'B':nilai>=70?'C':nilai>=60?'D':'E';
-  last={
-    nama:document.getElementById('inNama').value||'—',
-    absen:document.getElementById('inAbsen').value||'—',
-    kelas:document.getElementById('inKelas').value||'—',
-    waktu:new Date().toLocaleString('id-ID'),
-    hasil,benar,salah,kosong,nilai,grade,
-    avgConf:Math.round(totConf/50),
-    mode:warpedD?'Warp':'Direct'
-  };
-  document.getElementById('btnScan').disabled=false;
-  setSbar('ok',`✅ Selesai! ${benar}/50 benar`);
-  renderHasil();goTab(2);toast('✅ Scan selesai!');
-}
-
-// ── BW MODE ───────────────────────────────────────────────────
 function applyBWBlur(){
   const cv=document.getElementById('cvMain'),ctx=cv.getContext('2d');
-  const src=imgD.data,W=imgW,H=imgH;
+  // Tampilkan flatD di canvas jika tersedia (sudah datar/normalized)
+  if(flatD){
+    const tmp=document.createElement('canvas');tmp.width=flatW;tmp.height=flatH;
+    tmp.getContext('2d').putImageData(flatD,0,0);
+    cv.width=flatW;cv.height=flatH;
+    const c2=cv.getContext('2d');c2.drawImage(tmp,0,0);
+    // BW
+    const id=c2.getImageData(0,0,flatW,flatH),dd=id.data;
+    for(let i=0;i<dd.length;i+=4){const v=Math.round(0.299*dd[i]+0.587*dd[i+1]+0.114*dd[i+2]);dd[i]=dd[i+1]=dd[i+2]=v;}
+    c2.putImageData(id,0,0);
+    // Sync overlay size
+    const ov=document.getElementById('cvOverlay');ov.width=flatW;ov.height=flatH;
+    if(flatCorners)drawCornersOverlay(flatCorners,flatW,flatH);
+    return;
+  }
+  // Fallback: BW dari imgD
+  const W=imgW,H=imgH,src=imgD.data;
   const gray=new Float32Array(W*H);
   for(let i=0;i<W*H;i++){const p=i*4;gray[i]=0.299*src[p]+0.587*src[p+1]+0.114*src[p+2];}
   const blr=new Float32Array(W*H),k=[1,2,1,2,4,2,1,2,1];
@@ -874,84 +1217,103 @@ function applyBWBlur(){
   for(let i=0;i<W*H;i++){const v=Math.round(blr[i]),p=i*4;out.data[p]=out.data[p+1]=out.data[p+2]=v;out.data[p+3]=255;}
   ctx.putImageData(out,0,0);
 }
-function restoreCanvas(){if(!imgD)return;document.getElementById('cvMain').getContext('2d').putImageData(imgD,0,0);}
+function restoreCanvas(){
+  if(!imgD)return;
+  const cv=document.getElementById('cvMain'),ov=document.getElementById('cvOverlay');
+  cv.width=ov.width=imgW;cv.height=ov.height=imgH;
+  cv.getContext('2d').putImageData(imgD,0,0);
+  ov.getContext('2d').clearRect(0,0,imgW,imgH);
+  if(flatCorners)drawCornersOverlay(flatCorners,imgW,imgH);
+}
 function toggleBW(){
-  if(!imgD)return;isBW=!isBW;
+  if(!imgD)return;
+  isBW=!isBW;
   const btn=document.getElementById('btnBW');
   if(isBW){applyBWBlur();btn.textContent='🎨 Lihat Asli';}
   else{restoreCanvas();btn.textContent='🔲 BW Mode';}
-  if(!isBW&&hasROI){drawCornersOverlay(null);if(warpedD)drawCornersOverlay(detectCornersFromMeta());}
 }
-
-// ── ROI OVERLAY ───────────────────────────────────────────────
 function toggleROI(){
   hasROI=!hasROI;
   const ov=document.getElementById('cvOverlay'),ctx=ov.getContext('2d');
   ctx.clearRect(0,0,ov.width,ov.height);
   document.getElementById('btnRoi').textContent=hasROI?'🚫 ROI':'👁 ROI';
-  if(!hasROI)return;
-  // Gambar overlay pada gambar ASLI (imgD dimensions)
-  // Jika ada warp, mapping balik dari warp coords ke original
-  const W=imgW,H=imgH;
+  if(!hasROI){if(flatCorners)drawCornersOverlay(flatCorners,ov.width,ov.height);return;}
+  const W=ov.width,H=ov.height;
   const lw=Math.max(0.5,W/800);
-  C.grid.forEach(soal=>{
-    soal.opsi.forEach((op,oi)=>{
-      // Kalau ada warp, konversi koordinat dari warp space ke original space
-      const{cx:wCx,cy:wCy,outerPx,innerPx}=getRoiCenter(op,warpedD?warpW:W,warpedD?warpH:H);
-      let cx=wCx,cy=wCy,oPx=outerPx,iPx=innerPx;
-      // Outer ring = warna bangun
-      ctx.strokeStyle=SCOL[oi];ctx.lineWidth=lw;
-      ctx.beginPath();ctx.arc(cx,cy,oPx*0.88,0,Math.PI*2);ctx.stroke();
-      // Inner circle = arsiran
-      ctx.strokeStyle='rgba(255,255,255,0.75)';ctx.lineWidth=lw*0.7;
-      ctx.beginPath();ctx.arc(cx,cy,iPx*0.9,0,Math.PI*2);ctx.stroke();
+  if(detectedFormat==='v4'){
+    C.grid.forEach(soal=>{
+      soal.opsi.forEach((op,oi)=>{
+        const{cx,cy,outerPx,innerPx}=getRoiCenter(op,flatW||W,flatH||H);
+        ctx.strokeStyle=SCOL[oi];ctx.lineWidth=lw;
+        ctx.beginPath();ctx.arc(cx,cy,outerPx*.88,0,Math.PI*2);ctx.stroke();
+        ctx.strokeStyle='rgba(255,255,255,.65)';ctx.lineWidth=lw*.7;
+        ctx.beginPath();ctx.arc(cx,cy,innerPx*.9,0,Math.PI*2);ctx.stroke();
+      });
     });
-  });
+  } else if(kotakGrid){
+    drawKotakROI(kotakGrid);
+  }
 }
-function detectCornersFromMeta(){return null;}
 
-// ── RENDER HASIL ──────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════
+// RENDER HASIL
+// ══════════════════════════════════════════════════════════════
 function renderHasil(){
   if(!last)return;
   const h=last;
   document.getElementById('hEmpty').style.display='none';
   document.getElementById('hContent').style.display='block';
   document.getElementById('hNilai').textContent=h.nilai!==null?h.nilai:'—';
-  const ge=document.getElementById('hGrade');ge.textContent=h.grade||'—';ge.className='sgrade'+(h.grade?' g'+h.grade:'');
-  document.getElementById('hDet').textContent=`Benar: ${h.benar}  Salah: ${h.salah}  Kosong: ${h.kosong}`;
-  document.getElementById('hConf').textContent=`Conf: ${h.avgConf}%  |  ${h.nama}  |  ${h.waktu}  |  ${h.mode||''}`;
+  const ge=document.getElementById('hGrade');ge.textContent=h.grade||'—';
+  ge.className='sgrade'+(h.grade?' g'+h.grade:'');
+  document.getElementById('hDet').textContent=
+    `Benar: ${h.benar}  Salah: ${h.salah}  Kosong: ${h.kosong}  (${h.totalSoal} soal)`;
+  document.getElementById('hConf').textContent=
+    `Conf: ${h.avgConf}%  |  ${h.nama}  |  Format: ${h.format}  |  ${h.waktu}`;
   const grid=document.getElementById('hGrid');grid.innerHTML='';
   h.hasil.forEach(s=>{
     const cls=s.correct===true?'ok':s.correct===false?'ng':(s.jaw===''||s.jaw==='?')?'ko':'';
-    const sym=s.symIdx>=0?`<span class="hsym" style="color:${SCOL[s.symIdx]}">${SYM[s.symIdx]}</span>`:'';
+    const lbl=h.format==='v4'&&s.symIdx>=0
+      ?`<span class="hsym" style="color:${SCOL[s.symIdx]}">${SYM[s.symIdx]}</span>`
+      :`<span style="font-weight:700">${s.jaw||'—'}</span>`;
     const cell=document.createElement('div');cell.className='hcell '+cls;
-    cell.innerHTML=`<div class="hn">${s.nomor}</div>${sym}<div class="ha">${s.jaw||'—'}</div>`;
-    cell.title=`Q${s.nomor}: Jawab=${s.jaw||'-'} Kunci=${s.kunci||'-'} Conf=${s.conf}% ${s.reason}`;
+    cell.innerHTML=`<div class="hn">${s.nomor}</div>${lbl}<div class="ha">${s.jaw||'—'}</div>`;
+    cell.title=`Q${s.nomor}: Jawab=${s.jaw||'-'} Kunci=${s.kunci||'-'} Conf=${s.conf}%`;
     grid.appendChild(cell);
   });
   const ibar=document.getElementById('ibar');ibar.innerHTML='';
   h.hasil.forEach(s=>{
     const seg=document.createElement('div');seg.className='iseg';
-    seg.style.background=s.correct===true?'#00ff9d':s.correct===false?'#ff3d5a':(s.jaw===''||s.jaw==='?')?'#ffab00':'#4a6d94';
+    seg.style.background=s.correct===true?'#00ff9d':s.correct===false?'#ff3d5a':
+      (s.jaw===''||s.jaw==='?')?'#ffab00':'#4a6d94';
     seg.title=`Q${s.nomor}:${s.jaw}(${s.conf}%)`;ibar.appendChild(seg);
   });
   const ambs=h.hasil.filter(r=>r.jaw==='?').length;
-  document.getElementById('hConf2').textContent=`🟢${h.benar}  🔴${h.salah}  🟡${h.kosong-ambs}  ❓${ambs}  |  Conf: ${h.avgConf}%`;
+  document.getElementById('hConf2').textContent=
+    `🟢${h.benar}  🔴${h.salah}  🟡${h.kosong-ambs}  ❓${ambs}  |  Conf: ${h.avgConf}%`;
 }
 
-// ── EXPORT ────────────────────────────────────────────────────
-function hSimpan(){if(!last){toast('Tidak ada hasil!');return;}rekap.push({...last});try{localStorage.setItem('bb41_rekap',JSON.stringify(rekap));}catch{}renderRekap();updateStats();toast('✅ Disimpan!');goTab(3);}
+// ══════════════════════════════════════════════════════════════
+// EXPORT
+// ══════════════════════════════════════════════════════════════
+function hSimpan(){
+  if(!last){toast('Tidak ada hasil!');return;}
+  rekap.push({...last});
+  try{localStorage.setItem('bb41_rekap',JSON.stringify(rekap));}catch{}
+  renderRekap();updateStats();toast('✅ Disimpan!');goTab(3);
+}
 function hTXT(){
   if(!last){toast('Tidak ada hasil!');return;}
   const h=last,NL='\n';
-  let t='HASIL LJK BENYAMIN BATAU v4.1'+NL+'='.repeat(50)+NL;
-  t+=`Nama: ${h.nama} | Absen: ${h.absen} | Kelas: ${h.kelas}`+NL+`Waktu: ${h.waktu}`+NL;
-  t+=`Nilai: ${h.nilai!==null?h.nilai:'—'} | Grade: ${h.grade||'—'} | Benar: ${h.benar}/50`+NL+NL;
-  t+='No   Simbol Jawab  Kunci  Status    Conf'+NL+'-'.repeat(42)+NL;
+  let t='HASIL LJK — BENYAMIN BATAU SCANNER v5.0'+NL+'='.repeat(50)+NL;
+  t+=`Nama: ${h.nama} | Absen: ${h.absen} | Kelas: ${h.kelas}`+NL;
+  t+=`Waktu: ${h.waktu} | Format: ${h.format}`+NL;
+  t+=`Nilai: ${h.nilai!==null?h.nilai:'—'} | Grade: ${h.grade||'—'} | Benar: ${h.benar}/${h.totalSoal}`+NL+NL;
+  t+='No   Jawab  Kunci  Status    Conf'+NL+'-'.repeat(38)+NL;
   h.hasil.forEach(s=>{
-    const sym=s.symIdx>=0?SYM[s.symIdx]:'-';
+    const sym=h.format==='v4'&&s.symIdx>=0?SYM[s.symIdx]:s.jaw||'-';
     const st=s.correct===true?'BENAR':s.correct===false?'SALAH':s.jaw===''?'KOSONG':'AMBIGUS';
-    t+=`${String(s.nomor).padStart(2)}   ${sym}      ${(s.jaw||'-').padEnd(6)} ${(s.kunci||'-').padEnd(6)} ${st.padEnd(9)} ${s.conf}%`+NL;
+    t+=`${String(s.nomor).padStart(2)}   ${sym.padEnd(6)} ${(s.kunci||'-').padEnd(6)} ${st.padEnd(9)} ${s.conf}%`+NL;
   });
   dlText(t,`hasil_${h.nama.replace(/\s+/g,'_')}_${Date.now()}.txt`);
 }
@@ -960,125 +1322,171 @@ function hPDF(){
   const h=last;let rows='';
   h.hasil.forEach(s=>{
     const col=s.correct===true?'#007a3d':s.correct===false?'#c0001a':s.jaw===''?'#d97000':'#888';
-    const sym=s.symIdx>=0?SYM[s.symIdx]:'—';
+    const sym=h.format==='v4'&&s.symIdx>=0?SYM[s.symIdx]:s.jaw||'—';
     const st=s.correct===true?'✓':s.correct===false?'✗':s.jaw===''?'—':'?';
-    rows+=`<tr><td>${s.nomor}</td><td>${sym}</td><td style="font-weight:700">${s.jaw||'—'}</td><td>${s.kunci||'—'}</td><td style="color:${col};font-weight:700">${st}</td><td>${s.conf}%</td></tr>`;
+    rows+=`<tr><td>${s.nomor}</td><td>${sym}</td><td style="font-weight:700">${s.jaw||'—'}</td>`+
+          `<td>${s.kunci||'—'}</td><td style="color:${col};font-weight:700">${st}</td><td>${s.conf}%</td></tr>`;
   });
-  const html='<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Hasil</title>'+
+  const html='<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Hasil LJK</title>'+
     '<style>body{font-family:Arial;padding:16px;font-size:11px}table{border-collapse:collapse;width:100%}'+
     'th,td{border:1px solid #ccc;padding:3px 6px;text-align:center}th{background:#0f3460;color:#fff}'+
     '.skb{font-size:40px;font-weight:700;color:#0f3460}</style></head>'+
-    '<body onload="window.print()"><h2>HASIL LJK — BENYAMIN BATAU SCANNER v4.1</h2>'+
-    `<p>Nama: <b>${h.nama}</b> | Kelas: <b>${h.kelas}</b> | Absen: <b>${h.absen}</b> | ${h.waktu}</p>`+
-    `<p><span class="skb">${h.nilai!==null?h.nilai:'—'}</span> <b>${h.grade||''}</b> &nbsp;|&nbsp; Benar: <b>${h.benar}/50</b></p>`+
+    '<body onload="window.print()"><h2>HASIL LJK — BENYAMIN BATAU SCANNER v5.0</h2>'+
+    `<p>Nama: <b>${h.nama}</b> | Kelas: <b>${h.kelas}</b> | ${h.waktu} | Format: ${h.format}</p>`+
+    `<p><span class="skb">${h.nilai!==null?h.nilai:'—'}</span> <b>${h.grade||''}</b> &nbsp;|&nbsp; `+
+    `Benar: <b>${h.benar}/${h.totalSoal}</b></p>`+
     '<table><thead><tr><th>No</th><th>Simbol</th><th>Jawab</th><th>Kunci</th><th>Status</th><th>Conf</th></tr></thead>'+
     `<tbody>${rows}</tbody></table></body></html>`;
-  const w=window.open('','_blank');if(w){w.document.write(html);w.document.close();}else toast('⚠️ Aktifkan popup');
+  const w=window.open('','_blank');if(w){w.document.write(html);w.document.close();}
+  else toast('⚠️ Aktifkan popup');
 }
 
-// ── REKAP ─────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════
+// REKAP
+// ══════════════════════════════════════════════════════════════
 function renderRekap(){
   const tb=document.getElementById('rBody');tb.innerHTML='';
-  if(!rekap.length){tb.innerHTML='<tr><td colspan="6" style="color:var(--tx3);padding:14px;text-align:center">Belum ada data</td></tr>';return;}
+  if(!rekap.length){
+    tb.innerHTML='<tr><td colspan="6" style="color:var(--tx3);padding:14px;text-align:center">Belum ada data</td></tr>';
+    return;
+  }
   rekap.forEach((r,i)=>{
     const tr=document.createElement('tr');
     const gc=r.grade?`<span class="gchip cg${r.grade}">${r.grade}</span>`:'—';
-    tr.innerHTML=`<td>${i+1}</td><td class="tdnama" title="${r.nama}">${r.nama}</td><td>${r.kelas||'—'}</td><td>${r.benar}/50</td><td style="font-weight:700;color:var(--cy)">${r.nilai!==null?r.nilai:'—'}</td><td>${gc}</td>`;
+    tr.innerHTML=`<td>${i+1}</td><td class="tdnama" title="${r.nama}">${r.nama}</td>`+
+      `<td>${r.kelas||'—'}</td><td>${r.benar}/${r.totalSoal||50}</td>`+
+      `<td style="font-weight:700;color:var(--cy)">${r.nilai!==null?r.nilai:'—'}</td><td>${gc}</td>`;
     tb.appendChild(tr);
   });
 }
 function updateStats(){
   document.getElementById('rJml').textContent=rekap.length;
   const vals=rekap.filter(r=>r.nilai!==null).map(r=>r.nilai);
-  if(!vals.length){document.getElementById('rRata').textContent='—';document.getElementById('rLulus').textContent='0%';document.getElementById('barChart').innerHTML='';return;}
+  if(!vals.length){
+    document.getElementById('rRata').textContent='—';
+    document.getElementById('rLulus').textContent='0%';
+    document.getElementById('barChart').innerHTML='';return;
+  }
   document.getElementById('rRata').textContent=Math.round(vals.reduce((a,b)=>a+b,0)/vals.length);
-  document.getElementById('rLulus').textContent=Math.round(rekap.filter(r=>r.nilai>=75).length/rekap.length*100)+'%';
+  document.getElementById('rLulus').textContent=
+    Math.round(rekap.filter(r=>r.nilai>=75).length/rekap.length*100)+'%';
   const bc=document.getElementById('barChart');bc.innerHTML='';
   const gc={A:0,B:0,C:0,D:0,E:0};rekap.forEach(r=>{if(r.grade)gc[r.grade]++;});
   const mx=Math.max(...Object.values(gc),1);
   const cols={A:'#00ff9d',B:'#76ff03',C:'#ffab00',D:'#ff9100',E:'#ff3d5a'};
   Object.entries(gc).forEach(([g,n])=>{
     const h2=Math.round(n/mx*44)+4,col=document.createElement('div');col.className='barcol';
-    col.innerHTML=`<div class="barnum" style="color:${cols[g]}">${n}</div><div class="barbg" style="height:${h2}px;background:${cols[g]}"></div><div class="barlbl" style="color:${cols[g]}">${g}</div>`;
+    col.innerHTML=`<div class="barnum" style="color:${cols[g]}">${n}</div>`+
+      `<div class="barbg" style="height:${h2}px;background:${cols[g]}"></div>`+
+      `<div class="barlbl" style="color:${cols[g]}">${g}</div>`;
     bc.appendChild(col);
   });
 }
 function rPDF(){
   if(!rekap.length){toast('Rekap kosong!');return;}
-  let rows='';rekap.forEach((r,i)=>rows+=`<tr><td>${i+1}</td><td>${r.nama}</td><td>${r.kelas||'—'}</td><td>${r.absen||'—'}</td><td>${r.benar}/50</td><td>${r.nilai!==null?r.nilai:'—'}</td><td>${r.grade||'—'}</td></tr>`);
+  let rows='';
+  rekap.forEach((r,i)=>rows+=`<tr><td>${i+1}</td><td>${r.nama}</td><td>${r.kelas||'—'}</td>`+
+    `<td>${r.absen||'—'}</td><td>${r.benar}/${r.totalSoal||50}</td>`+
+    `<td>${r.nilai!==null?r.nilai:'—'}</td><td>${r.grade||'—'}</td></tr>`);
   const vals=rekap.filter(r=>r.nilai!==null).map(r=>r.nilai);
   const rata=vals.length?Math.round(vals.reduce((a,b)=>a+b,0)/vals.length):'—';
   const html='<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Rekap</title>'+
     '<style>body{font-family:Arial;padding:16px;font-size:11px}table{border-collapse:collapse;width:100%}'+
     'th,td{border:1px solid #ccc;padding:4px 6px}th{background:#0f3460;color:#fff}</style></head>'+
-    `<body onload="window.print()"><h2>REKAP — BENYAMIN BATAU SCANNER v4.1</h2><p>${new Date().toLocaleString('id-ID')}</p>`+
+    `<body onload="window.print()"><h2>REKAP — BENYAMIN BATAU SCANNER v5.0</h2>`+
+    `<p>${new Date().toLocaleString('id-ID')}</p>`+
     '<table><thead><tr><th>#</th><th>Nama</th><th>Kelas</th><th>Absen</th><th>Benar</th><th>Nilai</th><th>Grade</th></tr></thead>'+
     `<tbody>${rows}</tbody></table><p>Jumlah: ${rekap.length} | Rata-rata: ${rata}</p></body></html>`;
-  const w=window.open('','_blank');if(w){w.document.write(html);w.document.close();}else toast('⚠️ Aktifkan popup');
+  const w=window.open('','_blank');if(w){w.document.write(html);w.document.close();}
+  else toast('⚠️ Aktifkan popup');
 }
 function rTXT(){
   if(!rekap.length){toast('Rekap kosong!');return;}
   const NL='\n';
-  let t='REKAP BENYAMIN BATAU SCANNER v4.1'+NL+'='.repeat(45)+NL;
-  rekap.forEach((r,i)=>t+=`${String(i+1).padStart(2)}  ${r.nama.padEnd(20)} ${(r.kelas||'').padEnd(8)} ${String(r.benar).padEnd(4)} ${String(r.nilai!==null?r.nilai:'—').padEnd(4)} ${r.grade||'—'}`+NL);
+  let t='REKAP BENYAMIN BATAU SCANNER v5.0'+NL+'='.repeat(45)+NL;
+  rekap.forEach((r,i)=>
+    t+=`${String(i+1).padStart(2)}  ${r.nama.padEnd(20)} ${(r.kelas||'').padEnd(8)} `+
+       `${String(r.benar).padEnd(4)} ${String(r.nilai!==null?r.nilai:'—').padEnd(4)} ${r.grade||'—'}`+NL);
   dlText(t,`rekap_${Date.now()}.txt`);
 }
-function rHapus(){if(!confirm('Hapus semua rekap?'))return;rekap=[];try{localStorage.setItem('bb41_rekap','[]');}catch{}renderRekap();updateStats();toast('🗑 Rekap dihapus');}
+function rHapus(){
+  if(!confirm('Hapus semua rekap?'))return;
+  rekap=[];try{localStorage.setItem('bb41_rekap','[]');}catch{}
+  renderRekap();updateStats();toast('🗑 Rekap dihapus');
+}
 
-// ── KUNCI ─────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════
+// KUNCI
+// ══════════════════════════════════════════════════════════════
 function buildKunci(){
   const wrap=document.getElementById('kunciWrap');wrap.innerHTML='';
   for(let i=0;i<50;i++){
     const cell=document.createElement('div');cell.className='kcell';
     const num=document.createElement('div');num.className='knum';num.textContent=i+1;
     const sel=document.createElement('select');sel.className='ksel';sel.id='ks'+i;
-    ['','A','B','C','D','E'].forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v||'—';sel.appendChild(o);});
+    ['','A','B','C','D','E'].forEach(v=>{
+      const o=document.createElement('option');o.value=v;o.textContent=v||'—';sel.appendChild(o);
+    });
     sel.value=kunci[i]||'';if(kunci[i])sel.classList.add('isi');
-    sel.addEventListener('change',function(){kunci[i]=this.value;this.classList.toggle('isi',!!this.value);updateKCount();try{localStorage.setItem('bb41_kunci',JSON.stringify(kunci));}catch{};});
+    sel.addEventListener('change',function(){
+      kunci[i]=this.value;this.classList.toggle('isi',!!this.value);
+      updateKCount();
+      try{localStorage.setItem('bb41_kunci',JSON.stringify(kunci));}catch{}
+    });
     cell.appendChild(num);cell.appendChild(sel);wrap.appendChild(cell);
   }
   updateKCount();
 }
 function updateKCount(){document.getElementById('kCount').textContent=kunci.filter(k=>!!k).length;}
-function kSave(){for(let i=0;i<50;i++){const el=document.getElementById('ks'+i);if(el)kunci[i]=el.value;}try{localStorage.setItem('bb41_kunci',JSON.stringify(kunci));}catch{}updateKCount();toast('✅ Tersimpan!');}
-function kRandom(){kunci=Array.from({length:50},()=>'ABCDE'[Math.floor(Math.random()*5)]);for(let i=0;i<50;i++){const el=document.getElementById('ks'+i);if(el){el.value=kunci[i];el.classList.add('isi');}}try{localStorage.setItem('bb41_kunci',JSON.stringify(kunci));}catch{}updateKCount();toast('🎲 Diacak!');}
-function kClear(){kunci=new Array(50).fill('');for(let i=0;i<50;i++){const el=document.getElementById('ks'+i);if(el){el.value='';el.classList.remove('isi');}}try{localStorage.setItem('bb41_kunci',JSON.stringify(kunci));}catch{}updateKCount();toast('🗑 Dikosongkan');}
+function kSave(){
+  for(let i=0;i<50;i++){const el=document.getElementById('ks'+i);if(el)kunci[i]=el.value;}
+  try{localStorage.setItem('bb41_kunci',JSON.stringify(kunci));}catch{}
+  updateKCount();toast('✅ Tersimpan!');
+}
+function kRandom(){
+  kunci=Array.from({length:50},()=>'ABCDE'[Math.floor(Math.random()*5)]);
+  for(let i=0;i<50;i++){const el=document.getElementById('ks'+i);if(el){el.value=kunci[i];el.classList.add('isi');}}
+  try{localStorage.setItem('bb41_kunci',JSON.stringify(kunci));}catch{}
+  updateKCount();toast('🎲 Diacak!');
+}
+function kClear(){
+  kunci=new Array(50).fill('');
+  for(let i=0;i<50;i++){const el=document.getElementById('ks'+i);if(el){el.value='';el.classList.remove('isi');}}
+  try{localStorage.setItem('bb41_kunci',JSON.stringify(kunci));}catch{}
+  updateKCount();toast('🗑 Dikosongkan');
+}
 function kImport(){
-  const raw=prompt('Paste 50 jawaban (A-E):');if(!raw)return;
+  const raw=prompt('Paste jawaban (A-E), max 50:');if(!raw)return;
   const pts=raw.toUpperCase().match(/[A-E]/g);
-  if(!pts||pts.length!==50){alert('Perlu 50 jawaban A-E, ditemukan: '+(pts?pts.length:0));return;}
-  kunci=pts;for(let i=0;i<50;i++){const el=document.getElementById('ks'+i);if(el){el.value=kunci[i];el.classList.add('isi');}}
-  try{localStorage.setItem('bb41_kunci',JSON.stringify(kunci));}catch{}updateKCount();toast('✅ Import berhasil!');
+  if(!pts||!pts.length){alert('Tidak ada jawaban A-E yang ditemukan');return;}
+  kunci=new Array(50).fill('');
+  pts.forEach((v,i)=>{if(i<50)kunci[i]=v;});
+  for(let i=0;i<50;i++){const el=document.getElementById('ks'+i);if(el){el.value=kunci[i];el.classList.toggle('isi',!!kunci[i]);}}
+  try{localStorage.setItem('bb41_kunci',JSON.stringify(kunci));}catch{}
+  updateKCount();toast(`✅ Import ${pts.length} jawaban!`);
 }
 
-// ── KALIBRASI ─────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════
+// KALIBRASI
+// ══════════════════════════════════════════════════════════════
 function kalSync(){
-  KAL.warnaThr=parseInt(document.getElementById('sWarnaThr').value);
   KAL.arsirThr=parseInt(document.getElementById('sArsirThr').value);
-  KAL.arsirMin=parseInt(document.getElementById('sArsirMin').value);
-  KAL.ratio   =parseInt(document.getElementById('sRatio').value);
   KAL.minDiff =parseInt(document.getElementById('sMinDiff').value);
   KAL.minScore=parseInt(document.getElementById('sMinScore').value);
   KAL.ofsx    =parseInt(document.getElementById('sOfsX').value);
   KAL.ofsy    =parseInt(document.getElementById('sOfsY').value);
   KAL.sx      =parseInt(document.getElementById('sSX').value)/100;
   KAL.sy      =parseInt(document.getElementById('sSY').value)/100;
-  document.getElementById('vWarnaThr').textContent=KAL.warnaThr;
   document.getElementById('vArsirThr').textContent=KAL.arsirThr;
-  document.getElementById('vArsirMin').textContent=KAL.arsirMin+'%';
-  document.getElementById('vRatio').textContent=(1+KAL.ratio/100).toFixed(2)+'×';
-  document.getElementById('vMinDiff').textContent=KAL.minDiff;
+  document.getElementById('vMinDiff').textContent =KAL.minDiff;
   document.getElementById('vMinScore').textContent=KAL.minScore;
-  document.getElementById('vOfsX').textContent=KAL.ofsx+'px';
-  document.getElementById('vOfsY').textContent=KAL.ofsy+'px';
-  document.getElementById('vSX').textContent=KAL.sx.toFixed(2);
-  document.getElementById('vSY').textContent=KAL.sy.toFixed(2);
+  document.getElementById('vOfsX').textContent    =KAL.ofsx+'px';
+  document.getElementById('vOfsY').textContent    =KAL.ofsy+'px';
+  document.getElementById('vSX').textContent      =KAL.sx.toFixed(2);
+  document.getElementById('vSY').textContent      =KAL.sy.toFixed(2);
 }
 function kalUI(){
-  document.getElementById('sWarnaThr').value=KAL.warnaThr||8;
   document.getElementById('sArsirThr').value=KAL.arsirThr||170;
-  document.getElementById('sArsirMin').value=KAL.arsirMin||8;
-  document.getElementById('sRatio').value   =KAL.ratio   ||25;
   document.getElementById('sMinDiff').value =KAL.minDiff ||12;
   document.getElementById('sMinScore').value=KAL.minScore||5;
   document.getElementById('sOfsX').value    =KAL.ofsx    ||0;
@@ -1088,21 +1496,36 @@ function kalUI(){
   kalSync();
 }
 function kalSave(){kalSync();try{localStorage.setItem('bb41_kal',JSON.stringify(KAL));}catch{}toast('✅ Tersimpan!');}
-function kalReset(){KAL={warnaThr:8,arsirThr:170,arsirMin:8,ratio:25,minDiff:12,minScore:5,ofsx:0,ofsy:0,sx:1,sy:1};kalUI();toast('🔄 Default');}
+function kalReset(){KAL={arsirThr:170,minDiff:12,minScore:5,ofsx:0,ofsy:0,sx:1,sy:1};kalUI();toast('🔄 Default');}
 function kalLoad(){try{return JSON.parse(localStorage.getItem('bb41_kal'))||{};}catch{return{};}}
 
-// ── UTILITIES ─────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════
+// UTILITIES
+// ══════════════════════════════════════════════════════════════
 function clearCanvas(){
   document.getElementById('canvasWrap').style.display='none';
   document.getElementById('pvPanel').style.display='none';
-  const ov=document.getElementById('cvOverlay');ov.getContext('2d').clearRect(0,0,ov.width||1,ov.height||1);
-  hasROI=false;isBW=false;warpedD=null;
-  ['btnRoi','btnPrev','btnScan','btnBW'].forEach(id=>document.getElementById(id).disabled=true);
+  const ov=document.getElementById('cvOverlay');
+  ov.getContext('2d').clearRect(0,0,ov.width||1,ov.height||1);
+  hasROI=false;isBW=false;flatD=null;kotakGrid=null;
+  setFlatInfo('');
+  ['btnRoi','btnPrev','btnScan','btnBW'].forEach(id=>
+    document.getElementById(id).disabled=true);
   document.getElementById('btnRoi').textContent='👁 ROI';
   document.getElementById('btnBW').textContent='🔲 BW Mode';
 }
-function doReset(){imgD=null;imgW=0;imgH=0;clearCanvas();document.getElementById('fileInput').value='';setPbar(-1);setSbar('idle','Upload LJK v4 terlebih dahulu');}
-function dlText(txt,fname){const a=document.createElement('a');a.href='data:text/plain;charset=utf-8,'+encodeURIComponent(txt);a.download=fname;document.body.appendChild(a);a.click();document.body.removeChild(a);}
+function doReset(){
+  imgD=null;imgW=0;imgH=0;flatD=null;flatCorners=null;
+  clearCanvas();
+  document.getElementById('fileInput').value='';
+  setPbar(-1);setSbar('idle','Upload LJK terlebih dahulu');
+}
+function dlText(txt,fname){
+  const a=document.createElement('a');
+  a.href='data:text/plain;charset=utf-8,'+encodeURIComponent(txt);
+  a.download=fname;document.body.appendChild(a);a.click();document.body.removeChild(a);
+}
+
 </script>
 </body>
 </html>
