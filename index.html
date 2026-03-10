@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <meta name="theme-color" content="#0d1117">
-<title>LJK Scanner v9 - Benyamin Batau</title>
+<title>BB LJK Scanner v10</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{--bg:#0d1117;--bg2:#161b22;--bg3:#1c2330;--bd:#30363d;--tx1:#e6edf3;--tx2:#8b949e;--tx3:#484f58;--cy:#58a6ff;--gn:#3fb950;--ye:#d29922;--rd:#f85149;--am:#ffa657}
@@ -87,84 +87,48 @@ body{background:var(--bg);color:var(--tx1);font-family:system-ui,sans-serif;font
 .mbox{background:var(--bg2);border:1px solid var(--bd);border-radius:12px;padding:18px;max-width:320px;width:90%}
 .mtit{font-weight:700;font-size:14px;color:var(--rd);margin-bottom:6px}
 
-/* ─── VIEWFINDER KAMERA ─── */
-.camWrap{position:relative;background:#000;border-radius:10px;overflow:hidden;
-  margin:8px 0;display:none;}
-.camWrap.show{display:block;}
-#camVid{width:100%;display:block;border-radius:10px;}
-/* Overlay garis pandu LJK */
-.vfOverlay{position:absolute;inset:0;pointer-events:none;}
-/* 4 sudut L-bracket */
-.corner{position:absolute;width:22px;height:22px;}
-.corner.tl{top:8%;left:6%;border-top:3px solid #00ff99;border-left:3px solid #00ff99;}
-.corner.tr{top:8%;right:6%;border-top:3px solid #00ff99;border-right:3px solid #00ff99;}
-.corner.bl{bottom:8%;left:6%;border-bottom:3px solid #00ff99;border-left:3px solid #00ff99;}
-.corner.br{bottom:8%;right:6%;border-bottom:3px solid #00ff99;border-right:3px solid #00ff99;}
-/* Garis tengah tipis */
-.vfHLine{position:absolute;top:50%;left:8%;right:8%;height:1px;
-  background:rgba(0,255,153,.25);}
-.vfVLine{position:absolute;left:50%;top:10%;bottom:10%;width:1px;
-  background:rgba(0,255,153,.25);}
-/* Label panduan */
-.vfLabel{position:absolute;top:3%;left:0;right:0;text-align:center;
-  font-size:11px;font-weight:700;color:#00ff99;letter-spacing:.5px;
-  text-shadow:0 0 8px #00ff99;}
-/* Kotak zona LJK */
-.vfBox{position:absolute;top:8%;left:6%;right:6%;bottom:8%;
-  border:1.5px dashed rgba(0,255,153,.45);border-radius:4px;
-  box-shadow:inset 0 0 30px rgba(0,255,153,.06);}
-/* Tombol capture */
-.camBtns{display:flex;gap:8px;margin-top:6px;}
-.btnCap{flex:1;padding:9px;border:none;border-radius:8px;
-  background:#00ff99;color:#0d1117;font-weight:700;font-size:13px;cursor:pointer;}
-.btnCap:active{opacity:.8}
-.btnCamClose{flex:0 0 auto;padding:9px 14px;border:none;border-radius:8px;
-  background:var(--bg3);color:var(--tx2);border:1px solid var(--bd);
-  font-size:13px;cursor:pointer;}
-
-
-/* ─── MODAL VALIDASI LJK ─── */
-.vmov{position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:300;
-  display:none;align-items:center;justify-content:center;}
-.vmov.show{display:flex;}
-.vmbox{background:var(--bg2);border-radius:14px;padding:20px 18px;
-  max-width:310px;width:92%;border:1px solid var(--bd);}
-.vmicon{font-size:2.8rem;text-align:center;margin-bottom:8px;}
-.vmtit{font-weight:700;font-size:15px;text-align:center;margin-bottom:6px;}
-.vmtit.ok{color:var(--gn);}
-.vmtit.err{color:var(--rd);}
-.vmtit.warn{color:var(--ye);}
-.vmchecks{margin:10px 0;background:var(--bg3);border-radius:8px;padding:10px 12px;}
-.vmcheck{font-size:11px;color:var(--tx2);padding:3px 0;
-  display:flex;gap:6px;align-items:center;border-bottom:1px solid var(--bd);}
-.vmcheck:last-child{border:none;}
-.vmcheck .vik{font-size:13px;flex-shrink:0;}
-.vmcheck .vtx{flex:1;}
-.vmscore{text-align:center;font-size:13px;font-weight:700;
-  margin:8px 0 4px;color:var(--cy);}
-.vmhint{font-size:10px;color:var(--tx3);text-align:center;
-  background:var(--bg3);padding:7px 10px;border-radius:6px;line-height:1.5;margin:8px 0;}
-
-
-/* ─── TOUCHSCREEN ADJUST HANDLES ─── */
-#adjSvg circle { transition: r .1s; }
-#adjSvg circle:active { r: 5; opacity: 1 !important; }
-#hBub { filter: drop-shadow(0 0 3px #3fb950); }
-#hTL,#hTR,#hBL,#hBR { filter: drop-shadow(0 0 2px #58a6ff); }
-#hMV { filter: drop-shadow(0 0 3px #58a6ff44); }
-.roiCirc { pointer-events: none; }
-/* Pulsing hint saat adjust aktif */
-@keyframes adjPulse {
-  0%,100%{ stroke-opacity:.55 } 50%{ stroke-opacity:1 }
-}
-#adjRect { animation: adjPulse 2s ease-in-out infinite; }
-
+/* ─── KAMERA VIEWFINDER ─── */
+.camWrap{position:relative;background:#000;border-radius:10px;overflow:hidden;margin:8px 0;display:none}
+.camWrap.show{display:block}
+#camVid{width:100%;display:block}
+.vfOvr{position:absolute;inset:0;pointer-events:none}
+.vfBox{position:absolute;top:8%;left:5%;right:5%;bottom:8%;border:1.5px dashed rgba(0,255,153,.5);border-radius:4px}
+.corner{position:absolute;width:20px;height:20px}
+.corner.tl{top:8%;left:5%;border-top:3px solid #00ff99;border-left:3px solid #00ff99}
+.corner.tr{top:8%;right:5%;border-top:3px solid #00ff99;border-right:3px solid #00ff99}
+.corner.bl{bottom:8%;left:5%;border-bottom:3px solid #00ff99;border-left:3px solid #00ff99}
+.corner.br{bottom:8%;right:5%;border-bottom:3px solid #00ff99;border-right:3px solid #00ff99}
+.vfLbl{position:absolute;top:3%;left:0;right:0;text-align:center;font-size:11px;font-weight:700;
+  color:#00ff99;text-shadow:0 0 8px #00ff99}
+.camBtns{display:flex;gap:8px;margin-top:6px}
+.btnCap{flex:1;padding:10px;border:none;border-radius:8px;background:#00ff99;color:#0d1117;font-weight:700;font-size:13px;cursor:pointer}
+.btnCamX{padding:10px 14px;border:none;border-radius:8px;background:var(--bg3);color:var(--tx2);border:1px solid var(--bd);cursor:pointer;font-size:13px}
+/* ─── ADJUST SVG HANDLES ─── */
+#adjSvg circle{cursor:grab}
+#adjSvg circle:active{cursor:grabbing}
+#hBub{filter:drop-shadow(0 0 3px #3fb950)}
+#hTL,#hTR,#hBL,#hBR{filter:drop-shadow(0 0 2px #58a6ff)}
+.adjRoi{pointer-events:none}
+@keyframes adjPulse{0%,100%{opacity:.5}50%{opacity:1}}
+#adjRect{animation:adjPulse 2s ease-in-out infinite}
+/* ─── MODAL VALIDASI ─── */
+.vmod{position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:300;display:none;align-items:center;justify-content:center}
+.vmod.show{display:flex}
+.vbox{background:var(--bg2);border-radius:14px;padding:20px;max-width:310px;width:92%;border:1px solid var(--bd)}
+.vicon{font-size:2.5rem;text-align:center;margin-bottom:8px}
+.vtit{font-weight:700;font-size:14px;text-align:center;margin-bottom:8px}
+.vtit.ok{color:var(--gn)}.vtit.err{color:var(--rd)}.vtit.warn{color:var(--ye)}
+.vcklist{background:var(--bg3);border-radius:8px;padding:8px 10px;margin:8px 0}
+.vck{font-size:11px;color:var(--tx2);padding:3px 0;display:flex;gap:6px;border-bottom:1px solid var(--bd)}
+.vck:last-child{border:none}
+.vscore{text-align:center;font-weight:700;font-size:13px;color:var(--cy);margin:6px 0}
+.vhint{font-size:10px;color:var(--tx3);background:var(--bg3);padding:7px;border-radius:6px;text-align:center;margin:6px 0}
 </style>
 </head>
 <body>
 <div class="hdr">
   <div class="hdr-l">📋 LJK <span>Bubble</span></div>
-  <div class="hdr-r">v9 · Benyamin Batau</div>
+  <div class="hdr-r">v10 · Benyamin Batau</div>
 </div>
 <div class="tabs">
   <div class="tab on" onclick="T(0)"><i>📷</i>SCAN</div>
@@ -195,88 +159,69 @@ body{background:var(--bg);color:var(--tx1);font-family:system-ui,sans-serif;font
   </div>
   <div class="card">
     <div class="ct">📄 Upload LJK</div>
-    <div class="ibox">Metode: <b>hitamkan bulatan ●</b> dengan pulpen/spidol hitam.<br>⚡ Hanya menerima <b>LJK resmi SMKN 1 Sumarorong</b>. Format lain otomatis ditolak.<br>📐 Tekan <b>BUKA KAMERA</b> → sejajarkan LJK dengan garis pandu hijau → 📸 FOTO LJK</div>
-    <!-- Viewfinder Kamera -->
+    <div class="ibox">Metode: <b>hitamkan bulatan ●</b> dengan pulpen/spidol hitam.<br>Foto miring / gelap / kuning → tetap diproses otomatis.</div>
+    <!-- Viewfinder kamera -->
     <div class="camWrap" id="camWrap">
       <video id="camVid" autoplay playsinline muted></video>
-      <div class="vfOverlay">
+      <div class="vfOvr">
         <div class="vfBox"></div>
-        <div class="corner tl"></div>
-        <div class="corner tr"></div>
-        <div class="corner bl"></div>
-        <div class="corner br"></div>
-        <div class="vfHLine"></div>
-        <div class="vfVLine"></div>
-        <div class="vfLabel" id="vfLbl">📐 Sejajarkan LJK dengan garis pandu</div>
+        <div class="corner tl"></div><div class="corner tr"></div>
+        <div class="corner bl"></div><div class="corner br"></div>
+        <div class="vfLbl" id="vfLbl">📐 Sejajarkan LJK dalam kotak hijau</div>
       </div>
     </div>
     <div class="camBtns" id="camBtns" style="display:none">
       <button class="btnCap" onclick="captureCam()">📸 FOTO LJK</button>
-      <button class="btnCamClose" onclick="stopCam()">✕ Batal</button>
+      <button class="btnCamX" onclick="stopCam()">✕</button>
     </div>
-    <!-- Upload file biasa -->
-    <div class="upz" id="dz" onclick="startCam()" style="margin-top:6px">
+    <!-- Upload zone -->
+    <div class="upz" id="dz" onclick="startCam()">
       <input type="file" id="fi" accept="image/*,application/pdf" onchange="onF(event)" style="display:none">
       <div class="ui">📷</div>
       <div class="ut">BUKA KAMERA</div>
-      <div class="us">Arahkan HP ke LJK · Ikuti garis pandu</div>
+      <div class="us">Ikuti garis pandu hijau untuk foto LJK</div>
     </div>
-    <div style="text-align:center;margin:4px 0">
+    <div style="text-align:center;margin:3px 0 6px">
       <span style="font-size:10px;color:var(--tx3)">atau</span>
-      <button class="btn btn-gh" style="display:inline-block;margin-left:6px;padding:4px 10px;font-size:11px" 
+      <button class="btn btn-gh" style="display:inline-block;width:auto;padding:4px 12px;font-size:11px;margin-left:6px"
         onclick="document.getElementById('fi').click()">📁 Upload File</button>
     </div>
   </div>
-  
   <!-- PREVIEW + TOUCHSCREEN ADJUST -->
   <div id="cvw" style="display:none;margin:6px 0">
-    <!-- Instruksi adjust -->
-    <div id="adjHint" style="display:none;background:#1c2330;border:1px solid #30363d;
-      border-radius:7px;padding:6px 10px;margin-bottom:5px;font-size:10px;color:#8b949e;
-      text-align:center;line-height:1.6">
-      <b style="color:#58a6ff">✋ Cara adjust touchscreen:</b><br>
-      🔵 Seret <b>sudut biru</b> → geser posisi LJK &nbsp;|&nbsp;
-      🟢 Seret <b>titik hijau</b> → ubah ukuran bubble
+    <div id="adjHint" style="display:none;background:var(--bg3);border:1px solid var(--bd);
+      border-radius:7px;padding:7px 10px;margin-bottom:5px;font-size:10px;color:var(--tx2);text-align:center;line-height:1.7">
+      🔵 Seret <b style="color:var(--cy)">sudut</b> = geser margin &nbsp;·&nbsp;
+      ✛ <b style="color:var(--cy)">tengah</b> = pindah box &nbsp;·&nbsp;
+      🟢 <b style="color:var(--gn)">atas</b> = ukuran bubble
     </div>
-    <!-- Container canvas: posisi relatif untuk overlay -->
     <div style="position:relative;border-radius:10px;overflow:hidden;background:#000">
       <canvas id="cvm" style="width:100%;display:block"></canvas>
-      <!-- Overlay SVG interaktif — touch/drag untuk adjust -->
-      <svg id="adjSvg" style="position:absolute;top:0;left:0;width:100%;height:100%;
-        touch-action:none;cursor:crosshair" viewBox="0 0 100 100" preserveAspectRatio="none">
-        <!-- Box area LJK (4 sudut draggable) -->
+      <svg id="adjSvg" style="position:absolute;top:0;left:0;width:100%;height:100%;display:none;touch-action:none"
+           viewBox="0 0 100 100" preserveAspectRatio="none">
         <rect id="adjRect" x="5" y="5" width="90" height="90"
-          fill="none" stroke="#58a6ff" stroke-width=".6"
-          stroke-dasharray="3,1.5" rx=".5"/>
-        <!-- 4 handle sudut - drag untuk geser/resize margin -->
-        <circle id="hTL" cx="5"  cy="5"  r="3.5" fill="#58a6ff" opacity=".9" style="cursor:nwse-resize"/>
-        <circle id="hTR" cx="95" cy="5"  r="3.5" fill="#58a6ff" opacity=".9" style="cursor:nesw-resize"/>
-        <circle id="hBL" cx="5"  cy="95" r="3.5" fill="#58a6ff" opacity=".9" style="cursor:nesw-resize"/>
-        <circle id="hBR" cx="95" cy="95" r="3.5" fill="#58a6ff" opacity=".9" style="cursor:nwse-resize"/>
-        <!-- Handle tengah - drag untuk geser seluruh box -->
-        <circle id="hMV" cx="50" cy="50" r="5" fill="rgba(88,166,255,.25)"
-          stroke="#58a6ff" stroke-width=".5" style="cursor:move"/>
-        <!-- Handle ukuran bubble (radius) -->
-        <circle id="hBub" cx="50" cy="20" r="3" fill="#3fb950" opacity=".9"
-          style="cursor:ns-resize"/>
-        <text x="52" y="19" font-size="3.5" fill="#3fb950" opacity=".8">●</text>
-        <!-- Label -->
-        <text id="adjInfo" x="50" y="99" font-size="2.8" fill="#58a6ff"
-          text-anchor="middle" opacity=".7">Seret sudut biru untuk adjust</text>
+          fill="none" stroke="#58a6ff" stroke-width=".5" stroke-dasharray="3,1.5"/>
+        <!-- Sudut: drag = resize margin -->
+        <circle id="hTL" cx="5"  cy="5"  r="3" fill="#58a6ff"/>
+        <circle id="hTR" cx="95" cy="5"  r="3" fill="#58a6ff"/>
+        <circle id="hBL" cx="5"  cy="95" r="3" fill="#58a6ff"/>
+        <circle id="hBR" cx="95" cy="95" r="3" fill="#58a6ff"/>
+        <!-- Tengah: drag = geser seluruh box -->
+        <circle id="hMV" cx="50" cy="50" r="4" fill="rgba(88,166,255,.3)" stroke="#58a6ff" stroke-width=".5"/>
+        <!-- Atas tengah: drag naik/turun = ubah radius bubble -->
+        <circle id="hBub" cx="50" cy="18" r="2.5" fill="#3fb950"/>
+        <!-- Info teks -->
+        <text id="adjInfo" x="50" y="98.5" font-size="2.5" fill="#58a6ff"
+          text-anchor="middle" opacity=".8">Seret handle untuk adjust</text>
       </svg>
     </div>
-    <!-- Tombol aksi: hanya Adjust toggle + Scan + Reset -->
-    <div style="display:flex;gap:6px;margin-top:6px">
-      <button class="btn btn-gh" id="bAdj" onclick="togAdj()" style="flex:1">✋ Adjust</button>
-      <button class="btn btn-cy" id="bS"   onclick="doScan()" disabled style="flex:2">⚡ Scan</button>
-      <button class="btn btn-gh" onclick="doReset()" style="flex:1">🔄 Reset</button>
-    </div>
   </div>
-
   <div class="sbar" id="sb"><div class="sd"></div><span id="sbt">Upload LJK terlebih dahulu</span></div>
   <div class="pbw" id="pbw"><div class="pbi" id="pb" style="width:0%"></div></div>
-<div class="pvg" id="pvg"></div>
-    <div class="sm mt6" id="pvi"></div>
+  <div style="display:flex;gap:6px;margin-top:6px">
+    <button class="btn btn-gh" id="bAdj" onclick="togAdj()" disabled style="flex:1">✋ Adjust</button>
+    <button class="btn btn-cy" id="bS"   onclick="doScan()" disabled style="flex:2">⚡ Scan</button>
+    <button class="btn btn-gh" onclick="doReset()" style="flex:1">🔄 Reset</button>
   </div>
 </div>
 
@@ -337,503 +282,130 @@ body{background:var(--bg);color:var(--tx1);font-family:system-ui,sans-serif;font
   </div>
 </div>
 
-    <div class="ibox" style="font-size:10px">
-      Scan langsung di gambar asli — <b>tanpa warp</b> → cepat.<br>
-      Deteksi: bandingkan gelap dalam vs luar setiap bubble.
-    </div>
-    <span class="lbl">📐 Min gap skor (ketat = nilai besar)</span>
-    <div class="slw"><input type="range" id="sMD" min="3" max="40" value="10" oninput="kSy()"><span class="slv" id="vMD">10</span></div>
-    <span class="lbl">📐 Min skor ada isian</span>
-    <div class="slw"><input type="range" id="sMS" min="1" max="30" value="6" oninput="kSy()"><span class="slv" id="vMS">6</span></div>
-    <div class="sep"></div>
-    <span class="lbl">🔧 Offset X</span>
-    <div class="slw"><input type="range" id="sOX" min="-60" max="60" value="0" oninput="kSy()"><span class="slv" id="vOX">0px</span></div>
-    <span class="lbl">🔧 Offset Y</span>
-    <div class="slw"><input type="range" id="sOY" min="-60" max="60" value="0" oninput="kSy()"><span class="slv" id="vOY">0px</span></div>
-    <span class="lbl">🔧 Skala X</span>
-    <div class="slw"><input type="range" id="sSX" min="70" max="130" value="100" oninput="kSy()"><span class="slv" id="vSX">1.00</span></div>
-    <span class="lbl">🔧 Skala Y</span>
-    <div class="slw"><input type="range" id="sSY" min="70" max="130" value="100" oninput="kSy()"><span class="slv" id="vSY">1.00</span></div>
-    <div class="sep"></div>
-    <div class="g2">
-      <button class="btn btn-gh" onclick="kRs()">🔄 Default</button>
-      <button class="btn btn-am" onclick="kSv2()">💾 Simpan</button>
-    </div>
-  </div>
-</div>
-
 <script>
-// ═══ KOORDINAT BUBBLE (relatif 0-1, dari referensi 794x1123px) ═══
+// ═══════════════════════════════════════════════════════════════
+// BB LJK SCANNER v10 — JavaScript Bersih
+// ═══════════════════════════════════════════════════════════════
+
+// ─── KOORDINAT BUBBLE (relatif 0–1 dari LJK 794×1123px) ───────
 const CLX={A:.10579,B:.19270,C:.27960,D:.36650,E:.45340};
 const CRX={A:.60831,B:.69521,C:.78212,D:.86902,E:.95592};
 const RY=[.19590,.23508,.27516,.31523,.35530,.39537,.43544,.47551,
           .51558,.55565,.59573,.63580,.67587,.71594,.75601,.79608,
           .83615,.87622,.91630,.95637];
-const BR=.01637; // radius relatif
+const BR=.01637;
 
-// ═══ STATE ═══
-let iD=null,iW=0,iH=0;
-let bx0=0,by0=0,bx1=0,by1=0,hasBB=false;
-let bwM=false,roiOn=false,last=null;
+// ─── STATE ─────────────────────────────────────────────────────
+let iD=null, iW=0, iH=0;           // imageData gambar asli
+let bx0=0, by0=0, bx1=0, by1=0;   // bounding box terdeteksi
+let hasBB=false;
+let last=null;
 let kunci=new Array(40).fill('');
 let rekap=[];
-const KAL={md:10,ms:6,ox:0,oy:0,sx:1,sy:1};
 
+// ─── ADJUST STATE (touchscreen) ────────────────────────────────
+let ADJ={x0:5,y0:5,x1:95,y1:95,bubR:1.637};
+let adjMode=false;
+let adjDrag=null;
+
+// ─── KAMERA ────────────────────────────────────────────────────
+let camStream=null;
+let _vfT=null;
+
+// ─── INIT ──────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded',()=>{
-  try{const s=localStorage.getItem('bb6_k');if(s)kunci=JSON.parse(s);}catch{}
-  try{const s=localStorage.getItem('bb6_r');if(s)rekap=JSON.parse(s);}catch{}
-  bldK();rnRk();upSt();initAdjHandlers();syncSVG();
+  try{const s=localStorage.getItem('bb_k');if(s)kunci=JSON.parse(s);}catch{}
+  try{const s=localStorage.getItem('bb_r');if(s)rekap=JSON.parse(s);}catch{}
+  bldK(); rnRk(); upSt();
+  initAdj();
+  // Drag & drop upload
   const dz=document.getElementById('dz');
-  dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag');});
+  dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag')});
   dz.addEventListener('dragleave',()=>dz.classList.remove('drag'));
-  dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('drag');
-    if(e.dataTransfer.files[0])prcF(e.dataTransfer.files[0]);});
+  dz.addEventListener('drop',e=>{
+    e.preventDefault();dz.classList.remove('drag');
+    if(e.dataTransfer.files[0])prcF(e.dataTransfer.files[0]);
+  });
 });
 
+// ─── TAB SWITCH ────────────────────────────────────────────────
 function T(n){
   document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('on',i===n));
   document.querySelectorAll('.pg').forEach((p,i)=>p.classList.toggle('on',i===n));
-  if(n===3){rnRk();upSt();}if(n===1)upKC();
+  if(n===3){rnRk();upSt();}
+  if(n===1)upKC();
 }
 
+// ─── TOAST / STATUS ────────────────────────────────────────────
 let _tt;
-function toast(m,d=2500){const e=document.getElementById('toast');e.textContent=m;e.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>e.classList.remove('show'),d);}
-function sb(c,m){document.getElementById('sb').className='sbar '+c;document.getElementById('sbt').textContent=m;}
-function pb(p){const w=document.getElementById('pbw');w.style.display=(p>=0&&p<100)?'block':'none';document.getElementById('pb').style.width=p+'%';}
+function toast(m,d=2500){
+  const e=document.getElementById('toast');
+  e.textContent=m; e.classList.add('show');
+  clearTimeout(_tt); _tt=setTimeout(()=>e.classList.remove('show'),d);
+}
+function sb(c,m){
+  document.getElementById('sb').className='sbar '+c;
+  document.getElementById('sbt').textContent=m;
+}
+function pb(p){
+  const w=document.getElementById('pbw');
+  w.style.display=(p>=0&&p<100)?'block':'none';
+  document.getElementById('pb').style.width=p+'%';
+}
 function sl(ms){return new Promise(r=>setTimeout(r,ms));}
 
-
-
-
-// ═══════════════════════════════════════════════════════
-// TOUCHSCREEN ADJUST SYSTEM
-// ── State adjust (dalam persen 0-100 relatif SVG viewBox)
-// ── Konversi ke koordinat piksel gambar saat scan
-// ═══════════════════════════════════════════════════════
-let ADJ = {
-  // Bounding box LJK dalam % (0-100)
-  x0:5, y0:5, x1:95, y1:95,
-  // Ukuran radius bubble (% dari lebar bounding box)
-  bubR: 1.637,
-  // Mode adjust aktif?
-  active: false
-};
-let adjDragging = null;  // handle yg sedang di-drag
-let adjModeOn   = false; // apakah mode adjust tampil
-
-// ── Toggle mode adjust ───────────────────────────────
-function togAdj(){
-  adjModeOn = !adjModeOn;
-  const svg = document.getElementById('adjSvg');
-  const hint= document.getElementById('adjHint');
-  const btn = document.getElementById('bAdj');
-  svg.style.display    = adjModeOn ? '' : 'none';
-  hint.style.display   = adjModeOn ? '' : 'none';
-  btn.textContent      = adjModeOn ? '✅ Selesai Adjust' : '✋ Adjust';
-  btn.style.background = adjModeOn ? 'var(--gn)' : '';
-  btn.style.color      = adjModeOn ? '#0d1117' : '';
-  if(adjModeOn) {
-    drawROI();  // gambar lingkaran bubble saat adjust aktif
-    toast('✋ Seret sudut biru / titik hijau untuk adjust');
-  } else {
-    drawROI();  // hapus lingkaran setelah selesai
-    toast('✅ Adjust disimpan');
-  }
-}
-
-// ── Gambar ROI (lingkaran bubble) di overlay canvas ─
-function drawROI(){
-  const ov  = document.getElementById('adjSvg');
-  // Hapus lingkaran lama
-  document.querySelectorAll('.roiCirc').forEach(el=>el.remove());
-  if(!iD || !adjModeOn) return;
-
-  const {x0,y0,x1,y1,bubR} = ADJ;
-  const bW = x1-x0, bH = y1-y0;
-  const rPct = bubR;  // radius dalam % viewBox
-
-  // Gambar semua 200 bubble (40 soal × 5 opsi)
-  for(let n=1;n<=40;n++){
-    const isL = n<=20;
-    const r   = (n-1)%20;
-    const relY= RY[r];
-    for(const op of 'ABCDE'){
-      const relX = isL ? CLX[op] : CRX[op];
-      const cx = x0 + relX*bW;
-      const cy = y0 + relY*bH;
-      const el = document.createElementNS('http://www.w3.org/2000/svg','circle');
-      el.setAttribute('cx', cx.toFixed(2));
-      el.setAttribute('cy', cy.toFixed(2));
-      el.setAttribute('r',  rPct.toFixed(2));
-      el.setAttribute('fill','none');
-      el.setAttribute('stroke','rgba(88,166,255,.55)');
-      el.setAttribute('stroke-width','.35');
-      el.classList.add('roiCirc');
-      ov.insertBefore(el, document.getElementById('hTL'));
-    }
-  }
-}
-
-// ── Update posisi elemen SVG sesuai ADJ state ────────
-function syncSVG(){
-  const {x0,y0,x1,y1,bubR} = ADJ;
-  const mx=(x0+x1)/2, my=(y0+y1)/2;
-
-  // Rect
-  const rect=document.getElementById('adjRect');
-  rect.setAttribute('x', x0);
-  rect.setAttribute('y', y0);
-  rect.setAttribute('width',  x1-x0);
-  rect.setAttribute('height', y1-y0);
-  // Handles sudut
-  setH('hTL',x0,y0); setH('hTR',x1,y0);
-  setH('hBL',x0,y1); setH('hBR',x1,y1);
-  // Handle tengah (move)
-  setH('hMV',mx,my);
-  // Handle bubble (di atas tengah, jarak = bubR*3 dari top)
-  const bub_cy = y0 + (y1-y0)*RY[0] - bubR*3.5;
-  setH('hBub',(x0+x1)/2, Math.max(y0+2, bub_cy));
-  // Info text
-  const info=document.getElementById('adjInfo');
-  if(info){
-    info.setAttribute('x', mx);
-    info.setAttribute('y', Math.min(y1+3, 98));
-    info.textContent=`Box: ${(x1-x0).toFixed(1)}×${(y1-y0).toFixed(1)}% · Bubble: r${bubR.toFixed(2)}%`;
-  }
-  drawROI();
-}
-function setH(id,cx,cy){
-  const el=document.getElementById(id);
-  if(el){el.setAttribute('cx',cx.toFixed(2));el.setAttribute('cy',cy.toFixed(2));}
-}
-
-// ── Konversi koordinat touch/mouse ke % SVG ──────────
-function evtToSVG(e, svgEl){
-  const rect  = svgEl.getBoundingClientRect();
-  const touch = e.touches ? e.touches[0] : e;
-  return{
-    px: (touch.clientX - rect.left) / rect.width  * 100,
-    py: (touch.clientY - rect.top)  / rect.height * 100
-  };
-}
-
-// ── Setup drag handlers untuk semua handle ────────────
-function initAdjHandlers(){
-  const svg = document.getElementById('adjSvg');
-  const MIN = 15;  // minimum box size %
-
-  function onStart(e, handleId){
-    if(!adjModeOn) return;
-    e.preventDefault();
-    adjDragging = handleId;
-  }
-  function onMove(e){
-    if(!adjDragging || !adjModeOn) return;
-    e.preventDefault();
-    const {px,py} = evtToSVG(e, svg);
-    const {x0,y0,x1,y1} = ADJ;
-
-    if(adjDragging==='hTL'){
-      ADJ.x0 = Math.min(px, x1-MIN);
-      ADJ.y0 = Math.min(py, y1-MIN);
-    } else if(adjDragging==='hTR'){
-      ADJ.x1 = Math.max(px, x0+MIN);
-      ADJ.y0 = Math.min(py, y1-MIN);
-    } else if(adjDragging==='hBL'){
-      ADJ.x0 = Math.min(px, x1-MIN);
-      ADJ.y1 = Math.max(py, y0+MIN);
-    } else if(adjDragging==='hBR'){
-      ADJ.x1 = Math.max(px, x0+MIN);
-      ADJ.y1 = Math.max(py, y0+MIN);
-    } else if(adjDragging==='hMV'){
-      // Geser seluruh box
-      const dw=(x1-x0)/2, dh=(y1-y0)/2;
-      ADJ.x0 = Math.max(0, Math.min(px-dw, 100-2*dw));
-      ADJ.y0 = Math.max(0, Math.min(py-dh, 100-2*dh));
-      ADJ.x1 = ADJ.x0 + 2*dw;
-      ADJ.y1 = ADJ.y0 + 2*dh;
-    } else if(adjDragging==='hBub'){
-      // Naik = perkecil, turun = perbesar radius bubble
-      const center_y = (y0 + y1*RY[0]*1.0)/2;
-      const dist = (ADJ.y0 + (ADJ.y1-ADJ.y0)*RY[0]) - py;
-      ADJ.bubR = Math.max(0.5, Math.min(4.0, dist*0.18));
-    }
-    // Clamp
-    ADJ.x0=Math.max(0,ADJ.x0); ADJ.y0=Math.max(0,ADJ.y0);
-    ADJ.x1=Math.min(100,ADJ.x1); ADJ.y1=Math.min(100,ADJ.y1);
-    syncSVG();
-  }
-  function onEnd(){ adjDragging=null; }
-
-  // Mouse events
-  ['hTL','hTR','hBL','hBR','hMV','hBub'].forEach(id=>{
-    const el=document.getElementById(id);
-    if(!el) return;
-    el.addEventListener('mousedown', e=>onStart(e,id));
-    el.addEventListener('touchstart', e=>onStart(e,id), {passive:false});
-  });
-  svg.addEventListener('mousemove',  onMove);
-  svg.addEventListener('touchmove',  onMove, {passive:false});
-  svg.addEventListener('mouseup',    onEnd);
-  svg.addEventListener('touchend',   onEnd);
-  svg.addEventListener('mouseleave', onEnd);
-}
-
-// ── Reset adjust ke default ──────────────────────────
-function resetAdj(){
-  ADJ = {x0:5,y0:5,x1:95,y1:95,bubR:1.637,active:false};
-  syncSVG();
-}
-
-// ── Override cPx: gunakan ADJ bukan KAL+bounding box ─
-function cPx(nomor, opsi){
-  const isL = (nomor<=20);
-  const relX = isL ? CLX[opsi] : CRX[opsi];
-  const relY = RY[(nomor-1)%20];
-  // Konversi ADJ (% 0-100) → piksel gambar asli
-  const px0 = ADJ.x0/100 * iW;
-  const py0 = ADJ.y0/100 * iH;
-  const pw  = (ADJ.x1-ADJ.x0)/100 * iW;
-  const ph  = (ADJ.y1-ADJ.y0)/100 * iH;
-  // Radius bubble: ADJ.bubR% dari lebar box
-  const r   = ADJ.bubR/100 * pw;
-  return {
-    cx: px0 + relX * pw,
-    cy: py0 + relY * ph,
-    r : r
-  };
-}
-
-
-// ═══ VALIDASI FORMAT LJK ═══
-// Mengenali apakah foto yang diupload adalah LJK SMKN 1 Sumarorong
-// 5 check struktural — perlu ≥ 3 untuk diterima
-
-function grayPx(d,i){return .299*d[i*4]+.587*d[i*4+1]+.114*d[i*4+2];}
-
-function validateLJKFormat(imgData, W, H){
-  const d = imgData.data;
-  const checks = [];
-  let score = 0;
-
-  // ── CHECK 1: Rasio portrait (W/H 0.60–0.85, A4-like) ──────────────
-  const ratio = W / H;
-  const c1 = ratio >= 0.58 && ratio <= 0.88;
-  if(c1) score++;
-  checks.push({ok:c1, label:'Orientasi portrait ('+ratio.toFixed(2)+')',
-    hint: c1 ? 'Rasio sesuai A4 portrait' : 'Foto harus portrait, bukan landscape'});
-
-  // ── Bangun grayscale cepat ─────────────────────────────────────────
-  const G = new Uint8Array(W*H);
-  const STEP = Math.max(1, Math.floor(Math.min(W,H)/120));
-  for(let y=0;y<H;y+=STEP) for(let x=0;x<W;x+=STEP){
-    G[y*W+x] = Math.round(grayPx(d, y*W+x));
-  }
-  function zMean(x0,y0,x1,y1){
-    let s=0,n=0;
-    for(let y=y0;y<y1;y+=STEP) for(let x=x0;x<x1;x+=STEP){s+=G[y*W+x];n++;}
-    return n?s/n:128;
-  }
-  function zStd(x0,y0,x1,y1){
-    const m=zMean(x0,y0,x1,y1);let s=0,n=0;
-    for(let y=y0;y<y1;y+=STEP) for(let x=x0;x<x1;x+=STEP){
-      const v=G[y*W+x]-m;s+=v*v;n++;
-    }
-    return n?Math.sqrt(s/n):0;
-  }
-  function zMin(x0,y0,x1,y1){
-    let mn=255;
-    for(let y=y0;y<y1;y+=STEP) for(let x=x0;x<x1;x+=STEP) if(G[y*W+x]<mn) mn=G[y*W+x];
-    return mn;
-  }
-
-  const TX0=Math.floor(W*.04), TX1=Math.floor(W*.96);
-
-  // ── CHECK 2: Tabel punya variasi lebih tinggi dari header ──────────
-  // Header (Y 0–17%): biasanya hanya teks + garis = std lebih rendah
-  // Tabel (Y 20–95%): banyak garis horizontal & vertikal = std lebih tinggi
-  const stdHdr = zStd(TX0, 0,         TX1, Math.floor(H*.17));
-  const stdTbl = zStd(TX0, Math.floor(H*.20), TX1, Math.floor(H*.95));
-  const c2 = stdTbl > stdHdr * 1.15;
-  if(c2) score++;
-  checks.push({ok:c2, label:'Pola grid tabel terdeteksi',
-    hint: c2 ? 'Grid bubble terdeteksi jelas' : 'Tidak ada pola grid tabel LJK'});
-
-  // ── CHECK 3: Garis tepi tabel header (Y ~18.2–19.5% sangat gelap) ──
-  // Ada garis horizontal tebal pemisah baris header dan baris soal
-  const hdrRowMin = zMin(TX0, Math.floor(H*.180), TX1, Math.floor(H*.200));
-  const hdrRowStd = zStd(TX0, Math.floor(H*.180), TX1, Math.floor(H*.200));
-  const c3 = hdrRowMin < 130 || hdrRowStd > 12;
-  if(c3) score++;
-  checks.push({ok:c3, label:'Garis pembatas kolom header (Y≈19%)',
-    hint: c3 ? 'Garis tabel pembatas ditemukan' : 'Tidak ada garis horizontal tabel'});
-
-  // ── CHECK 4: DIP di X 46–57% (garis border antar blok L/R) ────────
-  // Di antara blok kiri dan kanan ada garis border → titik minimum gelap
-  const tY0=Math.floor(H*.22), tY1=Math.floor(H*.95);
-  const dipMin  = zMin(Math.floor(W*.44), tY0, Math.floor(W*.57), tY1);
-  const leftMn  = zMean(Math.floor(W*.10), tY0, Math.floor(W*.44), tY1);
-  const rightMn = zMean(Math.floor(W*.57), tY0, Math.floor(W*.96), tY1);
-  const c4 = dipMin < 160;
-  if(c4) score++;
-  checks.push({ok:c4, label:'Garis pemisah blok kiri-kanan (X≈50%)',
-    hint: c4 ? 'Pemisah dua blok soal ditemukan' : 'Tidak ada pemisah blok kiri-kanan'});
-
-  // ── CHECK 5: Banyak garis vertikal di zona tabel ───────────────────
-  // Tiap kolom A/B/C/D/E punya garis vertikal → std per kolom tinggi
-  let colStdSum=0, colStdN=0;
-  for(let x=Math.floor(W*.05);x<Math.floor(W*.95);x+=STEP*2){
-    let s=0,m=0,n=0;
-    for(let y=tY0;y<tY1;y+=STEP){s+=G[y*W+x];n++;}
-    m=n?s/n:128;s=0;
-    for(let y=tY0;y<tY1;y+=STEP){const v=G[y*W+x]-m;s+=v*v;}
-    colStdSum+=(n?Math.sqrt(s/n):0);colStdN++;
-  }
-  const avgColStd = colStdN ? colStdSum/colStdN : 0;
-  const c5 = avgColStd > 16;
-  if(c5) score++;
-  checks.push({ok:c5, label:'Pola garis vertikal (kolom A–E)',
-    hint: c5 ? 'Kolom A-E terdeteksi di kedua blok' : 'Kolom jawaban A-E tidak jelas'});
-
-  // ── Keputusan ─────────────────────────────────────────────────────
-  let valid=false, level='', mainMsg='';
-  if(score>=4){
-    valid=true; level='ok';
-    mainMsg = score===5 ? '✅ Format LJK Valid!' : '✅ Format LJK Dikenali';
-  } else if(score===3){
-    valid=true; level='warn';
-    mainMsg='⚠️ LJK Dikenali (kualitas rendah)';
-  } else if(score===2){
-    valid=false; level='warn';
-    mainMsg='⚠️ Format Tidak Jelas';
-  } else {
-    valid=false; level='err';
-    mainMsg='❌ Bukan LJK yang Dikenali';
-  }
-
-  return {valid, score, level, mainMsg, checks};
-}
-
-// ─── Tampilkan modal validasi ────────────────────────────────────────
-let _vmCb=null;
-function showVM(result, onOk){
-  _vmCb=onOk;
-  const el=id=>document.getElementById(id);
-  // Icon
-  el('vmIcon').textContent = result.level==='ok'?'✅':result.level==='warn'?'⚠️':'❌';
-  // Judul
-  el('vmTit').textContent  = result.mainMsg;
-  el('vmTit').className    = 'vmtit '+result.level;
-  // Skor
-  el('vmScore').textContent = `Skor: ${result.score}/5 pemeriksaan`;
-  // Checklist
-  el('vmChecks').innerHTML = result.checks.map(c=>
-    `<div class="vmcheck">
-      <span class="vik">${c.ok?'✅':'❌'}</span>
-      <span class="vtx">${c.label}</span>
-    </div>`
-  ).join('');
-  // Hint
-  let hint='';
-  if(!result.valid){
-    const fails = result.checks.filter(c=>!c.ok).map(c=>c.hint);
-    hint = fails.join(' · ');
-    if(result.score<=1) hint = '💡 Upload foto LJK SMKN 1 Sumarorong yang sesuai.';
-  } else if(result.score<5){
-    hint = '💡 Hasil scan mungkin kurang akurat. Coba foto lebih lurus & terang.';
-  } else {
-    hint = '✨ Foto LJK berkualitas baik. Siap di-scan!';
-  }
-  el('vmHint').textContent = hint;
-  // Tombol
-  el('vmBtnOk').style.display = result.valid ? '' : 'none';
-  el('vmBtnCancel').textContent = result.valid ? '✕ Batal' : '✕ Tutup';
-  // Tampilkan
-  el('vmov').classList.add('show');
-}
-function closeVM(proceed){
-  document.getElementById('vmov').classList.remove('show');
-  if(proceed && _vmCb) _vmCb();
-  _vmCb=null;
-}
-
-
-// ═══ KAMERA LIVE + VIEWFINDER ═══
-let camStream=null;
-const CAM_W=1280, CAM_H=720; // ideal 16:9, nanti crop jadi portrait
-
+// ─── KAMERA LIVE ───────────────────────────────────────────────
 async function startCam(){
-  // Kalau browser tidak support getUserMedia, langsung ke file input
   if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
-    document.getElementById('fi').click();return;
+    document.getElementById('fi').click(); return;
   }
   try{
-    // Minta kamera belakang, resolusi tinggi
     camStream=await navigator.mediaDevices.getUserMedia({
-      video:{
-        facingMode:{ideal:'environment'},
-        width:{ideal:1920},height:{ideal:1080}
-      },audio:false
+      video:{facingMode:{ideal:'environment'},width:{ideal:1920},height:{ideal:1080}},
+      audio:false
     });
-    const vid=document.getElementById('camVid');
-    vid.srcObject=camStream;
+    document.getElementById('camVid').srcObject=camStream;
     document.getElementById('camWrap').classList.add('show');
     document.getElementById('camBtns').style.display='flex';
     document.getElementById('dz').style.display='none';
-    // Update label
-    setVfLabel();
+    rotateVfLabel();
   }catch(e){
-    // Kalau gagal (misal browser lama), fallback ke file input
-    console.warn('Kamera gagal:',e);
     document.getElementById('fi').click();
   }
 }
-
 function stopCam(){
   if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null;}
   document.getElementById('camWrap').classList.remove('show');
   document.getElementById('camBtns').style.display='none';
   document.getElementById('dz').style.display='';
+  clearTimeout(_vfT);
 }
-
 async function captureCam(){
   const vid=document.getElementById('camVid');
   if(!vid.videoWidth){toast('⚠️ Kamera belum siap');return;}
-  
-  // Ambil frame dari video
-  const tmpC=document.createElement('canvas');
-  tmpC.width=vid.videoWidth;tmpC.height=vid.videoHeight;
-  tmpC.getContext('2d').drawImage(vid,0,0);
-  
-  stopCam(); // matikan kamera
-  
-  // Proses gambar yang diambil
-  sb('wrk','⏳ Memproses foto...');
-  const dataUrl=tmpC.toDataURL('image/jpeg',0.92);
-  try{await ldImg(dataUrl);}catch(e){sb('err','❌ '+e.message);}
+  const c=document.createElement('canvas');
+  c.width=vid.videoWidth; c.height=vid.videoHeight;
+  c.getContext('2d').drawImage(vid,0,0);
+  stopCam();
+  sb('wrk','⏳ Memproses...');
+  try{await ldImg(c.toDataURL('image/jpeg',.92));}catch(e){sb('err','❌ '+e.message);}
 }
-
-let _vfT;
-function setVfLabel(){
-  const msgs=[
-    '📐 Sejajarkan LJK dalam kotak hijau',
-    '✅ Pastikan semua sudut LJK terlihat',
-    '📏 Jaga HP tetap lurus & stabil',
-    '💡 Pastikan cahaya cukup, tidak ada bayangan',
-  ];
+function rotateVfLabel(){
+  const msgs=['📐 Sejajarkan LJK dalam kotak hijau','✅ Semua sudut LJK harus terlihat',
+              '📏 Jaga HP tetap lurus & stabil','💡 Pastikan pencahayaan cukup'];
   let i=0;
-  function cycle(){
+  function next(){
     const el=document.getElementById('vfLbl');
-    if(el)el.textContent=msgs[i%msgs.length];
-    i++;_vfT=setTimeout(cycle,2500);
+    if(el)el.textContent=msgs[i++%msgs.length];
+    _vfT=setTimeout(next,2500);
   }
-  clearTimeout(_vfT);cycle();
+  clearTimeout(_vfT); next();
 }
 
-// ═══ FILE LOAD ═══
+// ─── FILE LOAD ─────────────────────────────────────────────────
 function onF(e){const f=e.target.files[0];e.target.value='';if(f)prcF(f);}
 async function prcF(f){
-  clrSt();sb('wrk','⏳ Memuat...');
+  clrSt(); sb('wrk','⏳ Memuat...');
   try{
     if(f.type==='application/pdf'||f.name.toLowerCase().endsWith('.pdf'))await ldPDF(f);
     else{const u=URL.createObjectURL(f);await ldImg(u);URL.revokeObjectURL(u);}
@@ -842,16 +414,22 @@ async function prcF(f){
 async function ldPDF(f){
   sb('wrk','⏳ Render PDF...');
   if(!window.pdfjsLib){
-    await new Promise((ok,fail)=>{const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';s.onload=ok;s.onerror=()=>fail(new Error('Gagal load pdf.js'));document.head.appendChild(s);});
+    await new Promise((ok,fail)=>{
+      const s=document.createElement('script');
+      s.src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+      s.onload=ok; s.onerror=()=>fail(new Error('Gagal load pdf.js'));
+      document.head.appendChild(s);
+    });
     pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
   }
   const buf=await f.arrayBuffer();
   const pdf=await pdfjsLib.getDocument({data:buf}).promise;
   const pg=await pdf.getPage(1);
   const vp=pg.getViewport({scale:2.2});
-  const tmp=document.createElement('canvas');tmp.width=vp.width;tmp.height=vp.height;
-  await pg.render({canvasContext:tmp.getContext('2d'),viewport:vp}).promise;
-  await ldImg(tmp.toDataURL());
+  const c=document.createElement('canvas');
+  c.width=vp.width; c.height=vp.height;
+  await pg.render({canvasContext:c.getContext('2d'),viewport:vp}).promise;
+  await ldImg(c.toDataURL());
 }
 async function ldImg(src){
   return new Promise((ok,fail)=>{
@@ -870,64 +448,49 @@ async function ldImg(src){
   });
 }
 
-// ═══ PIPELINE — deteksi bounding box → validate → enable ═══
+// ─── PIPELINE ──────────────────────────────────────────────────
 async function pipe(){
-  sb('wrk','🔍 Deteksi kertas...');await sl(15);
-  const d=iD.data,STEP=Math.max(1,Math.floor(Math.min(iW,iH)/80));
-  // Grayscale cepat
+  sb('wrk','🔍 Deteksi kertas...'); await sl(15);
+  const d=iD.data;
+  const STEP=Math.max(1,Math.floor(Math.min(iW,iH)/80));
   const gray=new Uint8Array(iW*iH);
   for(let i=0;i<iW*iH;i++){const p=i*4;gray[i]=Math.round(.299*d[p]+.587*d[p+1]+.114*d[p+2]);}
-  // Threshold: rata-rata * 0.85
-  let sum=0;for(let i=0;i<gray.length;i+=STEP)sum+=gray[i];
+  let sum=0;
+  for(let i=0;i<gray.length;i+=STEP)sum+=gray[i];
   const thr=Math.max(140,(sum/Math.ceil(gray.length/STEP))*.85);
   const MRG=Math.floor(Math.min(iW,iH)*.03);
-  // Scan 4 tepi
   bx0=scnE(gray,iW,iH,'L',MRG,thr,STEP);
   bx1=scnE(gray,iW,iH,'R',MRG,thr,STEP);
   by0=scnE(gray,iW,iH,'T',MRG,thr,STEP);
   by1=scnE(gray,iW,iH,'B',MRG,thr,STEP);
   hasBB=(bx0>=0&&bx1>bx0+iW*.3&&by0>=0&&by1>by0+iH*.3);
   if(!hasBB){bx0=0;bx1=iW;by0=0;by1=iH;}
-  // Validate dasar (portrait, brightness)
   if(!vld(d,iW,iH))return;
-  shBW();drBB();
-  
-  // ── VALIDASI FORMAT LJK ──
-  sb('wrk','🔍 Memeriksa format LJK...');await sl(30);
-  const vRes = validateLJKFormat(iD, iW, iH);
-  
-  if(!vRes.valid){
-    // Tampilkan modal gagal — blokir scan
-    sb('err','❌ Format tidak dikenali (skor '+vRes.score+'/5)');
-    showVM(vRes, null);
-    return;
-  }
-  
-  // Valid: tampilkan modal info sebentar lalu lanjut
-  sb('ok','✅ Format LJK valid ('+vRes.score+'/5) | '+iW+'×'+iH);
 
-  // ── Init ADJ dari bounding box yang terdeteksi ──
-  if(hasBB){
-    ADJ.x0 = bx0/iW*100; ADJ.y0 = by0/iH*100;
-    ADJ.x1 = bx1/iW*100; ADJ.y1 = by1/iH*100;
-  } else {
-    ADJ.x0=5; ADJ.y0=5; ADJ.x1=95; ADJ.y1=95;
+  // Validasi format LJK
+  sb('wrk','🔍 Validasi format LJK...'); await sl(20);
+  const vr=validateLJK(iD,iW,iH);
+  if(!vr.valid){
+    sb('err','❌ Format tidak dikenali ('+vr.score+'/5)');
+    showVM(vr,null); return;
   }
-  ADJ.bubR = 1.637;
-  syncSVG();
-  // SVG overlay tersembunyi dulu, user bisa toggle
-  document.getElementById('adjSvg').style.display='none';
-  document.getElementById('adjHint').style.display='none';
-  adjModeOn=false;
-  const bAdj=document.getElementById('bAdj');
-  if(bAdj){bAdj.textContent='✋ Adjust';bAdj.style.background='';bAdj.style.color='';}
+
+  // Init ADJ dari bounding box
+  ADJ.x0=bx0/iW*100; ADJ.y0=by0/iH*100;
+  ADJ.x1=bx1/iW*100; ADJ.y1=by1/iH*100;
+  ADJ.bubR=1.637;
+
+  // Grayscale + tampilkan
+  shBW(iD,iW,iH);
+  syncAdj();
+
+  sb('ok','✅ LJK valid ('+vr.score+'/5) · '+iW+'×'+iH);
+  toast('✅ Siap — tekan ✋ Adjust jika perlu, lalu ⚡ Scan');
+  document.getElementById('bAdj').disabled=false;
   document.getElementById('bS').disabled=false;
-  
-  // Kalau skor 5 = langsung OK, skor 3-4 = tampilkan warning tapi boleh lanjut
-  if(vRes.score<5){
-    showVM(vRes, ()=>toast('✅ '+vRes.score+'/5 · Siap di-scan'));
-  } else {
-    toast('✅ LJK valid · Siap di-scan');
+
+  if(vr.score<5){
+    showVM(vr,()=>toast('⚠️ Kualitas rendah, adjust dulu bila perlu'));
   }
 }
 
@@ -949,9 +512,193 @@ function vld(d,W,H){
 function shM(msg){document.getElementById('mmsg').textContent=msg;document.getElementById('mod').classList.add('show');sb('err','❌ '+msg);}
 function closeM(){document.getElementById('mod').classList.remove('show');}
 
-// cPx: digantikan oleh TOUCHSCREEN ADJUST (lihat initAdjHandlers)
+// ─── VALIDASI FORMAT LJK (5 check) ────────────────────────────
+function gpx(d,i){return .299*d[i*4]+.587*d[i*4+1]+.114*d[i*4+2];}
+function validateLJK(imgData,W,H){
+  const d=imgData.data; let score=0; const checks=[];
+  const S=Math.max(1,Math.floor(Math.min(W,H)/120));
+  function zm(x0,y0,x1,y1){let s=0,n=0;for(let y=y0;y<y1;y+=S)for(let x=x0;x<x1;x+=S){s+=gpx(d,y*W+x);n++;}return n?s/n:128;}
+  function zs(x0,y0,x1,y1){const m=zm(x0,y0,x1,y1);let s=0,n=0;for(let y=y0;y<y1;y+=S)for(let x=x0;x<x1;x+=S){const v=gpx(d,y*W+x)-m;s+=v*v;n++;}return n?Math.sqrt(s/n):0;}
+  function zn(x0,y0,x1,y1){let mn=255;for(let y=y0;y<y1;y+=S)for(let x=x0;x<x1;x+=S){const v=gpx(d,y*W+x);if(v<mn)mn=v;}return mn;}
+  const TX0=Math.floor(W*.04),TX1=Math.floor(W*.96);
+  // C1: rasio portrait
+  const r=W/H,c1=r>=0.55&&r<=0.90;if(c1)score++;
+  checks.push({ok:c1,label:'Orientasi portrait ('+r.toFixed(2)+')'});
+  // C2: grid tabel lebih bervariasi dari header
+  const sHdr=zs(TX0,0,TX1,Math.floor(H*.17));
+  const sTbl=zs(TX0,Math.floor(H*.20),TX1,Math.floor(H*.95));
+  const c2=sTbl>sHdr*1.1;if(c2)score++;
+  checks.push({ok:c2,label:'Pola grid tabel terdeteksi'});
+  // C3: garis header tabel (Y≈18-20%)
+  const mn3=zn(TX0,Math.floor(H*.180),TX1,Math.floor(H*.200));
+  const sd3=zs(TX0,Math.floor(H*.180),TX1,Math.floor(H*.200));
+  const c3=mn3<130||sd3>12;if(c3)score++;
+  checks.push({ok:c3,label:'Garis pembatas header tabel'});
+  // C4: border pemisah blok (X≈46-57%)
+  const dm=zn(Math.floor(W*.44),Math.floor(H*.22),Math.floor(W*.57),Math.floor(H*.95));
+  const c4=dm<160;if(c4)score++;
+  checks.push({ok:c4,label:'Pemisah blok kiri–kanan'});
+  // C5: banyak garis vertikal di tabel
+  let csum=0,cn=0;
+  for(let x=Math.floor(W*.05);x<Math.floor(W*.95);x+=S*2){
+    csum+=zs(x,Math.floor(H*.22),x+S*2,Math.floor(H*.95));cn++;
+  }
+  const c5=(cn?csum/cn:0)>14;if(c5)score++;
+  checks.push({ok:c5,label:'Kolom A–E terdeteksi'});
+  // Keputusan
+  let valid=score>=3,level=score>=4?'ok':score===3?'warn':'err';
+  const msgs={ok:'✅ Format LJK Valid!',warn:'⚠️ LJK Dikenali (kualitas rendah)',err:'❌ Bukan LJK yang Dikenali'};
+  return{valid,score,level,mainMsg:msgs[level],checks};
+}
 
-// ═══ SCORE BUBBLE — satu metode, relative contrast ═══
+// ─── MODAL VALIDASI ────────────────────────────────────────────
+let _vmCb=null;
+function showVM(res,cb){
+  _vmCb=cb;
+  document.getElementById('vIcon').textContent=res.level==='ok'?'✅':res.level==='warn'?'⚠️':'❌';
+  const tEl=document.getElementById('vTit');
+  tEl.textContent=res.mainMsg; tEl.className='vtit '+res.level;
+  document.getElementById('vCks').innerHTML=res.checks.map(c=>
+    `<div class="vck"><span>${c.ok?'✅':'❌'}</span><span>${c.label}</span></div>`).join('');
+  document.getElementById('vScore').textContent='Skor: '+res.score+'/5';
+  document.getElementById('vHint').textContent=res.valid
+    ?(res.score<5?'💡 Foto kurang ideal. Adjust posisi bubble jika scan tidak akurat.':'✨ Kualitas foto bagus!')
+    :'💡 Upload foto LJK SMKN 1 Sumarorong yang sesuai format.';
+  document.getElementById('vOk').style.display=res.valid?'':'none';
+  document.getElementById('vmod').classList.add('show');
+}
+function closeVM(proceed){
+  document.getElementById('vmod').classList.remove('show');
+  if(proceed&&_vmCb)_vmCb();
+  _vmCb=null;
+}
+
+// ─── TOUCHSCREEN ADJUST ────────────────────────────────────────
+function initAdj(){
+  const svg=document.getElementById('adjSvg');
+  if(!svg)return;
+  const MIN=15;
+  function start(e,id){
+    if(!adjMode)return;
+    e.preventDefault(); adjDrag=id;
+  }
+  function move(e){
+    if(!adjDrag||!adjMode)return;
+    e.preventDefault();
+    const rc=svg.getBoundingClientRect();
+    const t=e.touches?e.touches[0]:e;
+    const px=(t.clientX-rc.left)/rc.width*100;
+    const py=(t.clientY-rc.top)/rc.height*100;
+    const {x0,y0,x1,y1}=ADJ;
+    if(adjDrag==='hTL'){ADJ.x0=Math.min(px,x1-MIN);ADJ.y0=Math.min(py,y1-MIN);}
+    else if(adjDrag==='hTR'){ADJ.x1=Math.max(px,x0+MIN);ADJ.y0=Math.min(py,y1-MIN);}
+    else if(adjDrag==='hBL'){ADJ.x0=Math.min(px,x1-MIN);ADJ.y1=Math.max(py,y0+MIN);}
+    else if(adjDrag==='hBR'){ADJ.x1=Math.max(px,x0+MIN);ADJ.y1=Math.max(py,y0+MIN);}
+    else if(adjDrag==='hMV'){
+      const hw=(x1-x0)/2,hh=(y1-y0)/2;
+      ADJ.x0=Math.max(0,Math.min(px-hw,100-2*hw));
+      ADJ.y0=Math.max(0,Math.min(py-hh,100-2*hh));
+      ADJ.x1=ADJ.x0+2*hw; ADJ.y1=ADJ.y0+2*hh;
+    }
+    else if(adjDrag==='hBub'){
+      const rowY=ADJ.y0+(ADJ.y1-ADJ.y0)*RY[0];
+      ADJ.bubR=Math.max(0.5,Math.min(4.5,(rowY-py)*0.18));
+    }
+    ADJ.x0=Math.max(0,ADJ.x0); ADJ.y0=Math.max(0,ADJ.y0);
+    ADJ.x1=Math.min(100,ADJ.x1); ADJ.y1=Math.min(100,ADJ.y1);
+    syncAdj();
+  }
+  function end(){adjDrag=null;}
+  ['hTL','hTR','hBL','hBR','hMV','hBub'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(!el)return;
+    el.addEventListener('mousedown',e=>start(e,id));
+    el.addEventListener('touchstart',e=>start(e,id),{passive:false});
+  });
+  svg.addEventListener('mousemove',move);
+  svg.addEventListener('touchmove',move,{passive:false});
+  svg.addEventListener('mouseup',end);
+  svg.addEventListener('touchend',end);
+  svg.addEventListener('mouseleave',end);
+}
+
+function togAdj(){
+  adjMode=!adjMode;
+  const svg=document.getElementById('adjSvg');
+  const hint=document.getElementById('adjHint');
+  const btn=document.getElementById('bAdj');
+  svg.style.display=adjMode?'':'none';
+  hint.style.display=adjMode?'':'none';
+  btn.textContent=adjMode?'✅ Selesai':'✋ Adjust';
+  btn.style.background=adjMode?'var(--gn)':'';
+  btn.style.color=adjMode?'#0d1117':'';
+  if(adjMode){syncAdj();toast('✋ Seret handle untuk adjust posisi & ukuran bubble');}
+  else toast('✅ Adjust disimpan');
+}
+
+function syncAdj(){
+  const {x0,y0,x1,y1,bubR}=ADJ;
+  const mx=(x0+x1)/2,my=(y0+y1)/2;
+  const bW=x1-x0,bH=y1-y0;
+  // Rect
+  const rect=document.getElementById('adjRect');
+  rect.setAttribute('x',x0);rect.setAttribute('y',y0);
+  rect.setAttribute('width',bW);rect.setAttribute('height',bH);
+  // Sudut
+  sh('hTL',x0,y0);sh('hTR',x1,y0);sh('hBL',x0,y1);sh('hBR',x1,y1);
+  sh('hMV',mx,my);
+  // Bubble handle (di atas baris pertama)
+  const bubY=y0+bH*RY[0]-bubR*3;
+  sh('hBub',mx,Math.max(y0+3,bubY));
+  // Info
+  const info=document.getElementById('adjInfo');
+  if(info){
+    info.setAttribute('x',mx);
+    info.setAttribute('y',Math.min(y1+3.5,99));
+    info.textContent=`Box ${bW.toFixed(1)}×${bH.toFixed(1)}% · Bubble r${bubR.toFixed(2)}%`;
+  }
+  // Gambar lingkaran bubble jika adjMode aktif
+  drawRoi();
+}
+function sh(id,cx,cy){const el=document.getElementById(id);if(el){el.setAttribute('cx',cx.toFixed(2));el.setAttribute('cy',cy.toFixed(2));}}
+
+function drawRoi(){
+  const svg=document.getElementById('adjSvg');
+  document.querySelectorAll('.adjRoi').forEach(el=>el.remove());
+  if(!adjMode||!iD)return;
+  const {x0,y0,x1,y1,bubR}=ADJ;
+  const bW=x1-x0,bH=y1-y0;
+  for(let n=1;n<=40;n++){
+    const isL=n<=20,r=(n-1)%20;
+    const relY=RY[r];
+    for(const op of 'ABCDE'){
+      const relX=isL?CLX[op]:CRX[op];
+      const cx=x0+relX*bW, cy=y0+relY*bH;
+      const el=document.createElementNS('http://www.w3.org/2000/svg','circle');
+      el.setAttribute('cx',cx.toFixed(2));
+      el.setAttribute('cy',cy.toFixed(2));
+      el.setAttribute('r',bubR.toFixed(2));
+      el.setAttribute('fill','none');
+      el.setAttribute('stroke','rgba(88,166,255,.6)');
+      el.setAttribute('stroke-width','.3');
+      el.classList.add('adjRoi');
+      svg.insertBefore(el,document.getElementById('hTL'));
+    }
+  }
+}
+
+// ─── KOORDINAT BUBBLE (pakai ADJ) ──────────────────────────────
+function cPx(nomor,opsi){
+  const isL=nomor<=20;
+  const relX=isL?CLX[opsi]:CRX[opsi];
+  const relY=RY[(nomor-1)%20];
+  const px0=ADJ.x0/100*iW, py0=ADJ.y0/100*iH;
+  const pw=(ADJ.x1-ADJ.x0)/100*iW, ph=(ADJ.y1-ADJ.y0)/100*iH;
+  const r=ADJ.bubR/100*pw;
+  return{cx:px0+relX*pw, cy:py0+relY*ph, r};
+}
+
+// ─── SCAN BUBBLE ───────────────────────────────────────────────
 function gv(d,i){return .299*d[i]+.587*d[i+1]+.114*d[i+2];}
 function sBub(d,W,H,cx,cy,r){
   const rIn=r*.82,rOut=r*1.65;
@@ -964,7 +711,7 @@ function sBub(d,W,H,cx,cy,r){
     const g=gv(d,(py*W+px)*4);
     if(dt<=rIn){iS+=g;iN++;}else if(dt>r){bS+=g;bN++;}
   }
-  return (bN?bS/bN:240)-(iN?iS/iN:220);
+  return(bN?bS/bN:240)-(iN?iS/iN:220);
 }
 function scnN(d,W,H,n){
   const sc='ABCDE'.split('').map(op=>{const{cx,cy,r}=cPx(n,op);return sBub(d,W,H,cx,cy,r);});
@@ -973,38 +720,16 @@ function scnN(d,W,H,n){
   if(mx<ms)return{jaw:'',sc,conf:0};
   const gap=[...sc].sort((a,b)=>b-a);const gp=gap[0]-gap[1];
   if(gp<md&&sc.filter(s=>s>=mx-md*.5&&s>=ms).length>=2)return{jaw:'?',sc,conf:15};
-  const idx=sc.indexOf(mx);
-  return{jaw:'ABCDE'[idx],sc,conf:Math.min(99,Math.round(20+Math.min(gp,70)+Math.min(mx,20)))};
+  return{jaw:'ABCDE'[sc.indexOf(mx)],sc,conf:Math.min(99,Math.round(20+Math.min(gp,70)+Math.min(mx,20)))};
 }
 
-// ═══ PREVIEW ═══
-async function doPrev(){
-  if(!iD){toast('Upload dulu!');return;}
-  sb('wrk','🔍 Preview...');await sl(15);
-  const d=iD.data,W=iW,H=iH,gr=document.getElementById('pvg');gr.innerHTML='';
-  let det=0,amb=0;
-  for(let n=1;n<=40;n++){
-    const res=scnN(d,W,H,n);
-    if(res.jaw&&res.jaw!=='?')det++;else if(res.jaw==='?')amb++;
-    const c=document.createElement('div');
-    c.className='pvc'+(res.jaw&&res.jaw!=='?'?' hit':res.jaw==='?'?' amb':'');
-    c.innerHTML=`<span class="pvn">${n}</span><span class="pva">${res.jaw||'—'}</span>`;
-    c.title=`Q${n}: ${res.jaw||'kosong'} ${res.conf}%`;
-    gr.appendChild(c);
-    if(n%10===0)await sl(0);
-  }
-  document.getElementById('pvi').textContent=`Terdeteksi: ${det}/40 | Ambigus: ${amb} | Kosong: ${40-det-amb}`;
-  
-  
-  sb('ok','Preview: '+det+'/40');toast('🔍 '+det+'/40 terdeteksi');
-}
-
-// ═══ SCAN PENUH ═══
+// ─── SCAN PENUH ────────────────────────────────────────────────
 async function doScan(){
   if(!iD){toast('Upload dulu!');return;}
   const noK=kunci.every(k=>!k);
-  if(noK&&!confirm('Kunci kosong. Lanjut?'))return;
-  document.getElementById('bS').disabled=true;sb('wrk','⚡ Scanning...');pb(0);await sl(15);
+  if(noK&&!confirm('Kunci jawaban kosong. Lanjut quand même?'))return;
+  document.getElementById('bS').disabled=true;
+  sb('wrk','⚡ Scanning...'); pb(0); await sl(15);
   const d=iD.data,W=iW,H=iH,hs=[];let tc=0;
   for(let n=1;n<=40;n++){
     pb(Math.round(n/40*95));
@@ -1012,142 +737,252 @@ async function doScan(){
     const kj=kunci[n-1]||'';
     const cor=!kj?null:(res.jaw&&res.jaw!=='?'&&kj.includes(res.jaw));
     hs.push({nomor:n,jaw:res.jaw,kunci:kj,correct:cor,conf:res.conf});
-    tc+=res.conf;if(n%8===0)await sl(0);
+    tc+=res.conf; if(n%8===0)await sl(0);
   }
-  pb(100);await sl(40);pb(-1);
+  pb(100); await sl(40); pb(-1);
   const bn=hs.filter(h=>h.correct===true).length;
   const sl2=hs.filter(h=>h.correct===false).length;
   const ko=hs.filter(h=>!h.jaw||h.jaw==='?').length;
   const ni=noK?null:Math.round(bn/40*100);
   const gr=ni===null?null:ni>=90?'A':ni>=80?'B':ni>=70?'C':ni>=60?'D':'E';
-  last={nama:document.getElementById('iNm').value||'—',absen:document.getElementById('iAb').value||'—',kelas:document.getElementById('iKl').value||'—',waktu:new Date().toLocaleString('id-ID'),hasil:hs,benar:bn,salah:sl2,kosong:ko,nilai:ni,grade:gr,avgConf:Math.round(tc/40)};
+  last={
+    nama:document.getElementById('iNm').value||'—',
+    absen:document.getElementById('iAb').value||'—',
+    kelas:document.getElementById('iKl').value||'—',
+    waktu:new Date().toLocaleString('id-ID'),
+    hasil:hs,benar:bn,salah:sl2,kosong:ko,nilai:ni,grade:gr,
+    avgConf:Math.round(tc/40)
+  };
   document.getElementById('bS').disabled=false;
-  sb('ok','✅ '+bn+'/40 benar');rnHs();T(2);toast('✅ Selesai!');
+  sb('ok','✅ '+bn+'/40 benar'); rnHs(); T(2); toast('✅ Selesai!');
 }
 
-// ═══ CANVAS ═══
-function shBW(){
-  if(!iD)return;
-  const cv=document.getElementById('cvm'),ctx=cv.getContext('2d');
-  const src=iD.data,W=iW,H=iH,out=ctx.createImageData(W,H);
-  for(let i=0;i<W*H;i++){const p=i*4,g=Math.round(gv(src,p));out.data[p]=out.data[p+1]=out.data[p+2]=g;out.data[p+3]=255;}
+// ─── GRAYSCALE DISPLAY ─────────────────────────────────────────
+function shBW(imgData,W,H){
+  const cv=document.getElementById('cvm');
+  const ctx=cv.getContext('2d');
+  const src=imgData.data,out=ctx.createImageData(W,H);
+  for(let i=0;i<W*H;i++){
+    const p=i*4,g=Math.round(gv(src,p));
+    out.data[p]=out.data[p+1]=out.data[p+2]=g;out.data[p+3]=255;
+  }
   ctx.putImageData(out,0,0);
 }
-function drBB(){/* overlay via SVG adjSvg, tidak perlu cvo */}
-  else{cv.getContext('2d').putImageData(iD,0,0);ov.getContext('2d').clearRect(0,0,ov.width,ov.height);drBB();}
+
+// ─── RESET ─────────────────────────────────────────────────────
+function clrSt(){
+  document.getElementById('cvw').style.display='none';
+  hasBB=false; iD=null; iW=0; iH=0;
+  // Matikan adjust
+  adjMode=false;
+  const svg=document.getElementById('adjSvg');
+  if(svg)svg.style.display='none';
+  document.getElementById('adjHint').style.display='none';
+  const bAdj=document.getElementById('bAdj');
+  if(bAdj){bAdj.textContent='✋ Adjust';bAdj.style.background='';bAdj.style.color='';bAdj.disabled=true;}
+  document.getElementById('bS').disabled=true;
+}
+function doReset(){
+  clrSt(); stopCam();
+  document.getElementById('fi').value='';
+  pb(-1); sb('','Upload LJK terlebih dahulu');
+  ADJ={x0:5,y0:5,x1:95,y1:95,bubR:1.637};
 }
 
-
-// ═══ RENDER HASIL ═══
+// ─── RENDER HASIL ──────────────────────────────────────────────
 function rnHs(){
-  if(!last)return;const h=last;
-  document.getElementById('hE').style.display='none';document.getElementById('hC').style.display='block';
+  if(!last)return;
+  const h=last;
+  document.getElementById('hE').style.display='none';
+  document.getElementById('hC').style.display='block';
   document.getElementById('hN').textContent=h.nilai!==null?h.nilai:'—';
-  const ge=document.getElementById('hG');ge.textContent=h.grade||'—';ge.className='sg'+(h.grade?' g'+h.grade:'');
+  const ge=document.getElementById('hG');
+  ge.textContent=h.grade||'—'; ge.className='sg'+(h.grade?' g'+h.grade:'');
   document.getElementById('hD').textContent=`Benar: ${h.benar}  Salah: ${h.salah}  Kosong: ${h.kosong}  /40`;
   document.getElementById('hI').textContent=`${h.nama} | ${h.kelas} | Conf: ${h.avgConf}% | ${h.waktu}`;
-  const gr=document.getElementById('hgr');gr.innerHTML='';
+  const gr=document.getElementById('hgr'); gr.innerHTML='';
   h.hasil.forEach(s=>{
     const cls=s.correct===true?'ok':s.correct===false?'ng':(!s.jaw||s.jaw==='?')?'ko':'';
-    const c=document.createElement('div');c.className='hc '+cls;
+    const c=document.createElement('div'); c.className='hc '+cls;
     c.innerHTML=`<div class="hn">${s.nomor}</div><div class="ha">${s.jaw||'—'}</div>`;
     c.title=`Q${s.nomor}: Jawab=${s.jaw||'-'} Kunci=${s.kunci||'-'} Conf=${s.conf}%`;
     gr.appendChild(c);
   });
-  const ib=document.getElementById('ibr');ib.innerHTML='';
-  h.hasil.forEach(s=>{const sg=document.createElement('div');sg.className='iseg';sg.style.background=s.correct===true?'#3fb950':s.correct===false?'#f85149':(!s.jaw||s.jaw==='?')?'#d29922':'#484f58';ib.appendChild(sg);});
-  document.getElementById('hI2').textContent=`🟢${h.benar}  🔴${h.salah}  🟡${h.kosong-h.hasil.filter(r=>r.jaw==='?').length}  ❓${h.hasil.filter(r=>r.jaw==='?').length}`;
+  const ib=document.getElementById('ibr'); ib.innerHTML='';
+  h.hasil.forEach(s=>{
+    const sg=document.createElement('div'); sg.className='iseg';
+    sg.style.background=s.correct===true?'#3fb950':s.correct===false?'#f85149':(!s.jaw||s.jaw==='?')?'#d29922':'#484f58';
+    ib.appendChild(sg);
+  });
+  document.getElementById('hI2').textContent=
+    `🟢${h.benar}  🔴${h.salah}  🟡${h.kosong-h.hasil.filter(r=>r.jaw==='?').length}  ❓${h.hasil.filter(r=>r.jaw==='?').length}`;
 }
 
-// ═══ EXPORT ═══
-function hSv(){if(!last){toast('Tidak ada hasil!');return;}rekap.push({...last});try{localStorage.setItem('bb6_r',JSON.stringify(rekap));}catch{}rnRk();upSt();toast('✅ Disimpan!');T(3);}
+// ─── EXPORT HASIL ──────────────────────────────────────────────
+function hSv(){
+  if(!last){toast('Tidak ada hasil!');return;}
+  rekap.push({...last});
+  try{localStorage.setItem('bb_r',JSON.stringify(rekap));}catch{}
+  rnRk(); upSt(); toast('✅ Disimpan!'); T(3);
+}
 function hTX(){
-  if(!last){toast('Tidak ada hasil!');return;}const h=last,N='\n';
-  let t='HASIL LJK — BENYAMIN BATAU v6'+N+'='.repeat(44)+N;
+  if(!last){toast('Tidak ada hasil!');return;}
+  const h=last,N='\n';
+  let t='HASIL LJK — BB SCANNER v10'+N+'='.repeat(40)+N;
   t+=`Nama: ${h.nama} | Kelas: ${h.kelas} | ${h.waktu}${N}`;
   t+=`Nilai: ${h.nilai!==null?h.nilai:'—'} | Grade: ${h.grade||'—'} | Benar: ${h.benar}/40${N+N}`;
   t+='No  Jawab  Kunci  Status    Conf'+N+'-'.repeat(35)+N;
-  h.hasil.forEach(s=>{const st=s.correct===true?'BENAR':s.correct===false?'SALAH':!s.jaw?'KOSONG':'AMBIGUS';t+=`${String(s.nomor).padStart(2)}  ${(s.jaw||'-').padEnd(6)} ${(s.kunci||'-').padEnd(6)} ${st.padEnd(9)} ${s.conf}%${N}`;});
+  h.hasil.forEach(s=>{
+    const st=s.correct===true?'BENAR':s.correct===false?'SALAH':!s.jaw?'KOSONG':'AMBIGUS';
+    t+=`${String(s.nomor).padStart(2)}  ${(s.jaw||'-').padEnd(6)} ${(s.kunci||'-').padEnd(6)} ${st.padEnd(9)} ${s.conf}%${N}`;
+  });
   dlT(t,`hasil_${h.nama.replace(/\s+/g,'_')}.txt`);
 }
 function hPD(){
-  if(!last){toast('Tidak ada hasil!');return;}const h=last;let rows='';
-  h.hasil.forEach(s=>{const col=s.correct===true?'#1a7f37':s.correct===false?'#cf222e':!s.jaw?'#9a6700':'#888';const st=s.correct===true?'✓':s.correct===false?'✗':!s.jaw?'—':'?';rows+=`<tr><td>${s.nomor}</td><td style="font-weight:700">${s.jaw||'—'}</td><td>${s.kunci||'—'}</td><td style="color:${col};font-weight:700">${st}</td><td>${s.conf}%</td></tr>`;});
-  pop(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Hasil</title><style>body{font-family:Arial;padding:16px;font-size:11px}table{border-collapse:collapse;width:100%}th,td{border:1px solid #ccc;padding:3px 6px;text-align:center}th{background:#0d1117;color:#fff}.nb{font-size:40px;font-weight:900}</style></head><body onload="window.print()"><h2>HASIL LJK — BENYAMIN BATAU v6</h2><p>Nama: <b>${h.nama}</b> | Kelas: <b>${h.kelas}</b> | ${h.waktu}</p><p><span class="nb">${h.nilai!==null?h.nilai:'—'}</span> <b>${h.grade||''}</b> | Benar: <b>${h.benar}/40</b> | Conf: ${h.avgConf}%</p><table><thead><tr><th>No</th><th>Jawab</th><th>Kunci</th><th>Status</th><th>Conf</th></tr></thead><tbody>${rows}</tbody></table>
-<!-- MODAL VALIDASI FORMAT LJK -->
-<div class="vmov" id="vmov">
-  <div class="vmbox">
-    <div class="vmicon" id="vmIcon">🔍</div>
-    <div class="vmtit" id="vmTit">Memeriksa Format...</div>
-    <div class="vmchecks" id="vmChecks"></div>
-    <div class="vmscore" id="vmScore"></div>
-    <div class="vmhint" id="vmHint"></div>
+  if(!last){toast('Tidak ada hasil!');return;}
+  const h=last; let rows='';
+  h.hasil.forEach(s=>{
+    const col=s.correct===true?'#1a7f37':s.correct===false?'#cf222e':!s.jaw?'#9a6700':'#888';
+    const st=s.correct===true?'✓':s.correct===false?'✗':!s.jaw?'—':'?';
+    rows+=`<tr><td>${s.nomor}</td><td style="font-weight:700">${s.jaw||'—'}</td><td>${s.kunci||'—'}</td><td style="color:${col};font-weight:700">${st}</td><td>${s.conf}%</td></tr>`;
+  });
+  pop(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Hasil</title><style>body{font-family:Arial;padding:16px;font-size:11px}table{border-collapse:collapse;width:100%}th,td{border:1px solid #ccc;padding:3px 6px;text-align:center}th{background:#0d1117;color:#fff}.nb{font-size:40px;font-weight:900}</style></head><body onload="window.print()"><h2>HASIL LJK — BB SCANNER v10</h2><p>Nama: <b>${h.nama}</b> | Kelas: <b>${h.kelas}</b> | ${h.waktu}</p><p><span class="nb">${h.nilai!==null?h.nilai:'—'}</span> <b>${h.grade||''}</b> | Benar: <b>${h.benar}/40</b> | Conf: ${h.avgConf}%</p><table><thead><tr><th>No</th><th>Jawab</th><th>Kunci</th><th>Status</th><th>Conf</th></tr></thead><tbody>${rows}</tbody></table>
+<!-- Modal Validasi LJK -->
+<div class="vmod" id="vmod">
+  <div class="vbox">
+    <div class="vicon" id="vIcon">🔍</div>
+    <div class="vtit" id="vTit">Memeriksa...</div>
+    <div class="vcklist" id="vCks"></div>
+    <div class="vscore" id="vScore"></div>
+    <div class="vhint"  id="vHint"></div>
     <div class="g2" style="margin-top:10px">
-      <button class="btn btn-gh" id="vmBtnCancel" onclick="closeVM()">✕ Batal</button>
-      <button class="btn btn-cy" id="vmBtnOk" style="display:none" onclick="closeVM(true)">✅ Lanjut Scan</button>
+      <button class="btn btn-gh" onclick="closeVM(false)">✕ Batal</button>
+      <button class="btn btn-cy" id="vOk" style="display:none" onclick="closeVM(true)">✅ Lanjut</button>
     </div>
   </div>
 </div>
-
 </body></html>`);
 }
 
-// ═══ REKAP ═══
+// ─── REKAP ─────────────────────────────────────────────────────
 function rnRk(){
-  const tb=document.getElementById('rB');tb.innerHTML='';
-  if(!rekap.length){tb.innerHTML='<tr><td colspan="6" style="color:var(--tx3);padding:12px;text-align:center">Belum ada data</td></tr>';return;}
-  rekap.forEach((r,i)=>{const tr=document.createElement('tr');const gc=r.grade?`<span class="gch cg${r.grade}">${r.grade}</span>`:'—';tr.innerHTML=`<td>${i+1}</td><td class="tnm">${r.nama}</td><td>${r.kelas||'—'}</td><td>${r.benar}/40</td><td style="font-weight:700;color:var(--cy)">${r.nilai!==null?r.nilai:'—'}</td><td>${gc}</td>`;tb.appendChild(tr);});
+  const tb=document.getElementById('rB'); tb.innerHTML='';
+  if(!rekap.length){
+    tb.innerHTML='<tr><td colspan="6" style="color:var(--tx3);padding:12px;text-align:center">Belum ada data</td></tr>';
+    return;
+  }
+  rekap.forEach((r,i)=>{
+    const tr=document.createElement('tr');
+    const gc=r.grade?`<span class="gch cg${r.grade}">${r.grade}</span>`:'—';
+    tr.innerHTML=`<td>${i+1}</td><td class="tnm">${r.nama}</td><td>${r.kelas||'—'}</td><td>${r.benar}/40</td><td style="font-weight:700;color:var(--cy)">${r.nilai!==null?r.nilai:'—'}</td><td>${gc}</td>`;
+    tb.appendChild(tr);
+  });
 }
 function upSt(){
   document.getElementById('rJ').textContent=rekap.length;
   const vs=rekap.filter(r=>r.nilai!==null).map(r=>r.nilai);
-  if(!vs.length){document.getElementById('rR').textContent='—';document.getElementById('rL').textContent='0%';document.getElementById('bch').innerHTML='';return;}
+  if(!vs.length){
+    document.getElementById('rR').textContent='—';
+    document.getElementById('rL').textContent='0%';
+    document.getElementById('bch').innerHTML='';
+    return;
+  }
   document.getElementById('rR').textContent=Math.round(vs.reduce((a,b)=>a+b)/vs.length);
   document.getElementById('rL').textContent=Math.round(rekap.filter(r=>r.nilai>=75).length/rekap.length*100)+'%';
-  const bc=document.getElementById('bch');bc.innerHTML='';
-  const gc={A:0,B:0,C:0,D:0,E:0};rekap.forEach(r=>{if(r.grade)gc[r.grade]++;});
-  const mx=Math.max(...Object.values(gc),1),cl={A:'#3fb950',B:'#58a6ff',C:'#d29922',D:'#ffa657',E:'#f85149'};
-  Object.entries(gc).forEach(([g,n])=>{const h=Math.round(n/mx*44)+3;const c=document.createElement('div');c.className='bcol';c.innerHTML=`<div class="bnum" style="color:${cl[g]}">${n}</div><div class="bbg" style="height:${h}px;background:${cl[g]}"></div><div class="blbl" style="color:${cl[g]}">${g}</div>`;bc.appendChild(c);});
+  const bc=document.getElementById('bch'); bc.innerHTML='';
+  const gc={A:0,B:0,C:0,D:0,E:0};
+  rekap.forEach(r=>{if(r.grade)gc[r.grade]++;});
+  const mx=Math.max(...Object.values(gc),1);
+  const cl={A:'#3fb950',B:'#58a6ff',C:'#d29922',D:'#ffa657',E:'#f85149'};
+  Object.entries(gc).forEach(([g,n])=>{
+    const h=Math.round(n/mx*44)+3;
+    const c=document.createElement('div'); c.className='bcol';
+    c.innerHTML=`<div class="bnum" style="color:${cl[g]}">${n}</div><div class="bbg" style="height:${h}px;background:${cl[g]}"></div><div class="blbl" style="color:${cl[g]}">${g}</div>`;
+    bc.appendChild(c);
+  });
 }
 function rTX(){
-  if(!rekap.length){toast('Rekap kosong!');return;}const N='\n';
-  let t='REKAP — BENYAMIN BATAU LJK v6'+N+'='.repeat(38)+N;
+  if(!rekap.length){toast('Rekap kosong!');return;}
+  const N='\n';
+  let t='REKAP — BB LJK SCANNER v10'+N+'='.repeat(38)+N;
   rekap.forEach((r,i)=>t+=`${String(i+1).padStart(2)}  ${r.nama.padEnd(20)} ${(r.kelas||'').padEnd(8)} ${String(r.benar).padEnd(4)} ${String(r.nilai!==null?r.nilai:'—').padEnd(4)} ${r.grade||'—'}${N}`);
   dlT(t,`rekap_${Date.now()}.txt`);
 }
 function rPD(){
-  if(!rekap.length){toast('Rekap kosong!');return;}let rows='';
+  if(!rekap.length){toast('Rekap kosong!');return;}
+  let rows='';
   rekap.forEach((r,i)=>rows+=`<tr><td>${i+1}</td><td>${r.nama}</td><td>${r.kelas||'—'}</td><td>${r.absen||'—'}</td><td>${r.benar}/40</td><td>${r.nilai!==null?r.nilai:'—'}</td><td>${r.grade||'—'}</td></tr>`);
   const vs=rekap.filter(r=>r.nilai!==null).map(r=>r.nilai);
   const rata=vs.length?Math.round(vs.reduce((a,b)=>a+b)/vs.length):'—';
-  pop(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Rekap</title><style>body{font-family:Arial;padding:16px;font-size:11px}table{border-collapse:collapse;width:100%}th,td{border:1px solid #ccc;padding:4px 6px}th{background:#0d1117;color:#fff}</style></head><body onload="window.print()"><h2>REKAP — BENYAMIN BATAU LJK v6</h2><p>${new Date().toLocaleString('id-ID')}</p><table><thead><tr><th>#</th><th>Nama</th><th>Kelas</th><th>Absen</th><th>Benar</th><th>Nilai</th><th>Grade</th></tr></thead><tbody>${rows}</tbody></table><p>Total: ${rekap.length} | Rata-rata: ${rata}</p></body></html>`);
+  pop(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Rekap</title><style>body{font-family:Arial;padding:16px;font-size:11px}table{border-collapse:collapse;width:100%}th,td{border:1px solid #ccc;padding:4px 6px}th{background:#0d1117;color:#fff}</style></head><body onload="window.print()"><h2>REKAP — BB LJK SCANNER v10</h2><p>${new Date().toLocaleString('id-ID')}</p><table><thead><tr><th>#</th><th>Nama</th><th>Kelas</th><th>Absen</th><th>Benar</th><th>Nilai</th><th>Grade</th></tr></thead><tbody>${rows}</tbody></table><p>Total: ${rekap.length} | Rata-rata: ${rata}</p></body></html>`);
 }
-function rDl(){if(!confirm('Hapus semua rekap?'))return;rekap=[];try{localStorage.setItem('bb6_r','[]');}catch{}rnRk();upSt();toast('🗑 Dihapus');}
+function rDl(){
+  if(!confirm('Hapus semua rekap?'))return;
+  rekap=[];
+  try{localStorage.setItem('bb_r','[]');}catch{}
+  rnRk(); upSt(); toast('🗑 Dihapus');
+}
 
-// ═══ KUNCI ═══
+// ─── KUNCI JAWABAN ─────────────────────────────────────────────
 function bldK(){
-  const wrap=document.getElementById('kw');wrap.innerHTML='';
+  const wrap=document.getElementById('kw'); wrap.innerHTML='';
   for(let i=0;i<40;i++){
-    const cell=document.createElement('div');cell.className='kc';
-    const num=document.createElement('div');num.className='kn';num.textContent=i+1;
-    const sel=document.createElement('select');sel.className='ks';sel.id='ks'+i;
-    ['','A','B','C','D','E'].forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v||'—';sel.appendChild(o);});
-    sel.value=kunci[i]||'';if(kunci[i])sel.classList.add('isi');
-    sel.addEventListener('change',function(){kunci[i]=this.value;this.classList.toggle('isi',!!this.value);upKC();try{localStorage.setItem('bb6_k',JSON.stringify(kunci));}catch{};});
-    cell.appendChild(num);cell.appendChild(sel);wrap.appendChild(cell);
+    const cell=document.createElement('div'); cell.className='kc';
+    const num=document.createElement('div'); num.className='kn'; num.textContent=i+1;
+    const sel=document.createElement('select'); sel.className='ks'; sel.id='ks'+i;
+    ['','A','B','C','D','E'].forEach(v=>{
+      const o=document.createElement('option'); o.value=v; o.textContent=v||'—'; sel.appendChild(o);
+    });
+    sel.value=kunci[i]||'';
+    if(kunci[i])sel.classList.add('isi');
+    sel.addEventListener('change',function(){
+      kunci[i]=this.value;
+      this.classList.toggle('isi',!!this.value);
+      upKC();
+      try{localStorage.setItem('bb_k',JSON.stringify(kunci));}catch{}
+    });
+    cell.appendChild(num); cell.appendChild(sel); wrap.appendChild(cell);
   }
   upKC();
 }
 function upKC(){document.getElementById('kCt').textContent=kunci.filter(k=>!!k).length;}
-function kSv(){for(let i=0;i<40;i++){const el=document.getElementById('ks'+i);if(el)kunci[i]=el.value;}try{localStorage.setItem('bb6_k',JSON.stringify(kunci));}catch{}upKC();toast('✅ Tersimpan!');}
-function kCl(){kunci=new Array(40).fill('');for(let i=0;i<40;i++){const el=document.getElementById('ks'+i);if(el){el.value='';el.classList.remove('isi');}}try{localStorage.setItem('bb6_k',JSON.stringify(kunci));}catch{}upKC();toast('🗑 Dikosongkan');}
-function kIm(){const raw=prompt('Paste jawaban A–E (40):');if(!raw)return;const pts=raw.toUpperCase().match(/[A-E]/g)||[];if(!pts.length){alert('Tidak ada A–E');return;}kunci=new Array(40).fill('');pts.slice(0,40).forEach((v,i)=>kunci[i]=v);for(let i=0;i<40;i++){const el=document.getElementById('ks'+i);if(el){el.value=kunci[i];el.classList.toggle('isi',!!kunci[i]);}}try{localStorage.setItem('bb6_k',JSON.stringify(kunci));}catch{}upKC();toast('✅ '+Math.min(pts.length,40)+' diimport');}
+function kSv(){
+  for(let i=0;i<40;i++){const el=document.getElementById('ks'+i);if(el)kunci[i]=el.value;}
+  try{localStorage.setItem('bb_k',JSON.stringify(kunci));}catch{}
+  upKC(); toast('✅ Tersimpan!');
+}
+function kCl(){
+  kunci=new Array(40).fill('');
+  for(let i=0;i<40;i++){const el=document.getElementById('ks'+i);if(el){el.value='';el.classList.remove('isi');}}
+  try{localStorage.setItem('bb_k',JSON.stringify(kunci));}catch{}
+  upKC(); toast('🗑 Dikosongkan');
+}
+function kIm(){
+  const raw=prompt('Paste jawaban A–E (40 soal):');
+  if(!raw)return;
+  const pts=raw.toUpperCase().match(/[A-E]/g)||[];
+  if(!pts.length){alert('Tidak ada A–E');return;}
+  kunci=new Array(40).fill('');
+  pts.slice(0,40).forEach((v,i)=>kunci[i]=v);
+  for(let i=0;i<40;i++){
+    const el=document.getElementById('ks'+i);
+    if(el){el.value=kunci[i];el.classList.toggle('isi',!!kunci[i]);}
+  }
+  try{localStorage.setItem('bb_k',JSON.stringify(kunci));}catch{}
+  upKC(); toast('✅ '+Math.min(pts.length,40)+' diimport');
+}
 
-// ═══ UTILS ═══
-function clrSt(){document.getElementById('cvw').style.display='none';/* cvo dihapus - clear handled by adjSvg */bwM=false;roiOn=false;hasBB=false;const _bS2=document.getElementById('bS');if(_bS2)_bS2.disabled=true;}
-function doReset(){iD=null;iW=0;iH=0;clrSt();stopCam();document.getElementById('fi').value='';pb(-1);sb('','Upload LJK terlebih dahulu');resetAdj();adjModeOn=false;const bAdj=document.getElementById('bAdj');if(bAdj){bAdj.textContent='✋ Adjust';bAdj.style.background='';bAdj.style.color='';}}
-function dlT(txt,fname){const a=document.createElement('a');a.href='data:text/plain;charset=utf-8,'+encodeURIComponent(txt);a.download=fname;document.body.appendChild(a);a.click();document.body.removeChild(a);}
-function pop(html){const w=window.open('','_blank');if(w){w.document.write(html);w.document.close();}else toast('⚠️ Aktifkan popup');}
+// ─── UTILS ─────────────────────────────────────────────────────
+function dlT(txt,fname){
+  const a=document.createElement('a');
+  a.href='data:text/plain;charset=utf-8,'+encodeURIComponent(txt);
+  a.download=fname; document.body.appendChild(a); a.click(); document.body.removeChild(a);
+}
+function pop(html){
+  const w=window.open('','_blank');
+  if(w){w.document.write(html);w.document.close();}else toast('⚠️ Aktifkan popup');
+}
+
 </script>
 </body>
 </html>
