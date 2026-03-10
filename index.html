@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <meta name="theme-color" content="#0d1117">
-<title>LJK Scanner v8 - Benyamin Batau</title>
+<title>LJK Scanner v9 - Benyamin Batau</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{--bg:#0d1117;--bg2:#161b22;--bg3:#1c2330;--bd:#30363d;--tx1:#e6edf3;--tx2:#8b949e;--tx3:#484f58;--cy:#58a6ff;--gn:#3fb950;--ye:#d29922;--rd:#f85149;--am:#ffa657}
@@ -145,12 +145,26 @@ body{background:var(--bg);color:var(--tx1);font-family:system-ui,sans-serif;font
 .vmhint{font-size:10px;color:var(--tx3);text-align:center;
   background:var(--bg3);padding:7px 10px;border-radius:6px;line-height:1.5;margin:8px 0;}
 
+
+/* ─── TOUCHSCREEN ADJUST HANDLES ─── */
+#adjSvg circle { transition: r .1s; }
+#adjSvg circle:active { r: 5; opacity: 1 !important; }
+#hBub { filter: drop-shadow(0 0 3px #3fb950); }
+#hTL,#hTR,#hBL,#hBR { filter: drop-shadow(0 0 2px #58a6ff); }
+#hMV { filter: drop-shadow(0 0 3px #58a6ff44); }
+.roiCirc { pointer-events: none; }
+/* Pulsing hint saat adjust aktif */
+@keyframes adjPulse {
+  0%,100%{ stroke-opacity:.55 } 50%{ stroke-opacity:1 }
+}
+#adjRect { animation: adjPulse 2s ease-in-out infinite; }
+
 </style>
 </head>
 <body>
 <div class="hdr">
   <div class="hdr-l">📋 LJK <span>Bubble</span></div>
-  <div class="hdr-r">v8 · Benyamin Batau</div>
+  <div class="hdr-r">v9 · Benyamin Batau</div>
 </div>
 <div class="tabs">
   <div class="tab on" onclick="T(0)"><i>📷</i>SCAN</div>
@@ -213,22 +227,56 @@ body{background:var(--bg);color:var(--tx1);font-family:system-ui,sans-serif;font
         onclick="document.getElementById('fi').click()">📁 Upload File</button>
     </div>
   </div>
-  <div id="cvw"><canvas id="cvm"></canvas><canvas id="cvo"></canvas></div>
+  
+  <!-- PREVIEW + TOUCHSCREEN ADJUST -->
+  <div id="cvw" style="display:none;margin:6px 0">
+    <!-- Instruksi adjust -->
+    <div id="adjHint" style="display:none;background:#1c2330;border:1px solid #30363d;
+      border-radius:7px;padding:6px 10px;margin-bottom:5px;font-size:10px;color:#8b949e;
+      text-align:center;line-height:1.6">
+      <b style="color:#58a6ff">✋ Cara adjust touchscreen:</b><br>
+      🔵 Seret <b>sudut biru</b> → geser posisi LJK &nbsp;|&nbsp;
+      🟢 Seret <b>titik hijau</b> → ubah ukuran bubble
+    </div>
+    <!-- Container canvas: posisi relatif untuk overlay -->
+    <div style="position:relative;border-radius:10px;overflow:hidden;background:#000">
+      <canvas id="cvm" style="width:100%;display:block"></canvas>
+      <!-- Overlay SVG interaktif — touch/drag untuk adjust -->
+      <svg id="adjSvg" style="position:absolute;top:0;left:0;width:100%;height:100%;
+        touch-action:none;cursor:crosshair" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <!-- Box area LJK (4 sudut draggable) -->
+        <rect id="adjRect" x="5" y="5" width="90" height="90"
+          fill="none" stroke="#58a6ff" stroke-width=".6"
+          stroke-dasharray="3,1.5" rx=".5"/>
+        <!-- 4 handle sudut - drag untuk geser/resize margin -->
+        <circle id="hTL" cx="5"  cy="5"  r="3.5" fill="#58a6ff" opacity=".9" style="cursor:nwse-resize"/>
+        <circle id="hTR" cx="95" cy="5"  r="3.5" fill="#58a6ff" opacity=".9" style="cursor:nesw-resize"/>
+        <circle id="hBL" cx="5"  cy="95" r="3.5" fill="#58a6ff" opacity=".9" style="cursor:nesw-resize"/>
+        <circle id="hBR" cx="95" cy="95" r="3.5" fill="#58a6ff" opacity=".9" style="cursor:nwse-resize"/>
+        <!-- Handle tengah - drag untuk geser seluruh box -->
+        <circle id="hMV" cx="50" cy="50" r="5" fill="rgba(88,166,255,.25)"
+          stroke="#58a6ff" stroke-width=".5" style="cursor:move"/>
+        <!-- Handle ukuran bubble (radius) -->
+        <circle id="hBub" cx="50" cy="20" r="3" fill="#3fb950" opacity=".9"
+          style="cursor:ns-resize"/>
+        <text x="52" y="19" font-size="3.5" fill="#3fb950" opacity=".8">●</text>
+        <!-- Label -->
+        <text id="adjInfo" x="50" y="99" font-size="2.8" fill="#58a6ff"
+          text-anchor="middle" opacity=".7">Seret sudut biru untuk adjust</text>
+      </svg>
+    </div>
+    <!-- Tombol aksi: hanya Adjust toggle + Scan + Reset -->
+    <div style="display:flex;gap:6px;margin-top:6px">
+      <button class="btn btn-gh" id="bAdj" onclick="togAdj()" style="flex:1">✋ Adjust</button>
+      <button class="btn btn-cy" id="bS"   onclick="doScan()" disabled style="flex:2">⚡ Scan</button>
+      <button class="btn btn-gh" onclick="doReset()" style="flex:1">🔄 Reset</button>
+    </div>
+  </div>
+
   <div class="sbar" id="sb"><div class="sd"></div><span id="sbt">Upload LJK terlebih dahulu</span></div>
   <div class="pbw" id="pbw"><div class="pbi" id="pb" style="width:0%"></div></div>
-  <div id="pvp" style="display:none;margin-top:6px">
-    <div class="ibox" style="font-size:10px">🔵=terisi &nbsp;|&nbsp; 🟡=ambigus &nbsp;|&nbsp; —=kosong</div>
-    <div class="pvg" id="pvg"></div>
+<div class="pvg" id="pvg"></div>
     <div class="sm mt6" id="pvi"></div>
-  </div>
-  <div class="g3 mt10">
-    <button class="btn btn-gh" id="bR" onclick="togROI()" disabled>👁 ROI</button>
-    <button class="btn btn-gh" id="bP" onclick="doPrev()" disabled>🔍 Preview</button>
-    <button class="btn btn-cy" id="bS" onclick="doScan()" disabled>⚡ Scan</button>
-  </div>
-  <div class="g2 mt6">
-    <button class="btn btn-gh" id="bBW" onclick="togBW()" disabled>🔲 BW</button>
-    <button class="btn btn-gh" onclick="doReset()">🔄 Reset</button>
   </div>
 </div>
 
@@ -334,7 +382,7 @@ const KAL={md:10,ms:6,ox:0,oy:0,sx:1,sy:1};
 document.addEventListener('DOMContentLoaded',()=>{
   try{const s=localStorage.getItem('bb6_k');if(s)kunci=JSON.parse(s);}catch{}
   try{const s=localStorage.getItem('bb6_r');if(s)rekap=JSON.parse(s);}catch{}
-  bldK();rnRk();upSt();
+  bldK();rnRk();upSt();initAdjHandlers();syncSVG();
   const dz=document.getElementById('dz');
   dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag');});
   dz.addEventListener('dragleave',()=>dz.classList.remove('drag'));
@@ -354,6 +402,207 @@ function sb(c,m){document.getElementById('sb').className='sbar '+c;document.getE
 function pb(p){const w=document.getElementById('pbw');w.style.display=(p>=0&&p<100)?'block':'none';document.getElementById('pb').style.width=p+'%';}
 function sl(ms){return new Promise(r=>setTimeout(r,ms));}
 
+
+
+
+// ═══════════════════════════════════════════════════════
+// TOUCHSCREEN ADJUST SYSTEM
+// ── State adjust (dalam persen 0-100 relatif SVG viewBox)
+// ── Konversi ke koordinat piksel gambar saat scan
+// ═══════════════════════════════════════════════════════
+let ADJ = {
+  // Bounding box LJK dalam % (0-100)
+  x0:5, y0:5, x1:95, y1:95,
+  // Ukuran radius bubble (% dari lebar bounding box)
+  bubR: 1.637,
+  // Mode adjust aktif?
+  active: false
+};
+let adjDragging = null;  // handle yg sedang di-drag
+let adjModeOn   = false; // apakah mode adjust tampil
+
+// ── Toggle mode adjust ───────────────────────────────
+function togAdj(){
+  adjModeOn = !adjModeOn;
+  const svg = document.getElementById('adjSvg');
+  const hint= document.getElementById('adjHint');
+  const btn = document.getElementById('bAdj');
+  svg.style.display    = adjModeOn ? '' : 'none';
+  hint.style.display   = adjModeOn ? '' : 'none';
+  btn.textContent      = adjModeOn ? '✅ Selesai Adjust' : '✋ Adjust';
+  btn.style.background = adjModeOn ? 'var(--gn)' : '';
+  btn.style.color      = adjModeOn ? '#0d1117' : '';
+  if(adjModeOn) {
+    drawROI();  // gambar lingkaran bubble saat adjust aktif
+    toast('✋ Seret sudut biru / titik hijau untuk adjust');
+  } else {
+    drawROI();  // hapus lingkaran setelah selesai
+    toast('✅ Adjust disimpan');
+  }
+}
+
+// ── Gambar ROI (lingkaran bubble) di overlay canvas ─
+function drawROI(){
+  const ov  = document.getElementById('adjSvg');
+  // Hapus lingkaran lama
+  document.querySelectorAll('.roiCirc').forEach(el=>el.remove());
+  if(!iD || !adjModeOn) return;
+
+  const {x0,y0,x1,y1,bubR} = ADJ;
+  const bW = x1-x0, bH = y1-y0;
+  const rPct = bubR;  // radius dalam % viewBox
+
+  // Gambar semua 200 bubble (40 soal × 5 opsi)
+  for(let n=1;n<=40;n++){
+    const isL = n<=20;
+    const r   = (n-1)%20;
+    const relY= RY[r];
+    for(const op of 'ABCDE'){
+      const relX = isL ? CLX[op] : CRX[op];
+      const cx = x0 + relX*bW;
+      const cy = y0 + relY*bH;
+      const el = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      el.setAttribute('cx', cx.toFixed(2));
+      el.setAttribute('cy', cy.toFixed(2));
+      el.setAttribute('r',  rPct.toFixed(2));
+      el.setAttribute('fill','none');
+      el.setAttribute('stroke','rgba(88,166,255,.55)');
+      el.setAttribute('stroke-width','.35');
+      el.classList.add('roiCirc');
+      ov.insertBefore(el, document.getElementById('hTL'));
+    }
+  }
+}
+
+// ── Update posisi elemen SVG sesuai ADJ state ────────
+function syncSVG(){
+  const {x0,y0,x1,y1,bubR} = ADJ;
+  const mx=(x0+x1)/2, my=(y0+y1)/2;
+
+  // Rect
+  const rect=document.getElementById('adjRect');
+  rect.setAttribute('x', x0);
+  rect.setAttribute('y', y0);
+  rect.setAttribute('width',  x1-x0);
+  rect.setAttribute('height', y1-y0);
+  // Handles sudut
+  setH('hTL',x0,y0); setH('hTR',x1,y0);
+  setH('hBL',x0,y1); setH('hBR',x1,y1);
+  // Handle tengah (move)
+  setH('hMV',mx,my);
+  // Handle bubble (di atas tengah, jarak = bubR*3 dari top)
+  const bub_cy = y0 + (y1-y0)*RY[0] - bubR*3.5;
+  setH('hBub',(x0+x1)/2, Math.max(y0+2, bub_cy));
+  // Info text
+  const info=document.getElementById('adjInfo');
+  if(info){
+    info.setAttribute('x', mx);
+    info.setAttribute('y', Math.min(y1+3, 98));
+    info.textContent=`Box: ${(x1-x0).toFixed(1)}×${(y1-y0).toFixed(1)}% · Bubble: r${bubR.toFixed(2)}%`;
+  }
+  drawROI();
+}
+function setH(id,cx,cy){
+  const el=document.getElementById(id);
+  if(el){el.setAttribute('cx',cx.toFixed(2));el.setAttribute('cy',cy.toFixed(2));}
+}
+
+// ── Konversi koordinat touch/mouse ke % SVG ──────────
+function evtToSVG(e, svgEl){
+  const rect  = svgEl.getBoundingClientRect();
+  const touch = e.touches ? e.touches[0] : e;
+  return{
+    px: (touch.clientX - rect.left) / rect.width  * 100,
+    py: (touch.clientY - rect.top)  / rect.height * 100
+  };
+}
+
+// ── Setup drag handlers untuk semua handle ────────────
+function initAdjHandlers(){
+  const svg = document.getElementById('adjSvg');
+  const MIN = 15;  // minimum box size %
+
+  function onStart(e, handleId){
+    if(!adjModeOn) return;
+    e.preventDefault();
+    adjDragging = handleId;
+  }
+  function onMove(e){
+    if(!adjDragging || !adjModeOn) return;
+    e.preventDefault();
+    const {px,py} = evtToSVG(e, svg);
+    const {x0,y0,x1,y1} = ADJ;
+
+    if(adjDragging==='hTL'){
+      ADJ.x0 = Math.min(px, x1-MIN);
+      ADJ.y0 = Math.min(py, y1-MIN);
+    } else if(adjDragging==='hTR'){
+      ADJ.x1 = Math.max(px, x0+MIN);
+      ADJ.y0 = Math.min(py, y1-MIN);
+    } else if(adjDragging==='hBL'){
+      ADJ.x0 = Math.min(px, x1-MIN);
+      ADJ.y1 = Math.max(py, y0+MIN);
+    } else if(adjDragging==='hBR'){
+      ADJ.x1 = Math.max(px, x0+MIN);
+      ADJ.y1 = Math.max(py, y0+MIN);
+    } else if(adjDragging==='hMV'){
+      // Geser seluruh box
+      const dw=(x1-x0)/2, dh=(y1-y0)/2;
+      ADJ.x0 = Math.max(0, Math.min(px-dw, 100-2*dw));
+      ADJ.y0 = Math.max(0, Math.min(py-dh, 100-2*dh));
+      ADJ.x1 = ADJ.x0 + 2*dw;
+      ADJ.y1 = ADJ.y0 + 2*dh;
+    } else if(adjDragging==='hBub'){
+      // Naik = perkecil, turun = perbesar radius bubble
+      const center_y = (y0 + y1*RY[0]*1.0)/2;
+      const dist = (ADJ.y0 + (ADJ.y1-ADJ.y0)*RY[0]) - py;
+      ADJ.bubR = Math.max(0.5, Math.min(4.0, dist*0.18));
+    }
+    // Clamp
+    ADJ.x0=Math.max(0,ADJ.x0); ADJ.y0=Math.max(0,ADJ.y0);
+    ADJ.x1=Math.min(100,ADJ.x1); ADJ.y1=Math.min(100,ADJ.y1);
+    syncSVG();
+  }
+  function onEnd(){ adjDragging=null; }
+
+  // Mouse events
+  ['hTL','hTR','hBL','hBR','hMV','hBub'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(!el) return;
+    el.addEventListener('mousedown', e=>onStart(e,id));
+    el.addEventListener('touchstart', e=>onStart(e,id), {passive:false});
+  });
+  svg.addEventListener('mousemove',  onMove);
+  svg.addEventListener('touchmove',  onMove, {passive:false});
+  svg.addEventListener('mouseup',    onEnd);
+  svg.addEventListener('touchend',   onEnd);
+  svg.addEventListener('mouseleave', onEnd);
+}
+
+// ── Reset adjust ke default ──────────────────────────
+function resetAdj(){
+  ADJ = {x0:5,y0:5,x1:95,y1:95,bubR:1.637,active:false};
+  syncSVG();
+}
+
+// ── Override cPx: gunakan ADJ bukan KAL+bounding box ─
+function cPx(nomor, opsi){
+  const isL = (nomor<=20);
+  const relX = isL ? CLX[opsi] : CRX[opsi];
+  const relY = RY[(nomor-1)%20];
+  // Konversi ADJ (% 0-100) → piksel gambar asli
+  const px0 = ADJ.x0/100 * iW;
+  const py0 = ADJ.y0/100 * iH;
+  const pw  = (ADJ.x1-ADJ.x0)/100 * iW;
+  const ph  = (ADJ.y1-ADJ.y0)/100 * iH;
+  // Radius bubble: ADJ.bubR% dari lebar box
+  const r   = ADJ.bubR/100 * pw;
+  return {
+    cx: px0 + relX * pw,
+    cy: py0 + relY * ph,
+    r : r
+  };
+}
 
 
 // ═══ VALIDASI FORMAT LJK ═══
@@ -656,9 +905,23 @@ async function pipe(){
   
   // Valid: tampilkan modal info sebentar lalu lanjut
   sb('ok','✅ Format LJK valid ('+vRes.score+'/5) | '+iW+'×'+iH);
-  bwM=true;
-  document.getElementById('bBW').textContent='🎨 Asli';
-  ['bR','bP','bS','bBW'].forEach(id=>document.getElementById(id).disabled=false);
+
+  // ── Init ADJ dari bounding box yang terdeteksi ──
+  if(hasBB){
+    ADJ.x0 = bx0/iW*100; ADJ.y0 = by0/iH*100;
+    ADJ.x1 = bx1/iW*100; ADJ.y1 = by1/iH*100;
+  } else {
+    ADJ.x0=5; ADJ.y0=5; ADJ.x1=95; ADJ.y1=95;
+  }
+  ADJ.bubR = 1.637;
+  syncSVG();
+  // SVG overlay tersembunyi dulu, user bisa toggle
+  document.getElementById('adjSvg').style.display='none';
+  document.getElementById('adjHint').style.display='none';
+  adjModeOn=false;
+  const bAdj=document.getElementById('bAdj');
+  if(bAdj){bAdj.textContent='✋ Adjust';bAdj.style.background='';bAdj.style.color='';}
+  document.getElementById('bS').disabled=false;
   
   // Kalau skor 5 = langsung OK, skor 3-4 = tampilkan warning tapi boleh lanjut
   if(vRes.score<5){
@@ -686,15 +949,7 @@ function vld(d,W,H){
 function shM(msg){document.getElementById('mmsg').textContent=msg;document.getElementById('mod').classList.add('show');sb('err','❌ '+msg);}
 function closeM(){document.getElementById('mod').classList.remove('show');}
 
-// ═══ MAPPING KOORDINAT: relatif → piksel absolut di gambar asli ═══
-function cPx(nomor,opsi){
-  const isL=(nomor<=20);
-  const relX=isL?CLX[opsi]:CRX[opsi];
-  const relY=RY[(nomor-1)%20];
-  const bW=bx1-bx0,bH=by1-by0;
-  const sx=KAL.sx||1,sy=KAL.sy||1,ox=KAL.ox||0,oy=KAL.oy||0;
-  return{cx:bx0+relX*bW*sx+ox, cy:by0+relY*bH*sy+oy, r:BR*bW*sx};
-}
+// cPx: digantikan oleh TOUCHSCREEN ADJUST (lihat initAdjHandlers)
 
 // ═══ SCORE BUBBLE — satu metode, relative contrast ═══
 function gv(d,i){return .299*d[i]+.587*d[i+1]+.114*d[i+2];}
@@ -785,25 +1040,9 @@ function drBB(){
   ctx.strokeStyle='#58a6ff';ctx.lineWidth=Math.max(1.5,iW/400);ctx.setLineDash([6,3]);
   ctx.strokeRect(bx0,by0,bx1-bx0,by1-by0);ctx.setLineDash([]);
 }
-function togBW(){
-  if(!iD)return;bwM=!bwM;
-  const cv=document.getElementById('cvm'),ov=document.getElementById('cvo');
-  if(bwM){shBW();drBB();document.getElementById('bBW').textContent='🎨 Asli';}
   else{cv.getContext('2d').putImageData(iD,0,0);ov.getContext('2d').clearRect(0,0,ov.width,ov.height);drBB();document.getElementById('bBW').textContent='🔲 BW';}
 }
-function togROI(){
-  roiOn=!roiOn;
-  const ov=document.getElementById('cvo'),ctx=ov.getContext('2d');
-  ctx.clearRect(0,0,ov.width,ov.height);
-  document.getElementById('bR').textContent=roiOn?'🚫 ROI':'👁 ROI';
-  if(!roiOn){drBB();return;}
-  ctx.lineWidth=Math.max(.5,iW/700);
-  for(let n=1;n<=40;n++)for(const op of 'ABCDE'){
-    const{cx,cy,r}=cPx(n,op);
-    ctx.strokeStyle='rgba(88,166,255,.55)';
-    ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.stroke();
-  }
-}
+
 
 // ═══ RENDER HASIL ═══
 function rnHs(){
@@ -911,8 +1150,8 @@ function kCl(){kunci=new Array(40).fill('');for(let i=0;i<40;i++){const el=docum
 function kIm(){const raw=prompt('Paste jawaban A–E (40):');if(!raw)return;const pts=raw.toUpperCase().match(/[A-E]/g)||[];if(!pts.length){alert('Tidak ada A–E');return;}kunci=new Array(40).fill('');pts.slice(0,40).forEach((v,i)=>kunci[i]=v);for(let i=0;i<40;i++){const el=document.getElementById('ks'+i);if(el){el.value=kunci[i];el.classList.toggle('isi',!!kunci[i]);}}try{localStorage.setItem('bb6_k',JSON.stringify(kunci));}catch{}upKC();toast('✅ '+Math.min(pts.length,40)+' diimport');}
 
 // ═══ UTILS ═══
-function clrSt(){document.getElementById('cvw').style.display='none';document.getElementById('pvp').style.display='none';const ov=document.getElementById('cvo');if(ov.width)ov.getContext('2d').clearRect(0,0,ov.width,ov.height);bwM=false;roiOn=false;hasBB=false;['bR','bP','bS','bBW'].forEach(id=>document.getElementById(id).disabled=true);document.getElementById('bR').textContent='👁 ROI';document.getElementById('bBW').textContent='🔲 BW';}
-function doReset(){iD=null;iW=0;iH=0;clrSt();stopCam();document.getElementById('fi').value='';pb(-1);sb('','Upload LJK terlebih dahulu');}
+function clrSt(){document.getElementById('cvw').style.display='none';document.getElementById('pvp').style.display='none';const ov=document.getElementById('cvo');if(ov.width)ov.getContext('2d').clearRect(0,0,ov.width,ov.height);bwM=false;roiOn=false;hasBB=false;const _bS2=document.getElementById('bS');if(_bS2)_bS2.disabled=true;}
+function doReset(){iD=null;iW=0;iH=0;clrSt();stopCam();document.getElementById('fi').value='';pb(-1);sb('','Upload LJK terlebih dahulu');resetAdj();adjModeOn=false;const bAdj=document.getElementById('bAdj');if(bAdj){bAdj.textContent='✋ Adjust';bAdj.style.background='';bAdj.style.color='';}}
 function dlT(txt,fname){const a=document.createElement('a');a.href='data:text/plain;charset=utf-8,'+encodeURIComponent(txt);a.download=fname;document.body.appendChild(a);a.click();document.body.removeChild(a);}
 function pop(html){const w=window.open('','_blank');if(w){w.document.write(html);w.document.close();}else toast('⚠️ Aktifkan popup');}
 </script>
