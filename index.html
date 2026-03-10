@@ -123,6 +123,14 @@ body{background:var(--bg);color:var(--tx1);font-family:system-ui,sans-serif;font
 .vck:last-child{border:none}
 .vscore{text-align:center;font-weight:700;font-size:13px;color:var(--cy);margin:6px 0}
 .vhint{font-size:10px;color:var(--tx3);background:var(--bg3);padding:7px;border-radius:6px;text-align:center;margin:6px 0}
+
+/* ─── TOUCHSCREEN TRANSFORM ADJUST ─── */
+#adjWrap { cursor: grab; }
+#adjWrap.dragging { cursor: grabbing; }
+#cvAdj { image-rendering: auto; }
+#cvRoi { image-rendering: auto; }
+#adjResetBar { display: none; }
+#adjResetBar.show { display: flex !important; }
 </style>
 </head>
 <body>
@@ -189,31 +197,34 @@ body{background:var(--bg);color:var(--tx1);font-family:system-ui,sans-serif;font
   </div>
   <!-- PREVIEW + TOUCHSCREEN ADJUST -->
   <div id="cvw" style="display:none;margin:6px 0">
-    <div id="adjHint" style="display:none;background:var(--bg3);border:1px solid var(--bd);
-      border-radius:7px;padding:7px 10px;margin-bottom:5px;font-size:10px;color:var(--tx2);text-align:center;line-height:1.7">
-      🔵 Seret <b style="color:var(--cy)">sudut</b> = geser margin &nbsp;·&nbsp;
-      ✛ <b style="color:var(--cy)">tengah</b> = pindah box &nbsp;·&nbsp;
-      🟢 <b style="color:var(--gn)">atas</b> = ukuran bubble
+    <!-- Hint adjust -->
+    <div id="adjHint" style="display:none;background:var(--bg3);border:1px solid var(--gn);
+      border-radius:7px;padding:7px 10px;margin-bottom:5px;font-size:10px;color:var(--tx2);
+      text-align:center;line-height:1.8">
+      <b style="color:#00ff99">Mode Adjust Aktif</b><br>
+      ✋ <b>1 jari</b> = geser foto &nbsp;·&nbsp;
+      🤏 <b>2 jari</b> = zoom &amp; putar &nbsp;·&nbsp;
+      🔄 ketuk <b>Reset</b> jika perlu
     </div>
-    <div style="position:relative;border-radius:10px;overflow:hidden;background:#000">
-      <canvas id="cvm" style="width:100%;display:block"></canvas>
-      <svg id="adjSvg" style="position:absolute;top:0;left:0;width:100%;height:100%;display:none;touch-action:none"
-           viewBox="0 0 100 100" preserveAspectRatio="none">
-        <rect id="adjRect" x="5" y="5" width="90" height="90"
-          fill="none" stroke="#58a6ff" stroke-width=".5" stroke-dasharray="3,1.5"/>
-        <!-- Sudut: drag = resize margin -->
-        <circle id="hTL" cx="5"  cy="5"  r="3" fill="#58a6ff"/>
-        <circle id="hTR" cx="95" cy="5"  r="3" fill="#58a6ff"/>
-        <circle id="hBL" cx="5"  cy="95" r="3" fill="#58a6ff"/>
-        <circle id="hBR" cx="95" cy="95" r="3" fill="#58a6ff"/>
-        <!-- Tengah: drag = geser seluruh box -->
-        <circle id="hMV" cx="50" cy="50" r="4" fill="rgba(88,166,255,.3)" stroke="#58a6ff" stroke-width=".5"/>
-        <!-- Atas tengah: drag naik/turun = ubah radius bubble -->
-        <circle id="hBub" cx="50" cy="18" r="2.5" fill="#3fb950"/>
-        <!-- Info teks -->
-        <text id="adjInfo" x="50" y="98.5" font-size="2.5" fill="#58a6ff"
-          text-anchor="middle" opacity=".8">Seret handle untuk adjust</text>
-      </svg>
+    <!-- Container canvas: posisi relative, overflow hidden -->
+    <div id="adjWrap" style="position:relative;border-radius:10px;
+      overflow:hidden;background:#111;touch-action:none;user-select:none">
+      <!-- Canvas foto asli (background, tidak berubah) -->
+      <canvas id="cvm" style="width:100%;display:block;opacity:1"></canvas>
+      <!-- Canvas overlay: gambar foto yang sudah di-transform -->
+      <canvas id="cvAdj" style="position:absolute;top:0;left:0;
+        width:100%;height:100%;display:none"></canvas>
+      <!-- Canvas grid bubble overlay -->
+      <canvas id="cvRoi" style="position:absolute;top:0;left:0;
+        width:100%;height:100%;pointer-events:none;display:none"></canvas>
+    </div>
+    <!-- Info transform -->
+    <div id="adjInfo" style="font-size:10px;color:var(--tx3);text-align:center;
+      margin:4px 0;display:none">
+      X: <span id="infoTx">0</span> &nbsp;
+      Y: <span id="infoTy">0</span> &nbsp;
+      Zoom: <span id="infoSc">1.00</span>× &nbsp;
+      Putar: <span id="infoRot">0</span>°
     </div>
   </div>
   <div class="sbar" id="sb"><div class="sd"></div><span id="sbt">Upload LJK terlebih dahulu</span></div>
@@ -222,6 +233,12 @@ body{background:var(--bg);color:var(--tx1);font-family:system-ui,sans-serif;font
     <button class="btn btn-gh" id="bAdj" onclick="togAdj()" disabled style="flex:1">✋ Adjust</button>
     <button class="btn btn-cy" id="bS"   onclick="doScan()" disabled style="flex:2">⚡ Scan</button>
     <button class="btn btn-gh" onclick="doReset()" style="flex:1">🔄 Reset</button>
+  </div>
+  <div id="adjResetBar" style="display:none;gap:6px;margin-top:4px;flex-wrap:wrap">
+    <button class="btn btn-gh" onclick="adjResetTransform()" style="flex:1;font-size:11px">↺ Reset Posisi</button>
+    <button class="btn btn-gh" onclick="adjRotate(-1)" style="flex:1;font-size:11px">↺ -1°</button>
+    <button class="btn btn-gh" onclick="adjRotate(1)"  style="flex:1;font-size:11px">↻ +1°</button>
+    <button class="btn btn-gh" onclick="adjRotate(-90)" style="flex:1;font-size:11px">↺ 90°</button>
   </div>
 </div>
 
@@ -303,10 +320,298 @@ let last=null;
 let kunci=new Array(40).fill('');
 let rekap=[];
 
-// ─── ADJUST STATE (touchscreen) ────────────────────────────────
-let ADJ={x0:5,y0:5,x1:95,y1:95,bubR:1.637};
-let adjMode=false;
-let adjDrag=null;
+// ═══════════════════════════════════════════════════════════════
+// TOUCHSCREEN TRANSFORM ADJUST
+// Sistem: foto bisa di-drag (1 jari), pinch-zoom & rotate (2 jari)
+// Canvas cvAdj menggambar foto dengan transform
+// Canvas cvRoi menggambar grid bubble di atas foto
+// cPx() memakai inverse transform untuk koordinat scan
+// ═══════════════════════════════════════════════════════════════
+
+// Transform state
+let TR = { tx:0, ty:0, scale:1, angle:0 };  // tx,ty = pixel di canvas display
+let adjMode = false;
+let adjDrag = null;
+
+// Touch tracking
+let _t1=null, _t2=null;         // touch points
+let _startTR = null;            // TR saat gesture mulai
+let _startMid = null;           // titik tengah 2 jari saat mulai
+let _startDist = null;          // jarak 2 jari saat mulai
+let _startAngle = null;         // sudut 2 jari saat mulai
+
+// ── Init adjWrap touch/mouse handlers ─────────────────────────
+function initAdj(){
+  const wrap = document.getElementById('adjWrap');
+  if(!wrap) return;
+
+  // === MOUSE ===
+  wrap.addEventListener('mousedown', e=>{
+    if(!adjMode) return;
+    e.preventDefault();
+    wrap.classList.add('dragging');
+    adjDrag = {sx: e.clientX - TR.tx, sy: e.clientY - TR.ty};
+  });
+  wrap.addEventListener('mousemove', e=>{
+    if(!adjDrag||!adjMode) return;
+    e.preventDefault();
+    TR.tx = e.clientX - adjDrag.sx;
+    TR.ty = e.clientY - adjDrag.sy;
+    renderAdj();
+  });
+  wrap.addEventListener('mouseup',   ()=>{ adjDrag=null; wrap.classList.remove('dragging'); });
+  wrap.addEventListener('mouseleave',()=>{ adjDrag=null; wrap.classList.remove('dragging'); });
+  // Scroll wheel = zoom
+  wrap.addEventListener('wheel', e=>{
+    if(!adjMode) return;
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? 0.9 : 1.1;
+    TR.scale = Math.max(0.2, Math.min(5, TR.scale * delta));
+    renderAdj();
+  }, {passive:false});
+
+  // === TOUCH ===
+  wrap.addEventListener('touchstart', e=>{
+    if(!adjMode) return;
+    e.preventDefault();
+    const touches = e.touches;
+    if(touches.length === 1){
+      // 1 jari = drag
+      _t1 = {x: touches[0].clientX, y: touches[0].clientY};
+      _t2 = null;
+      _startTR = {...TR};
+    } else if(touches.length >= 2){
+      // 2 jari = pinch zoom + rotate
+      _t1 = {x: touches[0].clientX, y: touches[0].clientY};
+      _t2 = {x: touches[1].clientX, y: touches[1].clientY};
+      _startTR = {...TR};
+      _startMid  = midpoint(_t1, _t2);
+      _startDist = dist(_t1, _t2);
+      _startAngle= angle(_t1, _t2);
+    }
+  }, {passive:false});
+
+  wrap.addEventListener('touchmove', e=>{
+    if(!adjMode) return;
+    e.preventDefault();
+    const touches = e.touches;
+    if(touches.length === 1 && _t2===null){
+      // Drag 1 jari
+      const dx = touches[0].clientX - _t1.x;
+      const dy = touches[0].clientY - _t1.y;
+      TR.tx = _startTR.tx + dx;
+      TR.ty = _startTR.ty + dy;
+    } else if(touches.length >= 2){
+      // Pinch zoom + rotate 2 jari
+      const cur1 = {x: touches[0].clientX, y: touches[0].clientY};
+      const cur2 = {x: touches[1].clientX, y: touches[1].clientY};
+      const curMid   = midpoint(cur1, cur2);
+      const curDist  = dist(cur1, cur2);
+      const curAngle = angle(cur1, cur2);
+      // Scale
+      if(_startDist > 0)
+        TR.scale = Math.max(0.15, Math.min(6, _startTR.scale * (curDist / _startDist)));
+      // Rotate
+      TR.angle = _startTR.angle + (curAngle - _startAngle);
+      // Pan (tengah pinch)
+      TR.tx = _startTR.tx + (curMid.x - _startMid.x);
+      TR.ty = _startTR.ty + (curMid.y - _startMid.y);
+    }
+    renderAdj();
+    updateInfo();
+  }, {passive:false});
+
+  wrap.addEventListener('touchend', e=>{
+    if(e.touches.length < 2){ _t2=null; _startDist=null; }
+    if(e.touches.length === 0){ _t1=null; _startTR=null; }
+  });
+}
+
+// ── Helper geometri ───────────────────────────────────────────
+function midpoint(a,b){ return {x:(a.x+b.x)/2, y:(a.y+b.y)/2}; }
+function dist(a,b){ return Math.sqrt((a.x-b.x)**2+(a.y-b.y)**2); }
+function angle(a,b){ return Math.atan2(b.y-a.y, b.x-a.x) * 180/Math.PI; }
+
+// ── Toggle mode adjust ────────────────────────────────────────
+function togAdj(){
+  adjMode = !adjMode;
+  const wrap = document.getElementById('adjWrap');
+  const hint = document.getElementById('adjHint');
+  const info = document.getElementById('adjInfo');
+  const bar  = document.getElementById('adjResetBar');
+  const btn  = document.getElementById('bAdj');
+  const cvAdj= document.getElementById('cvAdj');
+  const cvRoi= document.getElementById('cvRoi');
+
+  if(adjMode){
+    // Aktifkan
+    hint.style.display='block';
+    info.style.display='block';
+    bar.classList.add('show');
+    btn.textContent='✅ Selesai Adjust';
+    btn.style.background='var(--gn)';
+    btn.style.color='#0d1117';
+    cvAdj.style.display='block';
+    cvRoi.style.display='block';
+    // Sembunyikan canvas asli, tampilkan canvas transform
+    document.getElementById('cvm').style.opacity='0';
+    renderAdj();
+    toast('✋ 1 jari=geser · 2 jari=zoom+putar · ↺ untuk rotasi presisi');
+  } else {
+    // Selesai adjust
+    hint.style.display='none';
+    info.style.display='none';
+    bar.classList.remove('show');
+    btn.textContent='✋ Adjust';
+    btn.style.background='';
+    btn.style.color='';
+    // Bake transform ke iD (render ke canvas, baca pixel baru)
+    bakeTransform();
+    cvAdj.style.display='none';
+    cvRoi.style.display='none';
+    document.getElementById('cvm').style.opacity='1';
+    toast('✅ Posisi disimpan — siap scan');
+  }
+}
+
+// ── Render foto dengan transform ke cvAdj + grid ke cvRoi ────
+function renderAdj(){
+  if(!iD) return;
+  const wrap  = document.getElementById('adjWrap');
+  const cvAdj = document.getElementById('cvAdj');
+  const cvRoi = document.getElementById('cvRoi');
+  const W = wrap.clientWidth;
+  const H = wrap.clientHeight || Math.round(W * iH/iW);
+  // Set ukuran canvas display sesuai container
+  cvAdj.width = W; cvAdj.height = H;
+  cvRoi.width = W; cvRoi.height = H;
+
+  // ─ Gambar foto dengan transform ─
+  const ctx = cvAdj.getContext('2d');
+  ctx.clearRect(0,0,W,H);
+  ctx.save();
+  // Pivot di tengah canvas
+  ctx.translate(W/2 + TR.tx, H/2 + TR.ty);
+  ctx.rotate(TR.angle * Math.PI/180);
+  ctx.scale(TR.scale, TR.scale);
+  // Gambar foto asli dari iD ke temporary canvas, lalu ke cvAdj
+  const tmp = document.createElement('canvas');
+  tmp.width=iW; tmp.height=iH;
+  tmp.getContext('2d').putImageData(iD,0,0);
+  ctx.drawImage(tmp, -iW/2, -iH/2);
+  ctx.restore();
+
+  // ─ Gambar grid bubble ─
+  const rctx = cvRoi.getContext('2d');
+  rctx.clearRect(0,0,W,H);
+  rctx.save();
+  rctx.translate(W/2 + TR.tx, H/2 + TR.ty);
+  rctx.rotate(TR.angle * Math.PI/180);
+  rctx.scale(TR.scale, TR.scale);
+
+  // Radius bubble dalam pixel gambar asli
+  const bubR_px = BR * iW;
+
+  rctx.strokeStyle = 'rgba(0,255,153,0.75)';
+  rctx.lineWidth   = 1.5 / TR.scale;
+
+  for(let n=1;n<=40;n++){
+    const isL=n<=20, r=(n-1)%20;
+    const relY=RY[r];
+    for(const op of 'ABCDE'){
+      const relX = isL ? CLX[op] : CRX[op];
+      const cx = -iW/2 + relX*iW;
+      const cy = -iH/2 + relY*iH;
+      rctx.beginPath();
+      rctx.arc(cx, cy, bubR_px, 0, Math.PI*2);
+      rctx.stroke();
+    }
+  }
+  rctx.restore();
+
+  updateInfo();
+}
+
+// ── Bake: terapkan transform ke iD sehingga scan pakai gambar baru ─
+function bakeTransform(){
+  if(!iD) return;
+  const wrap  = document.getElementById('adjWrap');
+  const W = wrap.clientWidth;
+  const H = wrap.clientHeight || Math.round(W * iH/iW);
+
+  // Render ke canvas sementara dgn transform
+  const tmp = document.createElement('canvas');
+  tmp.width=iW; tmp.height=iH;
+  const ctx = tmp.getContext('2d');
+
+  // Pivot sama tapi koordinat dikembalikan ke ukuran iW×iH
+  // Scale factor antara display dan gambar asli
+  const dispScale = W / iW;  // berapa pixel display per pixel gambar
+
+  ctx.clearRect(0,0,iW,iH);
+  ctx.save();
+  ctx.translate(iW/2 + TR.tx/dispScale, iH/2 + TR.ty/dispScale);
+  ctx.rotate(TR.angle * Math.PI/180);
+  ctx.scale(TR.scale, TR.scale);
+
+  const src = document.createElement('canvas');
+  src.width=iW; src.height=iH;
+  src.getContext('2d').putImageData(iD,0,0);
+  ctx.drawImage(src, -iW/2, -iH/2);
+  ctx.restore();
+
+  // Baca imageData baru
+  iD = tmp.getContext('2d').getImageData(0,0,iW,iH);
+
+  // Tampilkan di canvas utama (grayscale)
+  shBW(iD, iW, iH);
+
+  // Reset transform (sudah di-bake)
+  TR = {tx:0, ty:0, scale:1, angle:0};
+}
+
+// ── Reset transform ke default ────────────────────────────────
+function adjResetTransform(){
+  TR = {tx:0, ty:0, scale:1, angle:0};
+  renderAdj();
+  toast('↺ Posisi direset');
+}
+
+// ── Rotasi presisi ±1° atau ±90° via tombol ───────────────────
+function adjRotate(deg){
+  TR.angle += deg;
+  renderAdj();
+  toast(`Rotasi: ${TR.angle.toFixed(1)}°`);
+}
+
+// ── Update info display ───────────────────────────────────────
+function updateInfo(){
+  const f = v => (typeof v==='number') ? v.toFixed(1) : v;
+  const el = id => document.getElementById(id);
+  if(el('infoTx'))  el('infoTx').textContent  = f(TR.tx);
+  if(el('infoTy'))  el('infoTy').textContent  = f(TR.ty);
+  if(el('infoSc'))  el('infoSc').textContent  = TR.scale.toFixed(2);
+  if(el('infoRot')) el('infoRot').textContent = TR.angle.toFixed(1);
+}
+
+// ── Override cPx: pakai koordinat gambar asli (sudah di-bake) ─
+// Tidak perlu transform di sini karena bakeTransform() sudah
+// mengubah iD sesuai posisi baru — koordinat tetap pakai BBX auto
+function cPx(nomor,opsi){
+  const isL=nomor<=20;
+  const relX=isL?CLX[opsi]:CRX[opsi];
+  const relY=RY[(nomor-1)%20];
+  // Gunakan bounding box dari deteksi awal (bx0,bx1,by0,by1)
+  // Atau full image kalau hasBB=false
+  const px0 = hasBB ? bx0 : 0;
+  const py0 = hasBB ? by0 : 0;
+  const pw  = hasBB ? (bx1-bx0) : iW;
+  const ph  = hasBB ? (by1-by0) : iH;
+  const r   = BR * pw;
+  return { cx: px0+relX*pw, cy: py0+relY*ph, r };
+}
+
+
 
 // ─── KAMERA ────────────────────────────────────────────────────
 let camStream=null;
@@ -475,11 +780,6 @@ async function pipe(){
     showVM(vr,null); return;
   }
 
-  // Init ADJ dari bounding box
-  ADJ.x0=bx0/iW*100; ADJ.y0=by0/iH*100;
-  ADJ.x1=bx1/iW*100; ADJ.y1=by1/iH*100;
-  ADJ.bubR=1.637;
-
   // Grayscale + tampilkan
   shBW(iD,iW,iH);
   syncAdj();
@@ -574,129 +874,7 @@ function closeVM(proceed){
 }
 
 // ─── TOUCHSCREEN ADJUST ────────────────────────────────────────
-function initAdj(){
-  const svg=document.getElementById('adjSvg');
-  if(!svg)return;
-  const MIN=15;
-  function start(e,id){
-    if(!adjMode)return;
-    e.preventDefault(); adjDrag=id;
-  }
-  function move(e){
-    if(!adjDrag||!adjMode)return;
-    e.preventDefault();
-    const rc=svg.getBoundingClientRect();
-    const t=e.touches?e.touches[0]:e;
-    const px=(t.clientX-rc.left)/rc.width*100;
-    const py=(t.clientY-rc.top)/rc.height*100;
-    const {x0,y0,x1,y1}=ADJ;
-    if(adjDrag==='hTL'){ADJ.x0=Math.min(px,x1-MIN);ADJ.y0=Math.min(py,y1-MIN);}
-    else if(adjDrag==='hTR'){ADJ.x1=Math.max(px,x0+MIN);ADJ.y0=Math.min(py,y1-MIN);}
-    else if(adjDrag==='hBL'){ADJ.x0=Math.min(px,x1-MIN);ADJ.y1=Math.max(py,y0+MIN);}
-    else if(adjDrag==='hBR'){ADJ.x1=Math.max(px,x0+MIN);ADJ.y1=Math.max(py,y0+MIN);}
-    else if(adjDrag==='hMV'){
-      const hw=(x1-x0)/2,hh=(y1-y0)/2;
-      ADJ.x0=Math.max(0,Math.min(px-hw,100-2*hw));
-      ADJ.y0=Math.max(0,Math.min(py-hh,100-2*hh));
-      ADJ.x1=ADJ.x0+2*hw; ADJ.y1=ADJ.y0+2*hh;
-    }
-    else if(adjDrag==='hBub'){
-      const rowY=ADJ.y0+(ADJ.y1-ADJ.y0)*RY[0];
-      ADJ.bubR=Math.max(0.5,Math.min(4.5,(rowY-py)*0.18));
-    }
-    ADJ.x0=Math.max(0,ADJ.x0); ADJ.y0=Math.max(0,ADJ.y0);
-    ADJ.x1=Math.min(100,ADJ.x1); ADJ.y1=Math.min(100,ADJ.y1);
-    syncAdj();
-  }
-  function end(){adjDrag=null;}
-  ['hTL','hTR','hBL','hBR','hMV','hBub'].forEach(id=>{
-    const el=document.getElementById(id);
-    if(!el)return;
-    el.addEventListener('mousedown',e=>start(e,id));
-    el.addEventListener('touchstart',e=>start(e,id),{passive:false});
-  });
-  svg.addEventListener('mousemove',move);
-  svg.addEventListener('touchmove',move,{passive:false});
-  svg.addEventListener('mouseup',end);
-  svg.addEventListener('touchend',end);
-  svg.addEventListener('mouseleave',end);
-}
-
-function togAdj(){
-  adjMode=!adjMode;
-  const svg=document.getElementById('adjSvg');
-  const hint=document.getElementById('adjHint');
-  const btn=document.getElementById('bAdj');
-  svg.style.display=adjMode?'':'none';
-  hint.style.display=adjMode?'':'none';
-  btn.textContent=adjMode?'✅ Selesai':'✋ Adjust';
-  btn.style.background=adjMode?'var(--gn)':'';
-  btn.style.color=adjMode?'#0d1117':'';
-  if(adjMode){syncAdj();toast('✋ Seret handle untuk adjust posisi & ukuran bubble');}
-  else toast('✅ Adjust disimpan');
-}
-
-function syncAdj(){
-  const {x0,y0,x1,y1,bubR}=ADJ;
-  const mx=(x0+x1)/2,my=(y0+y1)/2;
-  const bW=x1-x0,bH=y1-y0;
-  // Rect
-  const rect=document.getElementById('adjRect');
-  rect.setAttribute('x',x0);rect.setAttribute('y',y0);
-  rect.setAttribute('width',bW);rect.setAttribute('height',bH);
-  // Sudut
-  sh('hTL',x0,y0);sh('hTR',x1,y0);sh('hBL',x0,y1);sh('hBR',x1,y1);
-  sh('hMV',mx,my);
-  // Bubble handle (di atas baris pertama)
-  const bubY=y0+bH*RY[0]-bubR*3;
-  sh('hBub',mx,Math.max(y0+3,bubY));
-  // Info
-  const info=document.getElementById('adjInfo');
-  if(info){
-    info.setAttribute('x',mx);
-    info.setAttribute('y',Math.min(y1+3.5,99));
-    info.textContent=`Box ${bW.toFixed(1)}×${bH.toFixed(1)}% · Bubble r${bubR.toFixed(2)}%`;
-  }
-  // Gambar lingkaran bubble jika adjMode aktif
-  drawRoi();
-}
 function sh(id,cx,cy){const el=document.getElementById(id);if(el){el.setAttribute('cx',cx.toFixed(2));el.setAttribute('cy',cy.toFixed(2));}}
-
-function drawRoi(){
-  const svg=document.getElementById('adjSvg');
-  document.querySelectorAll('.adjRoi').forEach(el=>el.remove());
-  if(!adjMode||!iD)return;
-  const {x0,y0,x1,y1,bubR}=ADJ;
-  const bW=x1-x0,bH=y1-y0;
-  for(let n=1;n<=40;n++){
-    const isL=n<=20,r=(n-1)%20;
-    const relY=RY[r];
-    for(const op of 'ABCDE'){
-      const relX=isL?CLX[op]:CRX[op];
-      const cx=x0+relX*bW, cy=y0+relY*bH;
-      const el=document.createElementNS('http://www.w3.org/2000/svg','circle');
-      el.setAttribute('cx',cx.toFixed(2));
-      el.setAttribute('cy',cy.toFixed(2));
-      el.setAttribute('r',bubR.toFixed(2));
-      el.setAttribute('fill','none');
-      el.setAttribute('stroke','rgba(88,166,255,.6)');
-      el.setAttribute('stroke-width','.3');
-      el.classList.add('adjRoi');
-      svg.insertBefore(el,document.getElementById('hTL'));
-    }
-  }
-}
-
-// ─── KOORDINAT BUBBLE (pakai ADJ) ──────────────────────────────
-function cPx(nomor,opsi){
-  const isL=nomor<=20;
-  const relX=isL?CLX[opsi]:CRX[opsi];
-  const relY=RY[(nomor-1)%20];
-  const px0=ADJ.x0/100*iW, py0=ADJ.y0/100*iH;
-  const pw=(ADJ.x1-ADJ.x0)/100*iW, ph=(ADJ.y1-ADJ.y0)/100*iH;
-  const r=ADJ.bubR/100*pw;
-  return{cx:px0+relX*pw, cy:py0+relY*ph, r};
-}
 
 // ─── SCAN BUBBLE ───────────────────────────────────────────────
 function gv(d,i){return .299*d[i]+.587*d[i+1]+.114*d[i+2];}
@@ -775,8 +953,6 @@ function clrSt(){
   hasBB=false; iD=null; iW=0; iH=0;
   // Matikan adjust
   adjMode=false;
-  const svg=document.getElementById('adjSvg');
-  if(svg)svg.style.display='none';
   document.getElementById('adjHint').style.display='none';
   const bAdj=document.getElementById('bAdj');
   if(bAdj){bAdj.textContent='✋ Adjust';bAdj.style.background='';bAdj.style.color='';bAdj.disabled=true;}
@@ -786,7 +962,6 @@ function doReset(){
   clrSt(); stopCam();
   document.getElementById('fi').value='';
   pb(-1); sb('','Upload LJK terlebih dahulu');
-  ADJ={x0:5,y0:5,x1:95,y1:95,bubR:1.637};
 }
 
 // ─── RENDER HASIL ──────────────────────────────────────────────
