@@ -3,1529 +3,584 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<meta name="theme-color" content="#050b18">
-<title>LJK Scanner v5 — Benyamin Batau</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#0d1117">
+<title>LJK Scanner Bubble - BB</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-:root{
-  --bg:#060c1a;--bg2:#0d1528;--bg3:#111d35;
-  --card:#0f1e38;--card2:#152444;
-  --bdr:#1e3a6e;--bdr2:#2a4f8f;
-  --cy:#00e5ff;--cy2:#00b8d9;--cy3:#80deea;
-  --gn:#00ff9d;--gn2:#00cc7a;
-  --am:#ffab00;--am2:#ff8f00;
-  --rd:#ff3d5a;--rd2:#cc2244;
-  --tx:#e8f4ff;--tx2:#8ab0d4;--tx3:#4a6d94;
-  --pv:#0f3460;--pv2:#1a4f8a;
-}
-html,body{width:100%;min-height:100vh;background:var(--bg);color:var(--tx);font-family:'Exo 2',sans-serif;overflow-x:hidden}
-body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,229,255,.012) 2px,rgba(0,229,255,.012) 4px);pointer-events:none;z-index:0}
-.hdr{position:sticky;top:0;z-index:200;background:linear-gradient(135deg,#060c1a,#0a1628);border-bottom:1px solid var(--bdr);padding:8px 14px;display:flex;align-items:center;gap:10px}
-.hdr-logo{width:34px;height:34px;border-radius:7px;background:linear-gradient(135deg,var(--pv),var(--cy2));display:grid;place-items:center;flex-shrink:0;font-size:20px}
-.hdr-info{flex:1;min-width:0}
-.hdr-info h1{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;color:var(--cy);letter-spacing:.7px}
-.hdr-info p{font-size:9px;color:var(--tx3);font-family:'Share Tech Mono',monospace;margin-top:1px}
-.badge{background:var(--pv);border:1px solid var(--bdr2);border-radius:20px;padding:2px 9px;font-size:9px;color:var(--cy3);font-family:'Share Tech Mono',monospace}
-.tabs{display:flex;background:var(--bg2);border-bottom:1px solid var(--bdr);position:sticky;top:51px;z-index:190;overflow-x:auto;scrollbar-width:none}
-.tabs::-webkit-scrollbar{display:none}
-.tab{flex:1;min-width:52px;padding:8px 2px 6px;text-align:center;cursor:pointer;font-size:9px;font-family:'Rajdhani',sans-serif;font-weight:700;letter-spacing:.3px;color:var(--tx3);border-bottom:2px solid transparent;transition:all .2s;user-select:none}
-.tab.on{color:var(--cy);border-bottom-color:var(--cy)}
-.tab i{display:block;font-size:16px;margin-bottom:2px;font-style:normal}
-.pg{display:none;padding:14px;max-width:500px;margin:0 auto;position:relative;z-index:1}
-.pg.on{display:block}
-.card{background:var(--card);border:1px solid var(--bdr);border-radius:8px;padding:13px;margin-bottom:11px}
-.ctitle{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;color:var(--cy3);letter-spacing:.5px;margin-bottom:10px;display:flex;align-items:center;gap:6px}
-.ctitle::before{content:'';width:3px;height:13px;background:var(--cy);border-radius:2px;flex-shrink:0}
-.fi{background:var(--bg3);border:1px solid var(--bdr);border-radius:4px;color:var(--tx);font-family:'Exo 2',sans-serif;font-size:13px;padding:8px 10px;width:100%;outline:none;transition:border .2s}
-.fi:focus{border-color:var(--cy2)}
-.sf{background:var(--bg3);border:1px solid var(--bdr);border-radius:4px;color:var(--tx);font-family:'Exo 2',sans-serif;font-size:13px;padding:8px 10px;width:100%;outline:none;cursor:pointer}
-.lbl{font-size:11px;color:var(--tx2);display:block;margin-bottom:3px;margin-top:8px;font-family:'Rajdhani',sans-serif;font-weight:600;letter-spacing:.4px}
-.lbl:first-child{margin-top:0}
-.btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:10px 14px;border:none;border-radius:4px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;letter-spacing:.5px;cursor:pointer;transition:all .15s;width:100%;touch-action:manipulation;color:#fff}
-.btn:active{transform:scale(.97);opacity:.88}
-.btn:disabled{opacity:.38;cursor:default;transform:none!important}
-.btn-cy{background:linear-gradient(135deg,var(--cy2),var(--pv2))}
-.btn-gn{background:linear-gradient(135deg,var(--gn2),#007a4d)}
-.btn-am{background:linear-gradient(135deg,var(--am2),#b35f00)}
-.btn-rd{background:linear-gradient(135deg,var(--rd2),#880022)}
-.btn-pu{background:linear-gradient(135deg,#7c3aed,#4c1d95)}
-.btn-gh{background:transparent;color:var(--tx2);border:1px solid var(--bdr)}
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0d1117;--bg2:#161b22;--bg3:#1c2330;--bd:#30363d;--tx1:#e6edf3;--tx2:#8b949e;--tx3:#484f58;--cy:#58a6ff;--gn:#3fb950;--ye:#d29922;--rd:#f85149;--am:#ffa657}
+body{background:var(--bg);color:var(--tx1);font-family:system-ui,sans-serif;font-size:14px;max-width:460px;margin:0 auto;padding-bottom:32px}
+.hdr{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--bg2);border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:10}
+.hdr-l{font-weight:700;font-size:15px}.hdr-l span{color:var(--cy)}
+.hdr-r{font-size:10px;color:var(--tx2);background:var(--bg3);padding:2px 7px;border-radius:10px;border:1px solid var(--bd)}
+.tabs{display:flex;border-bottom:1px solid var(--bd);background:var(--bg2)}
+.tab{flex:1;padding:9px 4px;text-align:center;font-size:11px;font-weight:600;color:var(--tx2);cursor:pointer;border-bottom:2px solid transparent;transition:.15s}
+.tab i{display:block;font-style:normal;font-size:13px;margin-bottom:1px}
+.tab.on{color:var(--cy);border-color:var(--cy)}
+.pg{display:none;padding:12px}.pg.on{display:block}
+.card{background:var(--bg2);border:1px solid var(--bd);border-radius:10px;padding:12px;margin-bottom:10px}
+.ct{font-weight:700;font-size:12px;color:var(--cy);margin-bottom:8px}
+.lbl{display:block;font-size:11px;color:var(--tx2);margin:6px 0 3px}
+.fi{width:100%;background:var(--bg3);border:1px solid var(--bd);border-radius:6px;padding:7px 10px;color:var(--tx1);font-size:13px}
+.fi:focus{outline:none;border-color:var(--cy)}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
-.mt8{margin-top:8px}.mt4{margin-top:4px}
-.sep{height:1px;background:var(--bdr);margin:10px 0}
-.upzone{border:2px dashed var(--bdr2);border-radius:8px;padding:28px 14px;text-align:center;cursor:pointer;transition:all .2s;background:var(--bg3);position:relative;overflow:hidden}
-.upzone:hover,.upzone.drag{border-color:var(--cy);background:rgba(0,229,255,.04)}
-.upzone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
-.upzone-icon{font-size:36px;margin-bottom:6px}
-.upzone-txt{font-family:'Rajdhani',sans-serif;font-size:13px;color:var(--tx2);font-weight:600}
-.upzone-sub{font-size:10px;color:var(--tx3);margin-top:3px}
-#canvasWrap{display:none;position:relative;width:100%;background:#000;border-radius:4px;overflow:hidden;margin-bottom:10px;border:1px solid var(--bdr)}
-#cvMain{width:100%;display:block}
-#cvOverlay{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none}
-.sbar{display:flex;align-items:center;gap:8px;padding:8px 11px;border-radius:4px;font-size:11px;font-family:'Share Tech Mono',monospace;margin-bottom:10px;transition:all .3s}
-.sbar.idle{background:rgba(74,109,148,.1);border:1px solid var(--bdr);color:var(--tx3)}
-.sbar.work{background:rgba(0,229,255,.07);border:1px solid var(--cy2);color:var(--cy)}
-.sbar.ok{background:rgba(0,255,157,.07);border:1px solid var(--gn2);color:var(--gn)}
-.sbar.err{background:rgba(255,61,90,.07);border:1px solid var(--rd2);color:var(--rd)}
-.sbar.warn{background:rgba(255,171,0,.07);border:1px solid var(--am2);color:var(--am)}
-.sdot{width:7px;height:7px;border-radius:50%;background:currentColor;flex-shrink:0}
-.sbar.work .sdot{animation:blink 1s infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
-.pbar-wrap{height:3px;background:var(--bg3);border-radius:2px;overflow:hidden;margin-bottom:8px;display:none}
-.pbar-inner{height:100%;background:linear-gradient(90deg,var(--cy2),var(--gn));border-radius:2px;transition:width .2s}
-#pvPanel{display:none;background:var(--card);border:1px solid var(--bdr);border-radius:8px;padding:12px;margin-bottom:11px}
-.pv-title{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:12px;color:var(--cy3);margin-bottom:6px}
-/* Preview grid — tampilkan simbol mini */
-.pv-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:3px;margin-top:6px}
-.pvcell{background:var(--bg3);border:1px solid var(--bdr);border-radius:3px;padding:4px 1px;text-align:center;position:relative}
-.pvcell .pvn{display:block;font-size:7px;color:var(--tx3);font-family:'Share Tech Mono',monospace}
-.pvcell .pvsym{display:block;font-size:14px;line-height:1.1}
-.pvcell .pva{display:block;font-size:10px;font-weight:700;font-family:'Rajdhani',sans-serif;color:var(--tx3)}
-.pvcell.hit{border-color:var(--cy2);background:rgba(0,229,255,.1)}
-.pvcell.hit .pva{color:var(--cy)}
-.pvcell.amb{border-color:var(--am2);background:rgba(255,171,0,.08)}
-.pvcell.amb .pva{color:var(--am)}
-/* KUNCI */
-#kunciWrap{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-top:8px}
-.kcell{display:flex;flex-direction:column;align-items:center;gap:2px}
-.knum{font-size:8px;color:var(--tx3);font-family:'Share Tech Mono',monospace;line-height:1.2}
-.ksel{width:100%;padding:4px 0;text-align:center;text-align-last:center;font-size:13px;font-family:'Rajdhani',sans-serif;font-weight:700;background:var(--bg3);border:1px solid var(--bdr);border-radius:3px;color:var(--tx);outline:none;cursor:pointer}
-.ksel:focus{border-color:var(--cy2);background:rgba(0,184,217,.1)}
-.ksel.isi{border-color:var(--cy2);color:var(--cy);background:rgba(0,184,217,.08)}
-/* HASIL */
-.skorbig{text-align:center;padding:18px;background:linear-gradient(135deg,var(--pv),#0a1628);border:1px solid var(--bdr2);border-radius:8px;margin-bottom:11px}
-.sval{font-family:'Rajdhani',sans-serif;font-size:58px;font-weight:700;line-height:1;color:var(--cy)}
-.sgrade{font-size:22px;font-weight:700;font-family:'Rajdhani',sans-serif;margin-top:3px}
-.gA{color:#00ff9d}.gB{color:#76ff03}.gC{color:#ffab00}.gD{color:#ff9100}.gE{color:#ff3d5a}
-.sdet{font-size:11px;color:var(--tx2);font-family:'Share Tech Mono',monospace;margin-top:6px}
-.hgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:3px;margin-top:8px}
-.hcell{background:var(--bg3);border:1px solid var(--bdr);border-radius:3px;padding:4px 1px;text-align:center}
-.hcell .hn{font-size:8px;color:var(--tx3);font-family:'Share Tech Mono',monospace}
-.hcell .ha{font-size:13px;font-weight:700;font-family:'Rajdhani',sans-serif;color:var(--tx2)}
-.hcell .hsym{font-size:11px}
-.hcell.ok{background:rgba(0,255,157,.12);border-color:var(--gn2)}.hcell.ok .ha{color:var(--gn)}
-.hcell.ng{background:rgba(255,61,90,.12);border-color:var(--rd2)}.hcell.ng .ha{color:var(--rd)}
-.hcell.ko{background:rgba(255,171,0,.08);border-color:var(--am2)}.hcell.ko .ha{color:var(--am)}
-.ibar{height:16px;border-radius:3px;overflow:hidden;display:flex;margin-top:6px;gap:1px}
-.iseg{flex:1;border-radius:1px}
-/* REKAP */
-.stat3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
-.stcard{background:var(--bg3);border:1px solid var(--bdr);border-radius:4px;padding:10px;text-align:center}
-.stval{font-family:'Rajdhani',sans-serif;font-size:26px;font-weight:700}
-.stlbl{font-size:9px;color:var(--tx3);margin-top:2px}
-.rtbl{width:100%;border-collapse:collapse;font-size:11px}
-.rtbl th{background:var(--pv);color:var(--cy3);padding:6px 4px;font-family:'Rajdhani',sans-serif;font-weight:700;border:1px solid var(--bdr2);text-align:center}
-.rtbl td{padding:5px 4px;border:1px solid var(--bdr);text-align:center;color:var(--tx2)}
-.rtbl tr:nth-child(even) td{background:rgba(15,30,56,.4)}
-.tdnama{text-align:left!important;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.gchip{display:inline-block;padding:1px 6px;border-radius:8px;font-size:9px;font-weight:700}
-.cgA{background:rgba(0,255,157,.2);color:#00ff9d}.cgB{background:rgba(118,255,3,.2);color:#76ff03}
-.cgC{background:rgba(255,171,0,.2);color:#ffab00}.cgD{background:rgba(255,145,0,.2);color:#ff9100}
-.cgE{background:rgba(255,61,90,.2);color:#ff3d5a}
-.barchart{display:flex;align-items:flex-end;gap:4px;height:55px;margin:4px 0 8px}
-.barcol{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px}
-.barnum{font-size:9px;font-family:'Share Tech Mono',monospace}
-.barbg{width:100%;border-radius:2px 2px 0 0;opacity:.85}
-.barlbl{font-size:9px;font-family:'Rajdhani',sans-serif;font-weight:700}
-/* KALIBR */
-.slwrap{display:flex;align-items:center;gap:8px;margin-top:4px;margin-bottom:8px}
-.slwrap input[type=range]{flex:1;accent-color:var(--cy)}
-.slval{font-size:11px;color:var(--cy);font-family:'Share Tech Mono',monospace;min-width:38px;text-align:right}
-/* MODAL */
-.modal{position:fixed;inset:0;background:rgba(4,8,20,.94);z-index:999;display:flex;align-items:center;justify-content:center;padding:16px;opacity:0;pointer-events:none;transition:opacity .25s}
-.modal.show{opacity:1;pointer-events:all}
-.mbox{background:var(--card);border:1px solid var(--bdr2);border-radius:12px;padding:20px 16px;max-width:360px;width:100%;text-align:center;transform:scale(.92);transition:transform .25s;max-height:88vh;overflow-y:auto}
-.modal.show .mbox{transform:scale(1)}
-.micon{font-size:44px;margin-bottom:8px;display:block}
-.mtitle{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:var(--rd);margin-bottom:6px}
-.mmsg{font-size:12px;color:var(--tx2);line-height:1.6;margin-bottom:8px}
-.vlist{text-align:left;margin:6px 0}
-.vrow{display:flex;align-items:flex-start;gap:6px;padding:3px 0;font-size:9.5px;font-family:'Share Tech Mono',monospace;border-bottom:1px solid rgba(255,255,255,.05)}
-.vdot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:2px}
-.vrow.vok{color:var(--gn)}.vrow.vok .vdot{background:var(--gn)}
-.vrow.vng{color:var(--rd)}.vrow.vng .vdot{background:var(--rd)}
-.mhint{font-size:10.5px;color:var(--am);background:rgba(255,171,0,.07);border:1px solid rgba(255,171,0,.2);border-radius:4px;padding:8px;margin:8px 0;line-height:1.7;text-align:left}
-.mdet{font-size:9px;color:var(--tx3);font-family:'Share Tech Mono',monospace;background:var(--bg3);border-radius:3px;padding:6px;margin-bottom:8px;text-align:left;white-space:pre-line;line-height:1.8}
-.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(12px);background:var(--card2);border:1px solid var(--bdr2);border-radius:20px;padding:7px 18px;font-size:12px;color:var(--tx);z-index:9999;opacity:0;transition:all .25s;white-space:nowrap;pointer-events:none;max-width:90vw;text-align:center}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-.ibox{padding:8px 10px;border-radius:4px;font-size:11px;color:var(--tx2);background:rgba(0,229,255,.05);border:1px solid rgba(0,229,255,.13);margin-bottom:8px;line-height:1.5}
-.wbox{padding:8px 10px;border-radius:4px;font-size:11px;color:var(--am);background:rgba(255,171,0,.06);border:1px solid rgba(255,171,0,.18);margin-bottom:8px;line-height:1.5}
-.sm{font-size:10px;color:var(--tx3);font-family:'Share Tech Mono',monospace}
-.cnt{font-size:11px;color:var(--cy);font-family:'Share Tech Mono',monospace;font-weight:700}
-/* Simbol warna mini */
-.sym-A{color:#1565c0}.sym-B{color:#1b5e20}.sym-C{color:#f57f17}.sym-D{color:#b71c1c}.sym-E{color:#6a1b9a}
-
-/* v5 additions */
-.flat-info{padding:7px 10px;border-radius:6px;font-size:10px;
-  font-family:'Share Tech Mono',monospace;margin-bottom:8px;
-  border:1px solid rgba(255,255,255,.08);display:none;}
-.fmt-badge{display:inline-block;padding:2px 8px;border-radius:10px;
-  font-size:10px;font-weight:700;margin-left:6px;}
-.fmt-v4{background:rgba(21,101,192,.25);color:#64b5f6;border:1px solid #1565c0;}
-.fmt-kotak{background:rgba(0,150,136,.25);color:#4db6ac;border:1px solid #00897b;}
-.fmt-unk{background:rgba(255,171,0,.18);color:#ffcc02;border:1px solid #ff9100;}
-.fmt-sel{background:var(--bg2);border:1px solid var(--bd);color:var(--tx1);
-  padding:4px 8px;border-radius:6px;font-size:11px;cursor:pointer;}
-.upzone-sub2{font-size:9px;color:var(--tx3);margin-top:3px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.mt6{margin-top:6px}.mt10{margin-top:10px}
+.upz{border:2px dashed var(--bd);border-radius:10px;padding:20px 14px;text-align:center;cursor:pointer;position:relative;transition:.15s;margin:8px 0}
+.upz:hover,.upz.drag{border-color:var(--cy);background:rgba(88,166,255,.05)}
+.upz input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.ui{font-size:28px;margin-bottom:4px}.ut{font-weight:700;font-size:13px}.us{font-size:10px;color:var(--tx2);margin-top:3px}
+.sbar{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:7px;font-size:11px;margin:6px 0;background:var(--bg3);border:1px solid var(--bd);transition:.2s}
+.sbar.ok{border-color:var(--gn);background:rgba(63,185,80,.07)}.sbar.err{border-color:var(--rd);background:rgba(248,81,73,.07)}.sbar.wrk{border-color:var(--ye);background:rgba(210,153,34,.07)}
+.sd{width:7px;height:7px;border-radius:50%;background:var(--tx3);flex-shrink:0}
+.ok .sd{background:var(--gn)}.err .sd{background:var(--rd)}.wrk .sd{background:var(--ye);animation:p 1s infinite}
+@keyframes p{0%,100%{opacity:1}50%{opacity:.25}}
+.pbw{height:3px;background:var(--bg3);border-radius:2px;margin:3px 0;display:none}
+.pbi{height:100%;background:var(--cy);border-radius:2px;transition:width .08s}
+#cvw{display:none;position:relative;margin:6px 0}
+#cvm{width:100%;border-radius:8px;display:block}
+#cvo{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none}
+.ibox{background:var(--bg3);border:1px solid var(--bd);border-radius:6px;padding:7px 10px;font-size:11px;color:var(--tx2);margin-bottom:8px}
+.btn{padding:7px 10px;border:none;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;width:100%;transition:.1s}
+.btn:disabled{opacity:.3;cursor:not-allowed}
+.btn-cy{background:var(--cy);color:#0d1117}.btn-gh{background:var(--bg3);color:var(--tx1);border:1px solid var(--bd)}.btn-rd{background:rgba(248,81,73,.15);color:var(--rd);border:1px solid var(--rd)}.btn-am{background:var(--am);color:#0d1117}
+.pvg{display:grid;grid-template-columns:repeat(10,1fr);gap:3px;margin:6px 0}
+.pvc{border-radius:5px;padding:3px 2px;text-align:center;background:var(--bg3);border:1px solid var(--bd)}
+.pvc.hit{background:rgba(88,166,255,.15);border-color:var(--cy)}.pvc.amb{background:rgba(210,153,34,.14);border-color:var(--ye)}
+.pvn{display:block;font-size:8px;color:var(--tx3)}.pva{display:block;font-size:12px;font-weight:700;color:var(--cy)}
+.pvc.amb .pva{color:var(--ye)}.pvc:not(.hit):not(.amb) .pva{color:var(--tx3)}
+.skb{text-align:center;padding:14px 0 6px}
+.sv{font-size:62px;font-weight:900;color:var(--cy);line-height:1}
+.sg{font-size:26px;font-weight:700;margin-top:3px}
+.gA{color:#3fb950}.gB{color:#58a6ff}.gC{color:#d29922}.gD{color:#ffa657}.gE{color:#f85149}
+.hg{display:grid;grid-template-columns:repeat(10,1fr);gap:3px;margin:8px 0}
+.hc{border-radius:5px;padding:3px 2px;text-align:center;background:var(--bg3);border:1px solid var(--bd)}
+.hc.ok{background:rgba(63,185,80,.14);border-color:var(--gn)}.hc.ng{background:rgba(248,81,73,.13);border-color:var(--rd)}.hc.ko{background:rgba(210,153,34,.11);border-color:var(--ye)}
+.hn{font-size:8px;color:var(--tx3)}.ha{font-size:12px;font-weight:700}
+.hc.ok .ha{color:var(--gn)}.hc.ng .ha{color:var(--rd)}.hc.ko .ha{color:var(--ye)}
+.ibar{display:flex;height:7px;border-radius:3px;overflow:hidden;margin:5px 0}.iseg{flex:1}
+.sm{font-size:11px;color:var(--tx2);text-align:center}
+.kw{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin:8px 0}
+.kc{text-align:center}.kn{font-size:9px;color:var(--tx3);margin-bottom:2px}
+.ks{width:100%;background:var(--bg3);border:1px solid var(--bd);border-radius:5px;color:var(--tx2);font-size:12px;padding:3px 0;cursor:pointer}
+.ks.isi{color:var(--cy);border-color:var(--cy);font-weight:700}
+.cnt{color:var(--cy);font-weight:700}
+.s3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
+.stc{background:var(--bg3);border:1px solid var(--bd);border-radius:8px;padding:8px;text-align:center}
+.stv{font-size:24px;font-weight:800}.stl{font-size:10px;color:var(--tx2);margin-top:2px}
+.rt{width:100%;border-collapse:collapse;font-size:11px}
+.rt th{background:var(--bg3);padding:5px 4px;color:var(--tx2);font-weight:600;border-bottom:1px solid var(--bd);text-align:left}
+.rt td{padding:4px;border-bottom:1px solid var(--bg3)}
+.tnm{max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gch{padding:1px 5px;border-radius:8px;font-size:10px;font-weight:700}
+.cgA{background:rgba(63,185,80,.2);color:#3fb950}.cgB{background:rgba(88,166,255,.2);color:#58a6ff}.cgC{background:rgba(210,153,34,.2);color:#d29922}.cgD{background:rgba(255,166,87,.2);color:#ffa657}.cgE{background:rgba(248,81,73,.2);color:#f85149}
+.bch{display:flex;align-items:flex-end;gap:6px;height:56px;margin:6px 0}
+.bcol{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px}
+.bnum{font-size:9px;font-weight:700}.bbg{width:100%;border-radius:3px 3px 0 0;min-height:3px}.blbl{font-size:10px;font-weight:700}
+.slw{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.slw input[type=range]{flex:1;accent-color:var(--cy)}
+.slv{font-size:11px;font-weight:700;color:var(--cy);min-width:36px;text-align:right}
+.sep{border-top:1px solid var(--bd);margin:10px 0}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--bg2);color:var(--tx1);border:1px solid var(--bd);border-radius:20px;padding:7px 16px;font-size:12px;opacity:0;transition:.2s;pointer-events:none;z-index:100;white-space:nowrap}
+.toast.show{opacity:1}
+.mov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:200;align-items:center;justify-content:center}
+.mov.show{display:flex}
+.mbox{background:var(--bg2);border:1px solid var(--bd);border-radius:12px;padding:18px;max-width:320px;width:90%}
+.mtit{font-weight:700;font-size:14px;color:var(--rd);margin-bottom:6px}
 </style>
 </head>
 <body>
-
 <div class="hdr">
-  <div class="hdr-logo">📋 LJK Scanner</div>
-  <div class="hdr-info">Benyamin Batau <span style="color:var(--cy)">v5.0</span></div>
+  <div class="hdr-l">📋 LJK <span>Bubble</span></div>
+  <div class="hdr-r">v6 · Benyamin Batau</div>
 </div>
-
 <div class="tabs">
-  <div class="tab on" onclick="goTab(0)"><i>📷</i>SCAN</div>
-  <div class="tab"    onclick="goTab(1)"><i>🗝️</i>KUNCI</div>
-  <div class="tab"    onclick="goTab(2)"><i>📊</i>HASIL</div>
-  <div class="tab"    onclick="goTab(3)"><i>📋</i>REKAP</div>
-  <div class="tab"    onclick="goTab(4)"><i>⚙️</i>KALIBR</div>
+  <div class="tab on" onclick="T(0)"><i>📷</i>SCAN</div>
+  <div class="tab"    onclick="T(1)"><i>🗝️</i>KUNCI</div>
+  <div class="tab"    onclick="T(2)"><i>📊</i>HASIL</div>
+  <div class="tab"    onclick="T(3)"><i>📋</i>REKAP</div>
+  <div class="tab"    onclick="T(4)"><i>⚙️</i>KALIBR</div>
 </div>
-
 <div id="toast" class="toast"></div>
-<div id="mReject" class="modal-overlay">
-  <div class="modal-box">
-    <div class="modal-title">❌ Gambar Ditolak</div>
-    <div class="modal-msg"  id="mMsg"></div>
-    <div class="modal-det"  id="mDet"></div>
-    <div id="mList" class="modal-list"></div>
-    <div id="mHint" class="ibox mt8" style="font-size:10px"></div>
-    <button class="btn btn-cy mt8" onclick="closeModal()">Tutup</button>
+<div id="mod" class="mov">
+  <div class="mbox">
+    <div class="mtit">❌ Gambar Tidak Valid</div>
+    <div id="mmsg" style="font-size:12px;color:var(--tx1);margin-bottom:4px"></div>
+    <div class="ibox mt6" style="font-size:10px">💡 Foto: seluruh lembar terlihat · tidak blur · HP tegak · jarak 20–40 cm</div>
+    <button class="btn btn-cy mt6" onclick="closeM()">Tutup</button>
   </div>
 </div>
 
-<!-- ══ TAB 0: SCAN ══════════════════════════════════════════ -->
+<!-- SCAN -->
 <div class="pg on" id="pg0">
   <div class="card">
-    <div class="ctitle">Identitas Siswa</div>
-    <span class="lbl">Nama Lengkap</span>
-    <input class="fi" type="text" id="inNama" placeholder="Nama siswa..." autocomplete="off">
-    <div class="g2 mt8">
-      <div><span class="lbl">No. Absen</span>
-           <input class="fi" type="number" id="inAbsen" placeholder="01" min="1" max="99"></div>
-      <div><span class="lbl">Kelas</span>
-           <input class="fi" type="text" id="inKelas" placeholder="X-TKJ-1"></div>
+    <div class="ct">👤 Identitas Siswa</div>
+    <span class="lbl">Nama</span>
+    <input class="fi" id="iNm" type="text" placeholder="Nama siswa..." autocomplete="off">
+    <div class="g2 mt6">
+      <div><span class="lbl">No. Absen</span><input class="fi" id="iAb" type="number" placeholder="01" min="1" max="99"></div>
+      <div><span class="lbl">Kelas</span><input class="fi" id="iKl" type="text" placeholder="X-TKJ-1"></div>
     </div>
   </div>
-
   <div class="card">
-    <div class="ctitle">Upload Lembar Jawaban
-      <span class="fmt-badge fmt-unk" id="fmtBadge">auto</span>
-    </div>
-    <div class="ibox" style="font-size:10px">
-      ✅ <b>Dual format:</b> LJK Simbol v4 (▲●■★⬡) &amp; LJK Kotak/Silang (SMKN)<br>
-      📐 <b>Auto-flatten:</b> luruskan perspektif → crop → normalize → center
-    </div>
-
-    <div class="g2 mt4" style="align-items:center">
-      <span class="lbl" style="margin:0">Format override:</span>
-      <select class="fmt-sel" id="fmtOverride" onchange="onFormatOverride()">
-        <option value="auto">🔍 Otomatis</option>
-        <option value="v4">▲ Simbol v4</option>
-        <option value="kotak">☒ Kotak/Silang</option>
-      </select>
-    </div>
-
-    <div class="upzone" id="dropZone">
-      <input type="file" id="fileInput" accept="image/*,application/pdf"
-             capture="environment" onchange="onFile(event)">
-      <div class="upzone-icon">📄</div>
-      <div class="upzone-txt">Foto / Upload LJK</div>
-      <div class="upzone-sub">JPG · PNG · HEIC · PDF · Maks 20MB</div>
-      <div class="upzone-sub2">Foto dari HP boleh miring/gelap/kuning — akan dikoreksi otomatis</div>
+    <div class="ct">📄 Upload LJK</div>
+    <div class="ibox">Metode: <b>hitamkan bulatan ●</b> dengan pulpen/spidol hitam.<br>Foto miring / gelap / kuning → tetap diproses otomatis.</div>
+    <div class="upz" id="dz">
+      <input type="file" id="fi" accept="image/*,application/pdf" capture="environment" onchange="onF(event)">
+      <div class="ui">📷</div>
+      <div class="ut">Foto / Upload LJK</div>
+      <div class="us">JPG · PNG · PDF</div>
     </div>
   </div>
-
-  <div id="flatInfo" class="flat-info"></div>
-
-  <div id="canvasWrap" style="display:none;position:relative;margin:8px 0">
-    <canvas id="cvMain"   style="width:100%;border-radius:8px;display:block"></canvas>
-    <canvas id="cvOverlay" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none"></canvas>
+  <div id="cvw"><canvas id="cvm"></canvas><canvas id="cvo"></canvas></div>
+  <div class="sbar" id="sb"><div class="sd"></div><span id="sbt">Upload LJK terlebih dahulu</span></div>
+  <div class="pbw" id="pbw"><div class="pbi" id="pb" style="width:0%"></div></div>
+  <div id="pvp" style="display:none;margin-top:6px">
+    <div class="ibox" style="font-size:10px">🔵=terisi &nbsp;|&nbsp; 🟡=ambigus &nbsp;|&nbsp; —=kosong</div>
+    <div class="pvg" id="pvg"></div>
+    <div class="sm mt6" id="pvi"></div>
   </div>
-
-  <div class="sbar idle" id="sbar"><div class="sdot"></div><span id="sbarTxt">Upload LJK terlebih dahulu</span></div>
-  <div class="pbar-wrap" id="pbarWrap"><div class="pbar-inner" id="pbar" style="width:0%"></div></div>
-
-  <div id="pvPanel" style="display:none">
-    <div class="pv-title">🔍 Preview Deteksi</div>
-    <div class="sm"><b>CYAN</b>=terdeteksi &nbsp;|&nbsp; 🟡=ambigus &nbsp;|&nbsp; —=kosong</div>
-    <div class="pv-grid" id="pvGrid"></div>
-    <div class="sm mt8" id="pvInfo"></div>
-    <div class="mt8" id="pvDetail"
-         style="font-size:9px;color:var(--tx3);font-family:Share Tech Mono,monospace;
-                white-space:pre-wrap;line-height:1.6;max-height:120px;overflow-y:auto"></div>
+  <div class="g3 mt10">
+    <button class="btn btn-gh" id="bR" onclick="togROI()" disabled>👁 ROI</button>
+    <button class="btn btn-gh" id="bP" onclick="doPrev()" disabled>🔍 Preview</button>
+    <button class="btn btn-cy" id="bS" onclick="doScan()" disabled>⚡ Scan</button>
   </div>
-
-  <div class="g3 mt8">
-    <button class="btn btn-gh" id="btnRoi"  onclick="toggleROI()"  disabled>👁 ROI</button>
-    <button class="btn btn-pu" id="btnPrev" onclick="doPreview()"  disabled>🔍 Preview</button>
-    <button class="btn btn-cy" id="btnScan" onclick="doScan()"     disabled>⚡ Scan</button>
-  </div>
-  <div class="g2 mt8">
-    <button class="btn btn-gh" id="btnBW"   onclick="toggleBW()"   disabled>🔲 BW Mode</button>
-    <button class="btn btn-gh"              onclick="doReset()">🔄 Reset</button>
+  <div class="g2 mt6">
+    <button class="btn btn-gh" id="bBW" onclick="togBW()" disabled>🔲 BW</button>
+    <button class="btn btn-gh" onclick="doReset()">🔄 Reset</button>
   </div>
 </div>
 
-<!-- ══ TAB 1: KUNCI ══════════════════════════════════════════ -->
+<!-- KUNCI -->
 <div class="pg" id="pg1">
   <div class="card">
-    <div class="ctitle">Kunci Jawaban — 50 Soal</div>
-    <div class="ibox" style="font-size:10px">
-      ▲=A &nbsp; ●=B &nbsp; ■=C &nbsp; ★=D &nbsp; ⬡=E
-      &nbsp;|&nbsp; Format kotak: A B C D E
+    <div class="ct">🗝️ Kunci Jawaban — 40 Soal</div>
+    <div class="sm">Terisi: <span class="cnt" id="kCt">0</span>/40</div>
+    <div class="kw" id="kw"></div>
+    <div class="g3 mt10">
+      <button class="btn btn-gh" onclick="kCl()">🗑 Hapus</button>
+      <button class="btn btn-gh" onclick="kIm()">📋 Import</button>
+      <button class="btn btn-am" onclick="kSv()">💾 Simpan</button>
     </div>
-    <div class="sm">Terisi: <span class="cnt" id="kCount">0</span>/50</div>
-    <div class="kunci-wrap" id="kunciWrap"></div>
-    <div class="g3 mt8">
-      <button class="btn btn-gh" onclick="kClear()">🗑 Hapus</button>
-      <button class="btn btn-gh" onclick="kRandom()">🎲 Acak</button>
-      <button class="btn btn-cy" onclick="kImport()">📋 Import</button>
-    </div>
-    <button class="btn btn-am mt8" onclick="kSave()" style="width:100%">💾 Simpan Kunci</button>
   </div>
 </div>
 
-<!-- ══ TAB 2: HASIL ═══════════════════════════════════════════ -->
+<!-- HASIL -->
 <div class="pg" id="pg2">
-  <div class="ibox" id="hEmpty">Belum ada hasil. Scan LJK di tab SCAN.</div>
-  <div id="hContent" style="display:none">
-    <div class="skorbig">
-      <div class="sval"   id="hNilai">—</div>
-      <div class="sgrade" id="hGrade">—</div>
-    </div>
-    <div class="sm tc"  id="hDet"></div>
-    <div class="sm tc"  id="hConf" style="font-size:9px;color:var(--tx3)"></div>
-    <div class="ibar"   id="ibar"></div>
-    <div class="sm tc"  id="hConf2" style="margin:6px 0"></div>
-    <div class="hgrid"  id="hGrid"></div>
-    <div class="g3 mt8">
-      <button class="btn btn-gh" onclick="hTXT()">📄 TXT</button>
-      <button class="btn btn-gh" onclick="hPDF()">🖨 PDF</button>
-      <button class="btn btn-am" onclick="hSimpan()">💾 Rekap</button>
+  <div class="ibox" id="hE">Belum ada hasil. Scan LJK di tab SCAN.</div>
+  <div id="hC" style="display:none">
+    <div class="skb"><div class="sv" id="hN">—</div><div class="sg" id="hG">—</div></div>
+    <div class="sm" id="hD"></div>
+    <div class="sm" id="hI" style="font-size:9px;color:var(--tx3);margin-top:2px"></div>
+    <div class="ibar" id="ibr"></div>
+    <div class="sm" id="hI2" style="margin:4px 0"></div>
+    <div class="hg" id="hgr"></div>
+    <div class="g3 mt10">
+      <button class="btn btn-gh" onclick="hTX()">📄 TXT</button>
+      <button class="btn btn-gh" onclick="hPD()">🖨 PDF</button>
+      <button class="btn btn-am" onclick="hSv()">💾 Rekap</button>
     </div>
   </div>
 </div>
 
-<!-- ══ TAB 3: REKAP ═══════════════════════════════════════════ -->
+<!-- REKAP -->
 <div class="pg" id="pg3">
   <div class="card">
-    <div class="ctitle">Statistik</div>
-    <div class="stat3">
-      <div class="stcard"><div class="stval" id="rJml" style="color:var(--cy)">0</div>
-        <div class="stlbl">Siswa</div></div>
-      <div class="stcard"><div class="stval" id="rRata" style="color:var(--gn)">—</div>
-        <div class="stlbl">Rata-rata</div></div>
-      <div class="stcard"><div class="stval" id="rLulus" style="color:var(--ye)">0%</div>
-        <div class="stlbl">Lulus ≥75</div></div>
+    <div class="ct">📊 Statistik</div>
+    <div class="s3">
+      <div class="stc"><div class="stv" id="rJ" style="color:var(--cy)">0</div><div class="stl">Siswa</div></div>
+      <div class="stc"><div class="stv" id="rR" style="color:var(--gn)">—</div><div class="stl">Rata-rata</div></div>
+      <div class="stc"><div class="stv" id="rL" style="color:var(--ye)">0%</div><div class="stl">Lulus ≥75</div></div>
     </div>
-    <div class="barchart" id="barChart"></div>
+    <div class="bch" id="bch"></div>
   </div>
   <div class="card">
-    <div class="ctitle">Daftar Hasil</div>
-    <table class="rtable">
+    <div class="ct">📋 Daftar Hasil</div>
+    <table class="rt">
       <thead><tr><th>#</th><th>Nama</th><th>Kelas</th><th>Benar</th><th>Nilai</th><th>Grade</th></tr></thead>
-      <tbody id="rBody"></tbody>
+      <tbody id="rB"></tbody>
     </table>
-    <div class="g3 mt8">
-      <button class="btn btn-gh" onclick="rTXT()">📄 TXT</button>
-      <button class="btn btn-gh" onclick="rPDF()">🖨 PDF</button>
-      <button class="btn btn-rd" onclick="rHapus()">🗑 Hapus</button>
+    <div class="g3 mt10">
+      <button class="btn btn-gh" onclick="rTX()">📄 TXT</button>
+      <button class="btn btn-gh" onclick="rPD()">🖨 PDF</button>
+      <button class="btn btn-rd" onclick="rDl()">🗑 Hapus</button>
     </div>
   </div>
 </div>
 
-<!-- ══ TAB 4: KALIBRASI ══════════════════════════════════════ -->
+<!-- KALIBRASI -->
 <div class="pg" id="pg4">
   <div class="card">
-    <div class="ctitle">Parameter Deteksi</div>
+    <div class="ct">⚙️ Kalibrasi Bubble</div>
     <div class="ibox" style="font-size:10px">
-      <b>Relative Scoring</b> — akurat untuk semua kondisi foto HP.<br>
-      Deteksi berdasarkan kontras lokal sel vs background, bukan nilai absolut.
+      Scan langsung di gambar asli — <b>tanpa warp</b> → cepat.<br>
+      Deteksi: bandingkan gelap dalam vs luar setiap bubble.
     </div>
-
-    <span class="lbl">⬤ Threshold gelap arsiran / tanda (gray &lt; X)</span>
-    <div class="slwrap"><input type="range" id="sArsirThr" min="80" max="220" value="170" oninput="kalSync()">
-      <span class="slval" id="vArsirThr">170</span></div>
-
-    <span class="lbl">📐 Min Gap Skor antar opsi (makin besar = makin ketat)</span>
-    <div class="slwrap"><input type="range" id="sMinDiff" min="3" max="40" value="12" oninput="kalSync()">
-      <span class="slval" id="vMinDiff">12</span></div>
-
-    <span class="lbl">📐 Min Skor Absolut (batas ada tanda)</span>
-    <div class="slwrap"><input type="range" id="sMinScore" min="1" max="30" value="5" oninput="kalSync()">
-      <span class="slval" id="vMinScore">5</span></div>
-
+    <span class="lbl">📐 Min gap skor (ketat = nilai besar)</span>
+    <div class="slw"><input type="range" id="sMD" min="3" max="40" value="10" oninput="kSy()"><span class="slv" id="vMD">10</span></div>
+    <span class="lbl">📐 Min skor ada isian</span>
+    <div class="slw"><input type="range" id="sMS" min="1" max="30" value="6" oninput="kSy()"><span class="slv" id="vMS">6</span></div>
     <div class="sep"></div>
-    <span class="lbl">🔧 Offset X grid (kiri−kanan)</span>
-    <div class="slwrap"><input type="range" id="sOfsX" min="-50" max="50" value="0" oninput="kalSync()">
-      <span class="slval" id="vOfsX">0px</span></div>
-
-    <span class="lbl">🔧 Offset Y grid (atas−bawah)</span>
-    <div class="slwrap"><input type="range" id="sOfsY" min="-50" max="50" value="0" oninput="kalSync()">
-      <span class="slval" id="vOfsY">0px</span></div>
-
+    <span class="lbl">🔧 Offset X</span>
+    <div class="slw"><input type="range" id="sOX" min="-60" max="60" value="0" oninput="kSy()"><span class="slv" id="vOX">0px</span></div>
+    <span class="lbl">🔧 Offset Y</span>
+    <div class="slw"><input type="range" id="sOY" min="-60" max="60" value="0" oninput="kSy()"><span class="slv" id="vOY">0px</span></div>
     <span class="lbl">🔧 Skala X</span>
-    <div class="slwrap"><input type="range" id="sSX" min="80" max="120" value="100" oninput="kalSync()">
-      <span class="slval" id="vSX">1.00</span></div>
-
+    <div class="slw"><input type="range" id="sSX" min="70" max="130" value="100" oninput="kSy()"><span class="slv" id="vSX">1.00</span></div>
     <span class="lbl">🔧 Skala Y</span>
-    <div class="slwrap"><input type="range" id="sSY" min="80" max="120" value="100" oninput="kalSync()">
-      <span class="slval" id="vSY">1.00</span></div>
-
+    <div class="slw"><input type="range" id="sSY" min="70" max="130" value="100" oninput="kSy()"><span class="slv" id="vSY">1.00</span></div>
     <div class="sep"></div>
     <div class="g2">
-      <button class="btn btn-gh" onclick="kalReset()">🔄 Default</button>
-      <button class="btn btn-am" onclick="kalSave()">💾 Simpan</button>
+      <button class="btn btn-gh" onclick="kRs()">🔄 Default</button>
+      <button class="btn btn-am" onclick="kSv2()">💾 Simpan</button>
     </div>
   </div>
 </div>
 
 <script>
-function onFormatOverride(){
-  const v=document.getElementById('fmtOverride').value;
-  const badge=document.getElementById('fmtBadge');
-  badge.className='fmt-badge '+(v==='v4'?'fmt-v4':v==='kotak'?'fmt-kotak':'fmt-unk');
-  badge.textContent=v==='auto'?'auto':v==='v4'?'Simbol v4':'Kotak';
-  if(imgD)runPipeline(); // re-detect jika gambar sudah ada
-}
+// ═══ KOORDINAT BUBBLE (relatif 0-1, dari referensi 794x1123px) ═══
+const CLX={A:.10579,B:.19270,C:.27960,D:.36650,E:.45340};
+const CRX={A:.60831,B:.69521,C:.78212,D:.86902,E:.95592};
+const RY=[.19590,.23508,.27516,.31523,.35530,.39537,.43544,.47551,
+          .51558,.55565,.59573,.63580,.67587,.71594,.75601,.79608,
+          .83615,.87622,.91630,.95637];
+const BR=.01637; // radius relatif
 
-// ═══════════════════════════════════════════════════════════════
-// LJK SCANNER v5.0 — Benyamin Batau
-// Dual format: v4 (simbol ▲●■★⬡) + Kotak/Silang (SMKN)
-// Pre-processing: auto-flatten + perspective warp + normalize
-// ═══════════════════════════════════════════════════════════════
-
-const C    = {"page_w":595.276,"page_h":841.89,"outer_r":0.01488,"inner_r":0.00595,"grid":[{"nomor":1,"opsi":[{"opsi":"A","rx":0.12179,"ry":0.18144,"rw":0.01904,"rh":0.01346,"cx":0.13131,"cy":0.18817},{"opsi":"B","rx":0.20297,"ry":0.18144,"rw":0.01904,"rh":0.01346,"cx":0.21249,"cy":0.18817},{"opsi":"C","rx":0.28416,"ry":0.18144,"rw":0.01904,"rh":0.01346,"cx":0.29368,"cy":0.18817},{"opsi":"D","rx":0.36534,"ry":0.18144,"rw":0.01904,"rh":0.01346,"cx":0.37486,"cy":0.18817},{"opsi":"E","rx":0.44653,"ry":0.18144,"rw":0.01904,"rh":0.01346,"cx":0.45605,"cy":0.18817}]},{"nomor":2,"opsi":[{"opsi":"A","rx":0.12179,"ry":0.21331,"rw":0.01904,"rh":0.01346,"cx":0.13131,"cy":0.22004},{"opsi":"B","rx":0.20297,"ry":0.21331,"rw":0.01904,"rh":0.01346,"cx":0.21249,"cy":0.22004},{"opsi":"C","rx":0.28416,"ry":0.21331,"rw":0.01904,"rh":0.01346,"cx":0.29368,"cy":0.22004},{"opsi":"D","rx":0.36534,"ry":0.21331,"rw":0.01904,"rh":0.01346,"cx":0.37486,"cy":0.22004},{"opsi":"E","rx":0.44653,"ry":0.21331,"rw":0.01904,"rh":0.01346,"cx":0.45605,"cy":0.22004}]},{"nomor":3,"opsi":[{"opsi":"A","rx":0.12179,"ry":0.24519,"rw":0.01904,"rh":0.01346,"cx":0.13131,"cy":0.25192},{"opsi":"B","rx":0.20297,"ry":0.24519,"rw":0.01904,"rh":0.01346,"cx":0.21249,"cy":0.25192},{"opsi":"C","rx":0.28416,"ry":0.24519,"rw":0.01904,"rh":0.01346,"cx":0.29368,"cy":0.25192},{"opsi":"D","rx":0.36534,"ry":0.24519,"rw":0.01904,"rh":0.01346,"cx":0.37486,"cy":0.25192},{"opsi":"E","rx":0.44653,"ry":0.24519,"rw":0.01904,"rh":0.01346,"cx":0.45605,"cy":0.25192}]},{"nomor":4,"opsi":[{"opsi":"A","rx":0.12179,"ry":0.27706,"rw":0.01904,"rh":0.01346,"cx":0.13131,"cy":0.2838},{"opsi":"B","rx":0.20297,"ry":0.27706,"rw":0.01904,"rh":0.01346,"cx":0.21249,"cy":0.2838},{"opsi":"C","rx":0.28416,"ry":0.27706,"rw":0.01904,"rh":0.01346,"cx":0.29368,"cy":0.2838},{"opsi":"D","rx":0.36534,"ry":0.27706,"rw":0.01904,"rh":0.01346,"cx":0.37486,"cy":0.2838},{"opsi":"E","rx":0.44653,"ry":0.27706,"rw":0.01904,"rh":0.01346,"cx":0.45605,"cy":0.2838}]},{"nomor":5,"opsi":[{"opsi":"A","rx":0.12179,"ry":0.30894,"rw":0.01904,"rh":0.01346,"cx":0.13131,"cy":0.31567},{"opsi":"B","rx":0.20297,"ry":0.30894,"rw":0.01904,"rh":0.01346,"cx":0.21249,"cy":0.31567},{"opsi":"C","rx":0.28416,"ry":0.30894,"rw":0.01904,"rh":0.01346,"cx":0.29368,"cy":0.31567},{"opsi":"D","rx":0.36534,"ry":0.30894,"rw":0.01904,"rh":0.01346,"cx":0.37486,"cy":0.31567},{"opsi":"E","rx":0.44653,"ry":0.30894,"rw":0.01904,"rh":0.01346,"cx":0.45605,"cy":0.31567}]},{"nomor":6,"opsi":[{"opsi":"A","rx":0.12179,"ry":0.34081,"rw":0.01904,"rh":0.01346,"cx":0.13131,"cy":0.34755},{"opsi":"B","rx":0.20297,"ry":0.34081,"rw":0.01904,"rh":0.01346,"cx":0.21249,"cy":0.34755},{"opsi":"C","rx":0.28416,"ry":0.34081,"rw":0.01904,"rh":0.01346,"cx":0.29368,"cy":0.34755},{"opsi":"D","rx":0.36534,"ry":0.34081,"rw":0.01904,"rh":0.01346,"cx":0.37486,"cy":0.34755},{"opsi":"E","rx":0.44653,"ry":0.34081,"rw":0.01904,"rh":0.01346,"cx":0.45605,"cy":0.34755}]},{"nomor":7,"opsi":[{"opsi":"A","rx":0.12179,"ry":0.37269,"rw":0.01904,"rh":0.01346,"cx":0.13131,"cy":0.37942},{"opsi":"B","rx":0.20297,"ry":0.37269,"rw":0.01904,"rh":0.01346,"cx":0.21249,"cy":0.37942},{"opsi":"C","rx":0.28416,"ry":0.37269,"rw":0.01904,"rh":0.01346,"cx":0.29368,"cy":0.37942},{"opsi":"D","rx":0.36534,"ry":0.37269,"rw":0.01904,"rh":0.01346,"cx":0.37486,"cy":0.37942},{"opsi":"E","rx":0.44653,"ry":0.37269,"rw":0.01904,"rh":0.01346,"cx":0.45605,"cy":0.37942}]},{"nomor":8,"opsi":[{"opsi":"A","rx":0.12179,"ry":0.40457,"rw":0.01904,"rh":0.01346,"cx":0.13131,"cy":0.4113},{"opsi":"B","rx":0.20297,"ry":0.40457,"rw":0.01904,"rh":0.01346,"cx":0.21249,"cy":0.4113},{"opsi":"C","rx":0.28416,"ry":0.40457,"rw":0.01904,"rh":0.01346,"cx":0.29368,"cy":0.4113},{"opsi":"D","rx":0.36534,"ry":0.40457,"rw":0.01904,"rh":0.01346,"cx":0.37486,"cy":0.4113},{"opsi":"E","rx":0.44653,"ry":0.40457,"rw":0.01904,"rh":0.01346,"cx":0.45605,"cy":0.4113}]},{"nomor":9,"opsi":[{"opsi":"A","rx":0.12179,"ry":0.43644,"rw":0.01904,"rh":0.01346,"cx":0.13131,"cy":0.44317},{"opsi":"B","rx":0.20297,"ry":0.43644,"rw":0.01904,"rh":0.01346,"cx":0.21249,"cy":0.44317},{"opsi":"C","rx":0.28416,"ry":0.43644,"rw":0.01904,"rh":0.01346,"cx":0.29368,"cy":0.44317},{"opsi":"D","rx":0.36534,"ry":0.43644,"rw":0.01904,"rh":0.01346,"cx":0.37486,"cy":0.44317},{"opsi":"E","rx":0.44653,"ry":0.43644,"rw":0.01904,"rh":0.01346,"cx":0.45605,"cy":0.44317}]},{"nomor":10,"opsi":[{"opsi":"A","rx":0.12179,"ry":0.46832,"rw":0.01904,"rh":0.01346,"cx":0.13131,"cy":0.47505},{"opsi":"B","rx":0.20297,"ry":0.46832,"rw":0.01904,"rh":0.01346,"cx":0.21249,"cy":0.47505},{"opsi":"C","rx":0.28416,"ry":0.46832,"rw":0.01904,"rh":0.01346,"cx":0.29368,"cy":0.47505},{"opsi":"D","rx":0.36534,"ry":0.46832,"rw":0.01904,"rh":0.01346,"cx":0.37486,"cy":0.47505},{"opsi":"E","rx":0.44653,"ry":0.46832,"rw":0.01904,"rh":0.01346,"cx":0.45605,"cy":0.47505}]},{"nomor":11,"opsi":[{"opsi":"A","rx":0.12179,"ry":0.50019,"rw":0.01904,"rh":0.01346,"cx":0.13131,"cy":0.50692},{"opsi":"B","rx":0.20297,"ry":0.50019,"rw":0.01904,"rh":0.01346,"cx":0.21249,"cy":0.50692},{"opsi":"C","rx":0.28416,"ry":0.50019,"rw":0.01904,"rh":0.01346,"cx":0.29368,"cy":0.50692},{"opsi":"D","rx":0.36534,"ry":0.50019,"rw":0.01904,"rh":0.01346,"cx":0.37486,"cy":0.50692},{"opsi":"E","rx":0.44653,"ry":0.50019,"rw":0.01904,"rh":0.01346,"cx":0.45605,"cy":0.50692}]},{"nomor":12,"opsi":[{"opsi":"A","rx":0.12179,"ry":0.53207,"rw":0.01904,"rh":0.01346,"cx":0.13131,"cy":0.5388},{"opsi":"B","rx":0.20297,"ry":0.53207,"rw":0.01904,"rh":0.01346,"cx":0.21249,"cy":0.5388},{"opsi":"C","rx":0.28416,"ry":0.53207,"rw":0.01904,"rh":0.01346,"cx":0.29368,"cy":0.5388},{"opsi":"D","rx":0.36534,"ry":0.53207,"rw":0.01904,"rh":0.01346,"cx":0.37486,"cy":0.5388},{"opsi":"E","rx":0.44653,"ry":0.53207,"rw":0.01904,"rh":0.01346,"cx":0.45605,"cy":0.5388}]},{"nomor":13,"opsi":[{"opsi":"A","rx":0.12179,"ry":0.56394,"rw":0.01904,"rh":0.01346,"cx":0.13131,"cy":0.57067},{"opsi":"B","rx":0.20297,"ry":0.56394,"rw":0.01904,"rh":0.01346,"cx":0.21249,"cy":0.57067},{"opsi":"C","rx":0.28416,"ry":0.56394,"rw":0.01904,"rh":0.01346,"cx":0.29368,"cy":0.57067},{"opsi":"D","rx":0.36534,"ry":0.56394,"rw":0.01904,"rh":0.01346,"cx":0.37486,"cy":0.57067},{"opsi":"E","rx":0.44653,"ry":0.56394,"rw":0.01904,"rh":0.01346,"cx":0.45605,"cy":0.57067}]},{"nomor":14,"opsi":[{"opsi":"A","rx":0.12179,"ry":0.59582,"rw":0.01904,"rh":0.01346,"cx":0.13131,"cy":0.60255},{"opsi":"B","rx":0.20297,"ry":0.59582,"rw":0.01904,"rh":0.01346,"cx":0.21249,"cy":0.60255},{"opsi":"C","rx":0.28416,"ry":0.59582,"rw":0.01904,"rh":0.01346,"cx":0.29368,"cy":0.60255},{"opsi":"D","rx":0.36534,"ry":0.59582,"rw":0.01904,"rh":0.01346,"cx":0.37486,"cy":0.60255},{"opsi":"E","rx":0.44653,"ry":0.59582,"rw":0.01904,"rh":0.01346,"cx":0.45605,"cy":0.60255}]},{"nomor":15,"opsi":[{"opsi":"A","rx":0.12179,"ry":0.62769,"rw":0.01904,"rh":0.01346,"cx":0.13131,"cy":0.63443},{"opsi":"B","rx":0.20297,"ry":0.62769,"rw":0.01904,"rh":0.01346,"cx":0.21249,"cy":0.63443},{"opsi":"C","rx":0.28416,"ry":0.62769,"rw":0.01904,"rh":0.01346,"cx":0.29368,"cy":0.63443},{"opsi":"D","rx":0.36534,"ry":0.62769,"rw":0.01904,"rh":0.01346,"cx":0.37486,"cy":0.63443},{"opsi":"E","rx":0.44653,"ry":0.62769,"rw":0.01904,"rh":0.01346,"cx":0.45605,"cy":0.63443}]},{"nomor":16,"opsi":[{"opsi":"A","rx":0.12179,"ry":0.65957,"rw":0.01904,"rh":0.01346,"cx":0.13131,"cy":0.6663},{"opsi":"B","rx":0.20297,"ry":0.65957,"rw":0.01904,"rh":0.01346,"cx":0.21249,"cy":0.6663},{"opsi":"C","rx":0.28416,"ry":0.65957,"rw":0.01904,"rh":0.01346,"cx":0.29368,"cy":0.6663},{"opsi":"D","rx":0.36534,"ry":0.65957,"rw":0.01904,"rh":0.01346,"cx":0.37486,"cy":0.6663},{"opsi":"E","rx":0.44653,"ry":0.65957,"rw":0.01904,"rh":0.01346,"cx":0.45605,"cy":0.6663}]},{"nomor":17,"opsi":[{"opsi":"A","rx":0.12179,"ry":0.69144,"rw":0.01904,"rh":0.01346,"cx":0.13131,"cy":0.69818},{"opsi":"B","rx":0.20297,"ry":0.69144,"rw":0.01904,"rh":0.01346,"cx":0.21249,"cy":0.69818},{"opsi":"C","rx":0.28416,"ry":0.69144,"rw":0.01904,"rh":0.01346,"cx":0.29368,"cy":0.69818},{"opsi":"D","rx":0.36534,"ry":0.69144,"rw":0.01904,"rh":0.01346,"cx":0.37486,"cy":0.69818},{"opsi":"E","rx":0.44653,"ry":0.69144,"rw":0.01904,"rh":0.01346,"cx":0.45605,"cy":0.69818}]},{"nomor":18,"opsi":[{"opsi":"A","rx":0.12179,"ry":0.72332,"rw":0.01904,"rh":0.01346,"cx":0.13131,"cy":0.73005},{"opsi":"B","rx":0.20297,"ry":0.72332,"rw":0.01904,"rh":0.01346,"cx":0.21249,"cy":0.73005},{"opsi":"C","rx":0.28416,"ry":0.72332,"rw":0.01904,"rh":0.01346,"cx":0.29368,"cy":0.73005},{"opsi":"D","rx":0.36534,"ry":0.72332,"rw":0.01904,"rh":0.01346,"cx":0.37486,"cy":0.73005},{"opsi":"E","rx":0.44653,"ry":0.72332,"rw":0.01904,"rh":0.01346,"cx":0.45605,"cy":0.73005}]},{"nomor":19,"opsi":[{"opsi":"A","rx":0.12179,"ry":0.75519,"rw":0.01904,"rh":0.01346,"cx":0.13131,"cy":0.76193},{"opsi":"B","rx":0.20297,"ry":0.75519,"rw":0.01904,"rh":0.01346,"cx":0.21249,"cy":0.76193},{"opsi":"C","rx":0.28416,"ry":0.75519,"rw":0.01904,"rh":0.01346,"cx":0.29368,"cy":0.76193},{"opsi":"D","rx":0.36534,"ry":0.75519,"rw":0.01904,"rh":0.01346,"cx":0.37486,"cy":0.76193},{"opsi":"E","rx":0.44653,"ry":0.75519,"rw":0.01904,"rh":0.01346,"cx":0.45605,"cy":0.76193}]},{"nomor":20,"opsi":[{"opsi":"A","rx":0.12179,"ry":0.78707,"rw":0.01904,"rh":0.01346,"cx":0.13131,"cy":0.7938},{"opsi":"B","rx":0.20297,"ry":0.78707,"rw":0.01904,"rh":0.01346,"cx":0.21249,"cy":0.7938},{"opsi":"C","rx":0.28416,"ry":0.78707,"rw":0.01904,"rh":0.01346,"cx":0.29368,"cy":0.7938},{"opsi":"D","rx":0.36534,"ry":0.78707,"rw":0.01904,"rh":0.01346,"cx":0.37486,"cy":0.7938},{"opsi":"E","rx":0.44653,"ry":0.78707,"rw":0.01904,"rh":0.01346,"cx":0.45605,"cy":0.7938}]},{"nomor":21,"opsi":[{"opsi":"A","rx":0.12179,"ry":0.81895,"rw":0.01904,"rh":0.01346,"cx":0.13131,"cy":0.82568},{"opsi":"B","rx":0.20297,"ry":0.81895,"rw":0.01904,"rh":0.01346,"cx":0.21249,"cy":0.82568},{"opsi":"C","rx":0.28416,"ry":0.81895,"rw":0.01904,"rh":0.01346,"cx":0.29368,"cy":0.82568},{"opsi":"D","rx":0.36534,"ry":0.81895,"rw":0.01904,"rh":0.01346,"cx":0.37486,"cy":0.82568},{"opsi":"E","rx":0.44653,"ry":0.81895,"rw":0.01904,"rh":0.01346,"cx":0.45605,"cy":0.82568}]},{"nomor":22,"opsi":[{"opsi":"A","rx":0.12179,"ry":0.85082,"rw":0.01904,"rh":0.01346,"cx":0.13131,"cy":0.85755},{"opsi":"B","rx":0.20297,"ry":0.85082,"rw":0.01904,"rh":0.01346,"cx":0.21249,"cy":0.85755},{"opsi":"C","rx":0.28416,"ry":0.85082,"rw":0.01904,"rh":0.01346,"cx":0.29368,"cy":0.85755},{"opsi":"D","rx":0.36534,"ry":0.85082,"rw":0.01904,"rh":0.01346,"cx":0.37486,"cy":0.85755},{"opsi":"E","rx":0.44653,"ry":0.85082,"rw":0.01904,"rh":0.01346,"cx":0.45605,"cy":0.85755}]},{"nomor":23,"opsi":[{"opsi":"A","rx":0.12179,"ry":0.8827,"rw":0.01904,"rh":0.01346,"cx":0.13131,"cy":0.88943},{"opsi":"B","rx":0.20297,"ry":0.8827,"rw":0.01904,"rh":0.01346,"cx":0.21249,"cy":0.88943},{"opsi":"C","rx":0.28416,"ry":0.8827,"rw":0.01904,"rh":0.01346,"cx":0.29368,"cy":0.88943},{"opsi":"D","rx":0.36534,"ry":0.8827,"rw":0.01904,"rh":0.01346,"cx":0.37486,"cy":0.88943},{"opsi":"E","rx":0.44653,"ry":0.8827,"rw":0.01904,"rh":0.01346,"cx":0.45605,"cy":0.88943}]},{"nomor":24,"opsi":[{"opsi":"A","rx":0.12179,"ry":0.91457,"rw":0.01904,"rh":0.01346,"cx":0.13131,"cy":0.9213},{"opsi":"B","rx":0.20297,"ry":0.91457,"rw":0.01904,"rh":0.01346,"cx":0.21249,"cy":0.9213},{"opsi":"C","rx":0.28416,"ry":0.91457,"rw":0.01904,"rh":0.01346,"cx":0.29368,"cy":0.9213},{"opsi":"D","rx":0.36534,"ry":0.91457,"rw":0.01904,"rh":0.01346,"cx":0.37486,"cy":0.9213},{"opsi":"E","rx":0.44653,"ry":0.91457,"rw":0.01904,"rh":0.01346,"cx":0.45605,"cy":0.9213}]},{"nomor":25,"opsi":[{"opsi":"A","rx":0.12179,"ry":0.94645,"rw":0.01904,"rh":0.01346,"cx":0.13131,"cy":0.95318},{"opsi":"B","rx":0.20297,"ry":0.94645,"rw":0.01904,"rh":0.01346,"cx":0.21249,"cy":0.95318},{"opsi":"C","rx":0.28416,"ry":0.94645,"rw":0.01904,"rh":0.01346,"cx":0.29368,"cy":0.95318},{"opsi":"D","rx":0.36534,"ry":0.94645,"rw":0.01904,"rh":0.01346,"cx":0.37486,"cy":0.95318},{"opsi":"E","rx":0.44653,"ry":0.94645,"rw":0.01904,"rh":0.01346,"cx":0.45605,"cy":0.95318}]},{"nomor":26,"opsi":[{"opsi":"A","rx":0.57139,"ry":0.18144,"rw":0.01904,"rh":0.01346,"cx":0.58091,"cy":0.18817},{"opsi":"B","rx":0.65257,"ry":0.18144,"rw":0.01904,"rh":0.01346,"cx":0.6621,"cy":0.18817},{"opsi":"C","rx":0.73376,"ry":0.18144,"rw":0.01904,"rh":0.01346,"cx":0.74328,"cy":0.18817},{"opsi":"D","rx":0.81494,"ry":0.18144,"rw":0.01904,"rh":0.01346,"cx":0.82447,"cy":0.18817},{"opsi":"E","rx":0.89613,"ry":0.18144,"rw":0.01904,"rh":0.01346,"cx":0.90565,"cy":0.18817}]},{"nomor":27,"opsi":[{"opsi":"A","rx":0.57139,"ry":0.21331,"rw":0.01904,"rh":0.01346,"cx":0.58091,"cy":0.22004},{"opsi":"B","rx":0.65257,"ry":0.21331,"rw":0.01904,"rh":0.01346,"cx":0.6621,"cy":0.22004},{"opsi":"C","rx":0.73376,"ry":0.21331,"rw":0.01904,"rh":0.01346,"cx":0.74328,"cy":0.22004},{"opsi":"D","rx":0.81494,"ry":0.21331,"rw":0.01904,"rh":0.01346,"cx":0.82447,"cy":0.22004},{"opsi":"E","rx":0.89613,"ry":0.21331,"rw":0.01904,"rh":0.01346,"cx":0.90565,"cy":0.22004}]},{"nomor":28,"opsi":[{"opsi":"A","rx":0.57139,"ry":0.24519,"rw":0.01904,"rh":0.01346,"cx":0.58091,"cy":0.25192},{"opsi":"B","rx":0.65257,"ry":0.24519,"rw":0.01904,"rh":0.01346,"cx":0.6621,"cy":0.25192},{"opsi":"C","rx":0.73376,"ry":0.24519,"rw":0.01904,"rh":0.01346,"cx":0.74328,"cy":0.25192},{"opsi":"D","rx":0.81494,"ry":0.24519,"rw":0.01904,"rh":0.01346,"cx":0.82447,"cy":0.25192},{"opsi":"E","rx":0.89613,"ry":0.24519,"rw":0.01904,"rh":0.01346,"cx":0.90565,"cy":0.25192}]},{"nomor":29,"opsi":[{"opsi":"A","rx":0.57139,"ry":0.27706,"rw":0.01904,"rh":0.01346,"cx":0.58091,"cy":0.2838},{"opsi":"B","rx":0.65257,"ry":0.27706,"rw":0.01904,"rh":0.01346,"cx":0.6621,"cy":0.2838},{"opsi":"C","rx":0.73376,"ry":0.27706,"rw":0.01904,"rh":0.01346,"cx":0.74328,"cy":0.2838},{"opsi":"D","rx":0.81494,"ry":0.27706,"rw":0.01904,"rh":0.01346,"cx":0.82447,"cy":0.2838},{"opsi":"E","rx":0.89613,"ry":0.27706,"rw":0.01904,"rh":0.01346,"cx":0.90565,"cy":0.2838}]},{"nomor":30,"opsi":[{"opsi":"A","rx":0.57139,"ry":0.30894,"rw":0.01904,"rh":0.01346,"cx":0.58091,"cy":0.31567},{"opsi":"B","rx":0.65257,"ry":0.30894,"rw":0.01904,"rh":0.01346,"cx":0.6621,"cy":0.31567},{"opsi":"C","rx":0.73376,"ry":0.30894,"rw":0.01904,"rh":0.01346,"cx":0.74328,"cy":0.31567},{"opsi":"D","rx":0.81494,"ry":0.30894,"rw":0.01904,"rh":0.01346,"cx":0.82447,"cy":0.31567},{"opsi":"E","rx":0.89613,"ry":0.30894,"rw":0.01904,"rh":0.01346,"cx":0.90565,"cy":0.31567}]},{"nomor":31,"opsi":[{"opsi":"A","rx":0.57139,"ry":0.34081,"rw":0.01904,"rh":0.01346,"cx":0.58091,"cy":0.34755},{"opsi":"B","rx":0.65257,"ry":0.34081,"rw":0.01904,"rh":0.01346,"cx":0.6621,"cy":0.34755},{"opsi":"C","rx":0.73376,"ry":0.34081,"rw":0.01904,"rh":0.01346,"cx":0.74328,"cy":0.34755},{"opsi":"D","rx":0.81494,"ry":0.34081,"rw":0.01904,"rh":0.01346,"cx":0.82447,"cy":0.34755},{"opsi":"E","rx":0.89613,"ry":0.34081,"rw":0.01904,"rh":0.01346,"cx":0.90565,"cy":0.34755}]},{"nomor":32,"opsi":[{"opsi":"A","rx":0.57139,"ry":0.37269,"rw":0.01904,"rh":0.01346,"cx":0.58091,"cy":0.37942},{"opsi":"B","rx":0.65257,"ry":0.37269,"rw":0.01904,"rh":0.01346,"cx":0.6621,"cy":0.37942},{"opsi":"C","rx":0.73376,"ry":0.37269,"rw":0.01904,"rh":0.01346,"cx":0.74328,"cy":0.37942},{"opsi":"D","rx":0.81494,"ry":0.37269,"rw":0.01904,"rh":0.01346,"cx":0.82447,"cy":0.37942},{"opsi":"E","rx":0.89613,"ry":0.37269,"rw":0.01904,"rh":0.01346,"cx":0.90565,"cy":0.37942}]},{"nomor":33,"opsi":[{"opsi":"A","rx":0.57139,"ry":0.40457,"rw":0.01904,"rh":0.01346,"cx":0.58091,"cy":0.4113},{"opsi":"B","rx":0.65257,"ry":0.40457,"rw":0.01904,"rh":0.01346,"cx":0.6621,"cy":0.4113},{"opsi":"C","rx":0.73376,"ry":0.40457,"rw":0.01904,"rh":0.01346,"cx":0.74328,"cy":0.4113},{"opsi":"D","rx":0.81494,"ry":0.40457,"rw":0.01904,"rh":0.01346,"cx":0.82447,"cy":0.4113},{"opsi":"E","rx":0.89613,"ry":0.40457,"rw":0.01904,"rh":0.01346,"cx":0.90565,"cy":0.4113}]},{"nomor":34,"opsi":[{"opsi":"A","rx":0.57139,"ry":0.43644,"rw":0.01904,"rh":0.01346,"cx":0.58091,"cy":0.44317},{"opsi":"B","rx":0.65257,"ry":0.43644,"rw":0.01904,"rh":0.01346,"cx":0.6621,"cy":0.44317},{"opsi":"C","rx":0.73376,"ry":0.43644,"rw":0.01904,"rh":0.01346,"cx":0.74328,"cy":0.44317},{"opsi":"D","rx":0.81494,"ry":0.43644,"rw":0.01904,"rh":0.01346,"cx":0.82447,"cy":0.44317},{"opsi":"E","rx":0.89613,"ry":0.43644,"rw":0.01904,"rh":0.01346,"cx":0.90565,"cy":0.44317}]},{"nomor":35,"opsi":[{"opsi":"A","rx":0.57139,"ry":0.46832,"rw":0.01904,"rh":0.01346,"cx":0.58091,"cy":0.47505},{"opsi":"B","rx":0.65257,"ry":0.46832,"rw":0.01904,"rh":0.01346,"cx":0.6621,"cy":0.47505},{"opsi":"C","rx":0.73376,"ry":0.46832,"rw":0.01904,"rh":0.01346,"cx":0.74328,"cy":0.47505},{"opsi":"D","rx":0.81494,"ry":0.46832,"rw":0.01904,"rh":0.01346,"cx":0.82447,"cy":0.47505},{"opsi":"E","rx":0.89613,"ry":0.46832,"rw":0.01904,"rh":0.01346,"cx":0.90565,"cy":0.47505}]},{"nomor":36,"opsi":[{"opsi":"A","rx":0.57139,"ry":0.50019,"rw":0.01904,"rh":0.01346,"cx":0.58091,"cy":0.50692},{"opsi":"B","rx":0.65257,"ry":0.50019,"rw":0.01904,"rh":0.01346,"cx":0.6621,"cy":0.50692},{"opsi":"C","rx":0.73376,"ry":0.50019,"rw":0.01904,"rh":0.01346,"cx":0.74328,"cy":0.50692},{"opsi":"D","rx":0.81494,"ry":0.50019,"rw":0.01904,"rh":0.01346,"cx":0.82447,"cy":0.50692},{"opsi":"E","rx":0.89613,"ry":0.50019,"rw":0.01904,"rh":0.01346,"cx":0.90565,"cy":0.50692}]},{"nomor":37,"opsi":[{"opsi":"A","rx":0.57139,"ry":0.53207,"rw":0.01904,"rh":0.01346,"cx":0.58091,"cy":0.5388},{"opsi":"B","rx":0.65257,"ry":0.53207,"rw":0.01904,"rh":0.01346,"cx":0.6621,"cy":0.5388},{"opsi":"C","rx":0.73376,"ry":0.53207,"rw":0.01904,"rh":0.01346,"cx":0.74328,"cy":0.5388},{"opsi":"D","rx":0.81494,"ry":0.53207,"rw":0.01904,"rh":0.01346,"cx":0.82447,"cy":0.5388},{"opsi":"E","rx":0.89613,"ry":0.53207,"rw":0.01904,"rh":0.01346,"cx":0.90565,"cy":0.5388}]},{"nomor":38,"opsi":[{"opsi":"A","rx":0.57139,"ry":0.56394,"rw":0.01904,"rh":0.01346,"cx":0.58091,"cy":0.57067},{"opsi":"B","rx":0.65257,"ry":0.56394,"rw":0.01904,"rh":0.01346,"cx":0.6621,"cy":0.57067},{"opsi":"C","rx":0.73376,"ry":0.56394,"rw":0.01904,"rh":0.01346,"cx":0.74328,"cy":0.57067},{"opsi":"D","rx":0.81494,"ry":0.56394,"rw":0.01904,"rh":0.01346,"cx":0.82447,"cy":0.57067},{"opsi":"E","rx":0.89613,"ry":0.56394,"rw":0.01904,"rh":0.01346,"cx":0.90565,"cy":0.57067}]},{"nomor":39,"opsi":[{"opsi":"A","rx":0.57139,"ry":0.59582,"rw":0.01904,"rh":0.01346,"cx":0.58091,"cy":0.60255},{"opsi":"B","rx":0.65257,"ry":0.59582,"rw":0.01904,"rh":0.01346,"cx":0.6621,"cy":0.60255},{"opsi":"C","rx":0.73376,"ry":0.59582,"rw":0.01904,"rh":0.01346,"cx":0.74328,"cy":0.60255},{"opsi":"D","rx":0.81494,"ry":0.59582,"rw":0.01904,"rh":0.01346,"cx":0.82447,"cy":0.60255},{"opsi":"E","rx":0.89613,"ry":0.59582,"rw":0.01904,"rh":0.01346,"cx":0.90565,"cy":0.60255}]},{"nomor":40,"opsi":[{"opsi":"A","rx":0.57139,"ry":0.62769,"rw":0.01904,"rh":0.01346,"cx":0.58091,"cy":0.63443},{"opsi":"B","rx":0.65257,"ry":0.62769,"rw":0.01904,"rh":0.01346,"cx":0.6621,"cy":0.63443},{"opsi":"C","rx":0.73376,"ry":0.62769,"rw":0.01904,"rh":0.01346,"cx":0.74328,"cy":0.63443},{"opsi":"D","rx":0.81494,"ry":0.62769,"rw":0.01904,"rh":0.01346,"cx":0.82447,"cy":0.63443},{"opsi":"E","rx":0.89613,"ry":0.62769,"rw":0.01904,"rh":0.01346,"cx":0.90565,"cy":0.63443}]},{"nomor":41,"opsi":[{"opsi":"A","rx":0.57139,"ry":0.65957,"rw":0.01904,"rh":0.01346,"cx":0.58091,"cy":0.6663},{"opsi":"B","rx":0.65257,"ry":0.65957,"rw":0.01904,"rh":0.01346,"cx":0.6621,"cy":0.6663},{"opsi":"C","rx":0.73376,"ry":0.65957,"rw":0.01904,"rh":0.01346,"cx":0.74328,"cy":0.6663},{"opsi":"D","rx":0.81494,"ry":0.65957,"rw":0.01904,"rh":0.01346,"cx":0.82447,"cy":0.6663},{"opsi":"E","rx":0.89613,"ry":0.65957,"rw":0.01904,"rh":0.01346,"cx":0.90565,"cy":0.6663}]},{"nomor":42,"opsi":[{"opsi":"A","rx":0.57139,"ry":0.69144,"rw":0.01904,"rh":0.01346,"cx":0.58091,"cy":0.69818},{"opsi":"B","rx":0.65257,"ry":0.69144,"rw":0.01904,"rh":0.01346,"cx":0.6621,"cy":0.69818},{"opsi":"C","rx":0.73376,"ry":0.69144,"rw":0.01904,"rh":0.01346,"cx":0.74328,"cy":0.69818},{"opsi":"D","rx":0.81494,"ry":0.69144,"rw":0.01904,"rh":0.01346,"cx":0.82447,"cy":0.69818},{"opsi":"E","rx":0.89613,"ry":0.69144,"rw":0.01904,"rh":0.01346,"cx":0.90565,"cy":0.69818}]},{"nomor":43,"opsi":[{"opsi":"A","rx":0.57139,"ry":0.72332,"rw":0.01904,"rh":0.01346,"cx":0.58091,"cy":0.73005},{"opsi":"B","rx":0.65257,"ry":0.72332,"rw":0.01904,"rh":0.01346,"cx":0.6621,"cy":0.73005},{"opsi":"C","rx":0.73376,"ry":0.72332,"rw":0.01904,"rh":0.01346,"cx":0.74328,"cy":0.73005},{"opsi":"D","rx":0.81494,"ry":0.72332,"rw":0.01904,"rh":0.01346,"cx":0.82447,"cy":0.73005},{"opsi":"E","rx":0.89613,"ry":0.72332,"rw":0.01904,"rh":0.01346,"cx":0.90565,"cy":0.73005}]},{"nomor":44,"opsi":[{"opsi":"A","rx":0.57139,"ry":0.75519,"rw":0.01904,"rh":0.01346,"cx":0.58091,"cy":0.76193},{"opsi":"B","rx":0.65257,"ry":0.75519,"rw":0.01904,"rh":0.01346,"cx":0.6621,"cy":0.76193},{"opsi":"C","rx":0.73376,"ry":0.75519,"rw":0.01904,"rh":0.01346,"cx":0.74328,"cy":0.76193},{"opsi":"D","rx":0.81494,"ry":0.75519,"rw":0.01904,"rh":0.01346,"cx":0.82447,"cy":0.76193},{"opsi":"E","rx":0.89613,"ry":0.75519,"rw":0.01904,"rh":0.01346,"cx":0.90565,"cy":0.76193}]},{"nomor":45,"opsi":[{"opsi":"A","rx":0.57139,"ry":0.78707,"rw":0.01904,"rh":0.01346,"cx":0.58091,"cy":0.7938},{"opsi":"B","rx":0.65257,"ry":0.78707,"rw":0.01904,"rh":0.01346,"cx":0.6621,"cy":0.7938},{"opsi":"C","rx":0.73376,"ry":0.78707,"rw":0.01904,"rh":0.01346,"cx":0.74328,"cy":0.7938},{"opsi":"D","rx":0.81494,"ry":0.78707,"rw":0.01904,"rh":0.01346,"cx":0.82447,"cy":0.7938},{"opsi":"E","rx":0.89613,"ry":0.78707,"rw":0.01904,"rh":0.01346,"cx":0.90565,"cy":0.7938}]},{"nomor":46,"opsi":[{"opsi":"A","rx":0.57139,"ry":0.81895,"rw":0.01904,"rh":0.01346,"cx":0.58091,"cy":0.82568},{"opsi":"B","rx":0.65257,"ry":0.81895,"rw":0.01904,"rh":0.01346,"cx":0.6621,"cy":0.82568},{"opsi":"C","rx":0.73376,"ry":0.81895,"rw":0.01904,"rh":0.01346,"cx":0.74328,"cy":0.82568},{"opsi":"D","rx":0.81494,"ry":0.81895,"rw":0.01904,"rh":0.01346,"cx":0.82447,"cy":0.82568},{"opsi":"E","rx":0.89613,"ry":0.81895,"rw":0.01904,"rh":0.01346,"cx":0.90565,"cy":0.82568}]},{"nomor":47,"opsi":[{"opsi":"A","rx":0.57139,"ry":0.85082,"rw":0.01904,"rh":0.01346,"cx":0.58091,"cy":0.85755},{"opsi":"B","rx":0.65257,"ry":0.85082,"rw":0.01904,"rh":0.01346,"cx":0.6621,"cy":0.85755},{"opsi":"C","rx":0.73376,"ry":0.85082,"rw":0.01904,"rh":0.01346,"cx":0.74328,"cy":0.85755},{"opsi":"D","rx":0.81494,"ry":0.85082,"rw":0.01904,"rh":0.01346,"cx":0.82447,"cy":0.85755},{"opsi":"E","rx":0.89613,"ry":0.85082,"rw":0.01904,"rh":0.01346,"cx":0.90565,"cy":0.85755}]},{"nomor":48,"opsi":[{"opsi":"A","rx":0.57139,"ry":0.8827,"rw":0.01904,"rh":0.01346,"cx":0.58091,"cy":0.88943},{"opsi":"B","rx":0.65257,"ry":0.8827,"rw":0.01904,"rh":0.01346,"cx":0.6621,"cy":0.88943},{"opsi":"C","rx":0.73376,"ry":0.8827,"rw":0.01904,"rh":0.01346,"cx":0.74328,"cy":0.88943},{"opsi":"D","rx":0.81494,"ry":0.8827,"rw":0.01904,"rh":0.01346,"cx":0.82447,"cy":0.88943},{"opsi":"E","rx":0.89613,"ry":0.8827,"rw":0.01904,"rh":0.01346,"cx":0.90565,"cy":0.88943}]},{"nomor":49,"opsi":[{"opsi":"A","rx":0.57139,"ry":0.91457,"rw":0.01904,"rh":0.01346,"cx":0.58091,"cy":0.9213},{"opsi":"B","rx":0.65257,"ry":0.91457,"rw":0.01904,"rh":0.01346,"cx":0.6621,"cy":0.9213},{"opsi":"C","rx":0.73376,"ry":0.91457,"rw":0.01904,"rh":0.01346,"cx":0.74328,"cy":0.9213},{"opsi":"D","rx":0.81494,"ry":0.91457,"rw":0.01904,"rh":0.01346,"cx":0.82447,"cy":0.9213},{"opsi":"E","rx":0.89613,"ry":0.91457,"rw":0.01904,"rh":0.01346,"cx":0.90565,"cy":0.9213}]},{"nomor":50,"opsi":[{"opsi":"A","rx":0.57139,"ry":0.94645,"rw":0.01904,"rh":0.01346,"cx":0.58091,"cy":0.95318},{"opsi":"B","rx":0.65257,"ry":0.94645,"rw":0.01904,"rh":0.01346,"cx":0.6621,"cy":0.95318},{"opsi":"C","rx":0.73376,"ry":0.94645,"rw":0.01904,"rh":0.01346,"cx":0.74328,"cy":0.95318},{"opsi":"D","rx":0.81494,"ry":0.94645,"rw":0.01904,"rh":0.01346,"cx":0.82447,"cy":0.95318},{"opsi":"E","rx":0.89613,"ry":0.94645,"rw":0.01904,"rh":0.01346,"cx":0.90565,"cy":0.95318}]}],"header":{"y_top":0.9703,"y_bot":0.8658,"x_l":0.0504,"x_r":0.9496},"grid_area":{"y_top":0.1722,"y_bot":0.9739,"x_l":0.0504,"x_r":0.9496},"mid_x":0.5,"opt_w":0.08119,"row_h":0.03188,"num_w":0.03696};
-const SYM  = ['▲','●','■','★','⬡'];
-const SCOL = ['#1565c0','#1b5e20','#f57f17','#b71c1c','#6a1b9a'];
-
-// ── STATE ────────────────────────────────────────────────────
-let imgD=null,imgW=0,imgH=0;
-let flatD=null,flatW=0,flatH=0;   // hasil autoFlatten
-let hasROI=false,isBW=false,last=null;
-let detectedFormat='unknown';      // 'v4' | 'kotak' | 'unknown'
-let flatCorners=null;              // untuk overlay
-let kunci=new Array(50).fill('');
+// ═══ STATE ═══
+let iD=null,iW=0,iH=0;
+let bx0=0,by0=0,bx1=0,by1=0,hasBB=false;
+let bwM=false,roiOn=false,last=null;
+let kunci=new Array(40).fill('');
 let rekap=[];
-let KAL=kalLoad();
+let KAL=kLd();
 
 document.addEventListener('DOMContentLoaded',()=>{
-  try{const s=localStorage.getItem('bb41_kunci');if(s)kunci=JSON.parse(s);}catch{}
-  try{const s=localStorage.getItem('bb41_rekap');if(s)rekap=JSON.parse(s);}catch{}
-  buildKunci();renderRekap();updateStats();kalUI();
-  const dz=document.getElementById('dropZone');
+  try{const s=localStorage.getItem('bb6_k');if(s)kunci=JSON.parse(s);}catch{}
+  try{const s=localStorage.getItem('bb6_r');if(s)rekap=JSON.parse(s);}catch{}
+  bldK();rnRk();upSt();kUI();
+  const dz=document.getElementById('dz');
   dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag');});
   dz.addEventListener('dragleave',()=>dz.classList.remove('drag'));
-  dz.addEventListener('drop',e=>{
-    e.preventDefault();dz.classList.remove('drag');
-    if(e.dataTransfer.files[0])processFile(e.dataTransfer.files[0]);
-  });
+  dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('drag');
+    if(e.dataTransfer.files[0])prcF(e.dataTransfer.files[0]);});
 });
 
-// ── TABS ─────────────────────────────────────────────────────
-function goTab(n){
+function T(n){
   document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('on',i===n));
-  document.querySelectorAll('.pg') .forEach((p,i)=>p.classList.toggle('on',i===n));
-  if(n===3){renderRekap();updateStats();}
-  if(n===1)updateKCount();
+  document.querySelectorAll('.pg').forEach((p,i)=>p.classList.toggle('on',i===n));
+  if(n===3){rnRk();upSt();}if(n===1)upKC();
 }
 
-// ── UI HELPERS ────────────────────────────────────────────────
 let _tt;
-function toast(m,d=2500){
-  const e=document.getElementById('toast');
-  e.textContent=m;e.classList.add('show');
-  clearTimeout(_tt);_tt=setTimeout(()=>e.classList.remove('show'),d);
-}
-function setSbar(t,m){
-  document.getElementById('sbar').className='sbar '+t;
-  document.getElementById('sbarTxt').textContent=m;
-}
-function setPbar(p){
-  const w=document.getElementById('pbarWrap');
-  w.style.display=(p>=0&&p<100)?'block':'none';
-  document.getElementById('pbar').style.width=p+'%';
-}
-function setFlatInfo(msg,type='ok'){
-  const el=document.getElementById('flatInfo');
-  if(!el)return;
-  el.textContent=msg;
-  el.style.display=msg?'block':'none';
-  el.style.background=type==='ok'?'rgba(0,229,255,.12)':type==='warn'?'rgba(255,171,0,.15)':'rgba(255,61,90,.12)';
-  el.style.color=type==='ok'?'#00e5ff':type==='warn'?'#ffab00':'#ff3d5a';
-}
-function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+function toast(m,d=2500){const e=document.getElementById('toast');e.textContent=m;e.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>e.classList.remove('show'),d);}
+function sb(c,m){document.getElementById('sb').className='sbar '+c;document.getElementById('sbt').textContent=m;}
+function pb(p){const w=document.getElementById('pbw');w.style.display=(p>=0&&p<100)?'block':'none';document.getElementById('pb').style.width=p+'%';}
+function sl(ms){return new Promise(r=>setTimeout(r,ms));}
 
-// ── FILE LOAD ─────────────────────────────────────────────────
-function onFile(e){const f=e.target.files[0];e.target.value='';if(f)processFile(f);}
-async function processFile(f){
-  clearCanvas();setSbar('work','⏳ Memuat...');
+// ═══ FILE LOAD ═══
+function onF(e){const f=e.target.files[0];e.target.value='';if(f)prcF(f);}
+async function prcF(f){
+  clrSt();sb('wrk','⏳ Memuat...');
   try{
-    if(f.type==='application/pdf'||f.name.toLowerCase().endsWith('.pdf'))await loadPDF(f);
-    else{const u=URL.createObjectURL(f);await loadImage(u);URL.revokeObjectURL(u);}
-  }catch(err){setSbar('err','❌ '+err.message);}
+    if(f.type==='application/pdf'||f.name.toLowerCase().endsWith('.pdf'))await ldPDF(f);
+    else{const u=URL.createObjectURL(f);await ldImg(u);URL.revokeObjectURL(u);}
+  }catch(e){sb('err','❌ '+e.message);}
 }
-async function loadPDF(f){
-  setSbar('work','⏳ Render PDF...');
+async function ldPDF(f){
+  sb('wrk','⏳ Render PDF...');
   if(!window.pdfjsLib){
-    await loadScript('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js');
-    pdfjsLib.GlobalWorkerOptions.workerSrc=
-      'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    await new Promise((ok,fail)=>{const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';s.onload=ok;s.onerror=()=>fail(new Error('Gagal load pdf.js'));document.head.appendChild(s);});
+    pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
   }
   const buf=await f.arrayBuffer();
   const pdf=await pdfjsLib.getDocument({data:buf}).promise;
   const pg=await pdf.getPage(1);
-  const vp=pg.getViewport({scale:2.5});
-  const tmp=document.createElement('canvas');
-  tmp.width=vp.width;tmp.height=vp.height;
+  const vp=pg.getViewport({scale:2.2});
+  const tmp=document.createElement('canvas');tmp.width=vp.width;tmp.height=vp.height;
   await pg.render({canvasContext:tmp.getContext('2d'),viewport:vp}).promise;
-  await loadImage(tmp.toDataURL());
+  await ldImg(tmp.toDataURL());
 }
-function loadScript(src){
-  return new Promise((ok,fail)=>{
-    const s=document.createElement('script');
-    s.src=src;s.onload=ok;
-    s.onerror=()=>fail(new Error('Gagal load '+src));
-    document.head.appendChild(s);
-  });
-}
-async function loadImage(src){
+async function ldImg(src){
   return new Promise((ok,fail)=>{
     const img=new Image();
     img.onload=async()=>{
-      const cv=document.getElementById('cvMain'),ov=document.getElementById('cvOverlay');
-      cv.width=ov.width=img.naturalWidth;
-      cv.height=ov.height=img.naturalHeight;
-      const ctx=cv.getContext('2d');
-      ctx.drawImage(img,0,0);
-      imgD=ctx.getImageData(0,0,cv.width,cv.height);
-      imgW=cv.width;imgH=cv.height;
-      document.getElementById('canvasWrap').style.display='block';
-      setSbar('work','🔧 Auto-flatten...');await sleep(20);
-      await runPipeline();ok();
+      const cv=document.getElementById('cvm'),ov=document.getElementById('cvo');
+      cv.width=ov.width=img.naturalWidth;cv.height=ov.height=img.naturalHeight;
+      cv.getContext('2d').drawImage(img,0,0);
+      iD=cv.getContext('2d').getImageData(0,0,cv.width,cv.height);
+      iW=cv.width;iH=cv.height;
+      document.getElementById('cvw').style.display='block';
+      await pipe();ok();
     };
-    img.onerror=()=>fail(new Error('File gambar tidak valid'));
+    img.onerror=()=>fail(new Error('Gambar tidak valid'));
     img.src=src;
   });
 }
 
-// ══════════════════════════════════════════════════════════════
-// PIPELINE UTAMA
-// ══════════════════════════════════════════════════════════════
-async function runPipeline(){
-  // STEP 1 — Auto-flatten: perspective + crop + normalize
-  setSbar('work','📐 Meluruskan perspektif...');await sleep(10);
-  const flatResult=autoFlatten(imgD,imgW,imgH);
-  flatD=flatResult.data;flatW=flatResult.w;flatH=flatResult.h;
-  flatCorners=flatResult.corners;
-
-  // Tampilkan overlay corners di canvas asli
-  if(flatCorners)drawCornersOverlay(flatCorners,imgW,imgH);
-
-  // STEP 2 — Deteksi format
-  setSbar('work','🔍 Mendeteksi format LJK...');await sleep(10);
-  const fmt=detectFormat(flatD,flatW,flatH);
-  const override=document.getElementById('fmtOverride');
-  detectedFormat = override&&override.value!=='auto' ? override.value : fmt;
-
-  // Update info badge
-  const fmtNames={'v4':'Simbol v4 (▲●■★⬡)','kotak':'Kotak/Silang (X)','unknown':'Tidak dikenal'};
-  setFlatInfo(
-    `📐 Flatten: ${flatResult.msg}  |  🔍 Format: ${fmtNames[detectedFormat]||detectedFormat}`,
-    detectedFormat==='unknown'?'warn':'ok'
-  );
-
-  // STEP 3 — Validasi dasar
-  setSbar('work','⚙️ Validasi...');await sleep(10);
-  const valid=await validate(flatD,flatW,flatH,detectedFormat);
-  if(!valid)return;
-
-  // STEP 4 — Enable tombol
-  setSbar('ok',`✅ Siap — ${fmtNames[detectedFormat]} | ${flatW}×${flatH}`);
-  toast(`✅ ${fmtNames[detectedFormat]}`);
-  isBW=true;applyBWBlur();
-  document.getElementById('btnBW').textContent='🎨 Lihat Asli';
-  ['btnRoi','btnPrev','btnScan','btnBW'].forEach(id=>
-    document.getElementById(id).disabled=false);
+// ═══ PIPELINE — deteksi bounding box → validate → enable ═══
+async function pipe(){
+  sb('wrk','🔍 Deteksi kertas...');await sl(15);
+  const d=iD.data,STEP=Math.max(1,Math.floor(Math.min(iW,iH)/80));
+  // Grayscale cepat
+  const gray=new Uint8Array(iW*iH);
+  for(let i=0;i<iW*iH;i++){const p=i*4;gray[i]=Math.round(.299*d[p]+.587*d[p+1]+.114*d[p+2]);}
+  // Threshold: rata-rata * 0.85
+  let sum=0;for(let i=0;i<gray.length;i+=STEP)sum+=gray[i];
+  const thr=Math.max(140,(sum/Math.ceil(gray.length/STEP))*.85);
+  const MRG=Math.floor(Math.min(iW,iH)*.03);
+  // Scan 4 tepi
+  bx0=scnE(gray,iW,iH,'L',MRG,thr,STEP);
+  bx1=scnE(gray,iW,iH,'R',MRG,thr,STEP);
+  by0=scnE(gray,iW,iH,'T',MRG,thr,STEP);
+  by1=scnE(gray,iW,iH,'B',MRG,thr,STEP);
+  hasBB=(bx0>=0&&bx1>bx0+iW*.3&&by0>=0&&by1>by0+iH*.3);
+  if(!hasBB){bx0=0;bx1=iW;by0=0;by1=iH;}
+  // Validate
+  if(!vld(d,iW,iH))return;
+  shBW();drBB();
+  sb('ok','✅ Siap'+(hasBB?' | Batas ✓':'')+' | '+iW+'×'+iH);
+  toast('✅ Siap di-scan');bwM=true;
+  document.getElementById('bBW').textContent='🎨 Asli';
+  ['bR','bP','bS','bBW'].forEach(id=>document.getElementById(id).disabled=false);
 }
 
-// ══════════════════════════════════════════════════════════════
-// AUTO-FLATTEN — Luruskan + Crop + Normalize + Center
-// ══════════════════════════════════════════════════════════════
-function autoFlatten(imgData,W,H){
-  const d=imgData.data;
-
-  // ── 1. Grayscale ──────────────────────────────────────────
-  const gray=new Uint8Array(W*H);
-  for(let i=0;i<W*H;i++){const p=i*4;gray[i]=Math.round(0.299*d[p]+0.587*d[p+1]+0.114*d[p+2]);}
-
-  // ── 2. Deteksi tepi kertas ─────────────────────────────────
-  const corners=detectPaperCorners(gray,W,H);
-
-  let outData,outW,outH,msg;
-
-  if(corners){
-    // ── 3a. Perspective warp ke standar A4 ──────────────────
-    const TW=1000,TH=1414;
-    const warped=bilinearWarp(d,W,H,corners,TW,TH);
-
-    // ── 4. Contrast normalize ────────────────────────────────
-    const normed=stretchContrast(warped,TW,TH);
-
-    // ── 5. Add symmetric margin 2% ───────────────────────────
-    const mx=Math.round(TW*0.02),my=Math.round(TH*0.02);
-    const out=cropCenter(normed,TW,TH,mx,my);
-    outData=out;outW=TW;outH=TH;
-    msg=`Warp ✓ (TL:${corners[0].x},${corners[0].y})`;
-  } else {
-    // ── 3b. Fallback: normalize saja ─────────────────────────
-    const normed=stretchContrast(imgData,W,H);
-    outData=normed;outW=W;outH=H;
-    msg='Fallback (no warp)';
-  }
-
-  return{data:outData,w:outW,h:outH,corners,msg};
+function scnE(gray,W,H,dir,MRG,thr,STEP){
+  if(dir==='L'){for(let x=MRG;x<W*.5;x+=STEP){let b=0,t=0;for(let y=Math.floor(H*.1);y<Math.floor(H*.9);y+=STEP*2){if(gray[y*W+x]>thr)b++;t++;}if(t&&b/t>.45)return Math.max(0,x-STEP*2);}return -1;}
+  if(dir==='R'){for(let x=W-MRG;x>W*.5;x-=STEP){let b=0,t=0;for(let y=Math.floor(H*.1);y<Math.floor(H*.9);y+=STEP*2){if(gray[y*W+x]>thr)b++;t++;}if(t&&b/t>.45)return Math.min(W,x+STEP*2);}return -1;}
+  if(dir==='T'){for(let y=MRG;y<H*.4;y+=STEP){let b=0,t=0;for(let x=Math.floor(W*.1);x<Math.floor(W*.9);x+=STEP*2){if(gray[y*W+x]>thr)b++;t++;}if(t&&b/t>.45)return Math.max(0,y-STEP*2);}return -1;}
+  for(let y=H-MRG;y>H*.6;y-=STEP){let b=0,t=0;for(let x=Math.floor(W*.1);x<Math.floor(W*.9);x+=STEP*2){if(gray[y*W+x]>thr)b++;t++;}if(t&&b/t>.45)return Math.min(H,y+STEP*2);}return -1;
 }
 
-// ── Deteksi 4 sudut kertas ────────────────────────────────────
-function detectPaperCorners(gray,W,H){
-  const STEP=Math.max(1,Math.floor(Math.min(W,H)/150));
-  const MRG =Math.floor(Math.min(W,H)*0.04);
-
-  // Hitung threshold adaptif: kertas putih = top 30% brightness
-  const samp=[];
-  for(let i=0;i<gray.length;i+=STEP*3)samp.push(gray[i]);
-  samp.sort((a,b)=>a-b);
-  const paperThr=samp[Math.floor(samp.length*0.65)]||180;
-  const edgeThr =Math.max(40,paperThr-60);
-
-  // Scan 4 tepi → temukan batas kertas
-  // Strategi: per-column/row, hitung jumlah piksel cerah
-  // Tepi kertas = transisi dari gelap/abu ke cerah
-
-  function scanEdge(axis,from,to,dir){
-    // axis='x' scan kolom kiri-kanan, axis='y' scan baris atas-bawah
-    let found=-1;
-    const start=from+(dir>0?0:0),end=to;
-    const stride=dir>0?STEP:-STEP;
-    for(let pos=start;pos!==end+stride;pos+=stride){
-      let bright=0,total=0;
-      if(axis==='x'){
-        for(let y=Math.floor(H*0.15);y<Math.floor(H*0.85);y+=STEP*2){
-          if(gray[y*W+pos]>paperThr)bright++;total++;
-        }
-      } else {
-        for(let x=Math.floor(W*0.15);x<Math.floor(W*0.85);x+=STEP*2){
-          if(gray[pos*W+x]>paperThr)bright++;total++;
-        }
-      }
-      if(total>0&&bright/total>0.55){found=pos;break;}
-    }
-    return found;
-  }
-
-  const left  =scanEdge('x',MRG,Math.floor(W*0.45),1);
-  const right =scanEdge('x',W-MRG,Math.floor(W*0.55),-1);
-  const top   =scanEdge('y',MRG,Math.floor(H*0.40),1);
-  const bottom=scanEdge('y',H-MRG,Math.floor(H*0.60),-1);
-
-  if(left<0||right<0||top<0||bottom<0)return null;
-  if((right-left)<W*0.35||(bottom-top)<H*0.35)return null;
-
-  // Refine corners dengan local edge scan
-  function refine(ax,ay,dx,dy){
-    // Cari piksel terang paling dekat dari arah (dx,dy) ke pusat
-    let bx=ax,by=ay;
-    for(let t=0;t<30;t++){
-      const nx=Math.round(ax+dx*t),ny=Math.round(ay+dy*t);
-      if(nx<0||nx>=W||ny<0||ny>=H)break;
-      if(gray[ny*W+nx]>edgeThr){bx=nx;by=ny;break;}
-    }
-    return{x:bx,y:by};
-  }
-
-  // Pad keluar sedikit (jangan crop konten)
-  const pad=Math.round(STEP*1.5);
-  return[
-    {x:Math.max(0,left-pad),   y:Math.max(0,top-pad)},     // TL
-    {x:Math.min(W-1,right+pad),y:Math.max(0,top-pad)},     // TR
-    {x:Math.min(W-1,right+pad),y:Math.min(H-1,bottom+pad)},// BR
-    {x:Math.max(0,left-pad),   y:Math.min(H-1,bottom+pad)} // BL
-  ];
-}
-
-// ── Bilinear warp (inverse mapping) ──────────────────────────
-function bilinearWarp(src,SW,SH,corners,TW,TH){
-  const[tl,tr,br,bl]=corners;
-  const out=new ImageData(new Uint8ClampedArray(TW*TH*4),TW,TH);
-  for(let ty=0;ty<TH;ty++){
-    const v=ty/TH;
-    for(let tx=0;tx<TW;tx++){
-      const u=tx/TW;
-      // Bilinear interpolation of corners
-      const sx=(1-v)*((1-u)*tl.x+u*tr.x)+v*((1-u)*bl.x+u*br.x);
-      const sy=(1-v)*((1-u)*tl.y+u*tr.y)+v*((1-u)*bl.y+u*br.y);
-      // Bilinear sample dari source
-      const x0=Math.floor(sx),y0=Math.floor(sy);
-      const x1=Math.min(x0+1,SW-1),y1=Math.min(y0+1,SH-1);
-      const fx=sx-x0,fy=sy-y0;
-      const di=(ty*TW+tx)*4;
-      for(let c=0;c<3;c++){
-        const v00=src[(y0*SW+x0)*4+c],v10=src[(y0*SW+x1)*4+c];
-        const v01=src[(y1*SW+x0)*4+c],v11=src[(y1*SW+x1)*4+c];
-        out.data[di+c]=Math.round(
-          v00*(1-fx)*(1-fy)+v10*fx*(1-fy)+v01*(1-fx)*fy+v11*fx*fy);
-      }
-      out.data[di+3]=255;
-    }
-  }
-  return out;
-}
-
-// ── Contrast stretch 3rd-97th percentile ──────────────────────
-function stretchContrast(imgData,W,H){
-  const d=imgData.data;
-  // Hitung histogram grayscale
-  const hist=new Int32Array(256);
-  const step=Math.max(1,Math.floor(W*H/8000));
-  for(let i=0;i<W*H;i+=step){
-    const p=i*4;
-    hist[Math.round(0.299*d[p]+0.587*d[p+1]+0.114*d[p+2])]++;
-  }
-  const total=W*H/step;
-  let lo=0,hi=255,cum=0;
-  for(let v=0;v<256;v++){cum+=hist[v];if(cum/total>0.03){lo=v;break;}}
-  cum=0;
-  for(let v=255;v>=0;v--){cum+=hist[v];if(cum/total>0.03){hi=v;break;}}
-  const rng=Math.max(1,hi-lo);
-  if(rng>220)return imgData; // sudah bagus, skip
-
-  const out=new ImageData(new Uint8ClampedArray(d.length),W,H);
-  for(let i=0;i<d.length;i+=4){
-    for(let c=0;c<3;c++)
-      out.data[i+c]=Math.min(255,Math.max(0,Math.round((d[i+c]-lo)/rng*255)));
-    out.data[i+3]=255;
-  }
-  return out;
-}
-
-// ── Crop center (remove margin px dari tiap sisi) ─────────────
-function cropCenter(imgData,W,H,mx,my){
-  // Buat ulang dengan meluaskan margin (isi putih di luar)
-  const out=new ImageData(new Uint8ClampedArray(W*H*4),W,H);
-  out.data.fill(255); // putih
-  const d=imgData.data;
-  // Copy area dalam (mx..W-mx, my..H-my) ke posisi (mx..W-mx, my..H-my)
-  // Sebenarnya yang perlu dilakukan: recenter — potong sisi, re-scale
-  // Pendekatan: scale up sedikit agar content full-frame setelah trim
-  const srcX0=mx,srcY0=my,srcX1=W-mx,srcY1=H-my;
-  const srcW=srcX1-srcX0,srcH=srcY1-srcY0;
-  for(let ty=0;ty<H;ty++){
-    const sy=Math.round(srcY0+ty/H*srcH);
-    if(sy<0||sy>=H)continue;
-    for(let tx=0;tx<W;tx++){
-      const sx=Math.round(srcX0+tx/W*srcW);
-      if(sx<0||sx>=W)continue;
-      const di=(ty*W+tx)*4,si=(sy*W+sx)*4;
-      out.data[di]=d[si];out.data[di+1]=d[si+1];
-      out.data[di+2]=d[si+2];out.data[di+3]=255;
-    }
-  }
-  return out;
-}
-
-// ── Draw corners overlay ──────────────────────────────────────
-function drawCornersOverlay(corners,W,H){
-  const ov=document.getElementById('cvOverlay'),ctx=ov.getContext('2d');
-  ctx.clearRect(0,0,ov.width,ov.height);
-  if(!corners)return;
-  const lw=Math.max(2,W/500);
-  ctx.strokeStyle='#00e5ff';ctx.lineWidth=lw;ctx.setLineDash([8,4]);
-  ctx.beginPath();ctx.moveTo(corners[0].x,corners[0].y);
-  corners.forEach(c=>ctx.lineTo(c.x,c.y));
-  ctx.closePath();ctx.stroke();ctx.setLineDash([]);
-  const r=Math.max(7,W/100);
-  corners.forEach((c,i)=>{
-    ctx.fillStyle=i===0?'#00ff9d':'#00e5ff';
-    ctx.beginPath();ctx.arc(c.x,c.y,r,0,Math.PI*2);ctx.fill();
-    ctx.fillStyle='#050b18';
-    ctx.font=`bold ${Math.max(10,r)}px monospace`;
-    ctx.fillText(['TL','TR','BR','BL'][i],c.x+r+2,c.y+r/2);
-  });
-}
-
-// ══════════════════════════════════════════════════════════════
-// FORMAT DETECTION — v4 (simbol warna) vs kotak (silang)
-// ══════════════════════════════════════════════════════════════
-function detectFormat(d_obj,W,H){
-  const d=d_obj.data;
-  // Sample area grid (tengah dokumen)
-  const x0=Math.floor(W*0.08),x1=Math.floor(W*0.92);
-  const y0=Math.floor(H*0.18),y1=Math.floor(H*0.96);
-  const step=Math.max(1,Math.floor((x1-x0)/60));
-  let colorPx=0,total=0;
-  for(let y=y0;y<y1;y+=step)for(let x=x0;x<x1;x+=step){
-    const i=(y*W+x)*4;
-    const r=d[i],g=d[i+1],b=d[i+2];
-    const mx=Math.max(r,g,b),mn=Math.min(r,g,b);
-    if(mx-mn>35&&mx>80)colorPx++; // piksel berwarna
-    total++;
-  }
-  const colorRatio=colorPx/Math.max(total,1);
-  // v4: ada simbol berwarna → colorRatio tinggi
-  // kotak: hitam putih → colorRatio rendah
-  if(colorRatio>0.04)return'v4';
-  if(colorRatio<0.02)return'kotak';
-  return'unknown';
-}
-
-// ══════════════════════════════════════════════════════════════
-// VALIDASI
-// ══════════════════════════════════════════════════════════════
-function gv(d,i){return 0.299*d[i]+0.587*d[i+1]+0.114*d[i+2];}
-function roiStats(d,W,H,rx0,ry0,rx1,ry1){
-  const x0=Math.floor(rx0*W),y0=Math.floor(ry0*H),
-        x1=Math.floor(rx1*W),y1=Math.floor(ry1*H);
-  const stx=Math.max(1,Math.floor((x1-x0)/40)),
-        sty=Math.max(1,Math.floor((y1-y0)/30));
-  let s=0,dk=0,col=0,c=0;
-  for(let y=y0;y<y1;y+=sty)for(let x=x0;x<x1;x+=stx){
-    const i=(y*W+x)*4,g=gv(d,i);
-    s+=g;if(g<140)dk++;
-    const mx=Math.max(d[i],d[i+1],d[i+2]),mn=Math.min(d[i],d[i+1],d[i+2]);
-    if(mx-mn>30)col++;c++;
-  }
-  return c?{avg:s/c,dark:dk/c,colored:col/c}:{avg:200,dark:0,colored:0};
-}
-async function validate(d_obj,W,H,fmt){
-  const d=d_obj.data,R=[];
-  const rat=W/H;
-  R.push({n:'Orientasi portrait',ok:rat<=1.15,msg:`Rasio ${rat.toFixed(2)}`});
-  R.push({n:'Resolusi',ok:W>=400&&H>=500,msg:`${W}×${H}`});
-  const g1=roiStats(d,W,H,0.05,0.15,0.95,0.97);
-  R.push({n:'Area grid',ok:g1.dark>=0.02,msg:`dark=${(g1.dark*100).toFixed(1)}%`});
-  let mn2=255,mx2=0;
-  for(let i=0;i<800;i++){const p=Math.floor(Math.random()*W*H)*4,v=gv(d,p);if(v<mn2)mn2=v;if(v>mx2)mx2=v;}
-  R.push({n:'Kontras',ok:(mx2-mn2)>=40,msg:`range=${(mx2-mn2).toFixed(0)}`});
-  if(fmt==='v4'){
-    const cL=roiStats(d,W,H,0.08,0.15,0.48,0.97),cR=roiStats(d,W,H,0.52,0.15,0.94,0.97);
-    R.push({n:'Simbol warna',ok:Math.max(cL.colored,cR.colored)>=0.02,
-      msg:`warna=${(Math.max(cL.colored,cR.colored)*100).toFixed(1)}%`});
-  }
-  const bOK=R[0].ok&&R[1].ok&&R[3].ok;
-  const fpOK=R.filter(r=>r.ok).length;
-  const score=Math.round(fpOK/R.length*100);
-  const valid=bOK&&fpOK>=R.length-1;
-  if(!valid){showReject(R,score);return false;}
+function vld(d,W,H){
+  if(W/H>1.2){shM('Putar HP — foto harus portrait');return false;}
+  if(W<250||H<350){shM('Resolusi terlalu kecil: '+W+'×'+H);return false;}
+  let dk=0,step=Math.max(1,Math.floor(W*H/3000));
+  for(let i=0;i<W*H;i+=step)if(.299*d[i*4]+.587*d[i*4+1]+.114*d[i*4+2]<130)dk++;
+  if(dk/(W*H/step)<.008){shM('Gambar terlalu terang atau kosong');return false;}
   return true;
 }
-function showReject(R,score){
-  const list=document.getElementById('mList');list.innerHTML='';
-  const mkH=t=>{const d=document.createElement('div');d.style='font-size:9px;color:var(--tx3);margin:5px 0 2px';d.textContent=t;return d;};
-  const mkR=(r,ok)=>{const d=document.createElement('div');d.className='vrow '+(ok?'vok':'vng');
-    d.innerHTML=`<div class="vdot"></div><span>${r.n}: ${r.msg}</span>`;return d;};
-  const fails=R.filter(r=>!r.ok),oks=R.filter(r=>r.ok);
-  if(fails.length){list.appendChild(mkH('❌ GAGAL:'));fails.forEach(r=>list.appendChild(mkR(r,false)));}
-  if(oks.length)  {list.appendChild(mkH('✅ LULUS:'));oks.forEach(r=>list.appendChild(mkR(r,true)));}
-  document.getElementById('mMsg').textContent='Gambar tidak memenuhi syarat minimum.';
-  document.getElementById('mDet').textContent=`Skor ${score}/100`;
-  document.getElementById('mHint').innerHTML=
-    '💡 <b>Tips foto HP:</b><br>① Seluruh lembar terlihat<br>② Cahaya merata, tidak bayangan<br>③ HP tegak lurus, jarak 20–40 cm<br>④ Tidak blur/goyang';
-  document.getElementById('mReject').classList.add('show');
-}
-function closeModal(){document.getElementById('mReject').classList.remove('show');setSbar('idle','Upload LJK terlebih dahulu');}
+function shM(msg){document.getElementById('mmsg').textContent=msg;document.getElementById('mod').classList.add('show');sb('err','❌ '+msg);}
+function closeM(){document.getElementById('mod').classList.remove('show');}
 
-// ══════════════════════════════════════════════════════════════
-// SCAN FORMAT v4 — Simbol ▲●■★⬡ + arsiran lingkaran
-// ══════════════════════════════════════════════════════════════
-function getRoiCenter(op,W,H){
-  const sx=KAL.sx||1,sy=KAL.sy||1,ox=KAL.ofsx||0,oy=KAL.ofsy||0;
-  return{cx:op.cx*W*sx+ox,cy:op.cy*H*sy+oy,
-         outerPx:C.outer_r*W*sx,innerPx:C.inner_r*W*sx};
+// ═══ MAPPING KOORDINAT: relatif → piksel absolut di gambar asli ═══
+function cPx(nomor,opsi){
+  const isL=(nomor<=20);
+  const relX=isL?CLX[opsi]:CRX[opsi];
+  const relY=RY[(nomor-1)%20];
+  const bW=bx1-bx0,bH=by1-by0;
+  const sx=KAL.sx||1,sy=KAL.sy||1,ox=KAL.ox||0,oy=KAL.oy||0;
+  return{cx:bx0+relX*bW*sx+ox, cy:by0+relY*bH*sy+oy, r:BR*bW*sx};
 }
-function localContrastScore(d,W,H,cx,cy,outerPx,innerPx){
-  const rIn=innerPx*1.1,rBgIn=outerPx*1.0,rBgOut=outerPx*1.6;
-  const x0=Math.max(0,Math.floor(cx-rBgOut)),x1=Math.min(W,Math.ceil(cx+rBgOut)+1);
-  const y0=Math.max(0,Math.floor(cy-rBgOut)),y1=Math.min(H,Math.ceil(cy+rBgOut)+1);
-  let inSum=0,inCnt=0,bgSum=0,bgCnt=0;
+
+// ═══ SCORE BUBBLE — satu metode, relative contrast ═══
+function gv(d,i){return .299*d[i]+.587*d[i+1]+.114*d[i+2];}
+function sBub(d,W,H,cx,cy,r){
+  const rIn=r*.82,rOut=r*1.65;
+  const x0=Math.max(0,Math.floor(cx-rOut)),x1=Math.min(W,Math.ceil(cx+rOut)+1);
+  const y0=Math.max(0,Math.floor(cy-rOut)),y1=Math.min(H,Math.ceil(cy+rOut)+1);
+  let iS=0,iN=0,bS=0,bN=0;
   for(let py=y0;py<y1;py++)for(let px=x0;px<x1;px++){
-    const dx=px-cx,dy=py-cy,dist=Math.sqrt(dx*dx+dy*dy);
+    const dx=px-cx,dy=py-cy,dt=Math.sqrt(dx*dx+dy*dy);
+    if(dt>rOut)continue;
     const g=gv(d,(py*W+px)*4);
-    if(dist<=rIn){inSum+=g;inCnt++;}
-    else if(dist>=rBgIn&&dist<=rBgOut){bgSum+=g;bgCnt++;}
+    if(dt<=rIn){iS+=g;iN++;}else if(dt>r){bS+=g;bN++;}
   }
-  const inAvg=inCnt?inSum/inCnt:200,bgAvg=bgCnt?bgSum/bgCnt:220;
-  return{score:bgAvg-inAvg,inAvg,bgAvg};
+  return (bN?bS/bN:240)-(iN?iS/iN:220);
 }
-function scanSoalV4(d,W,H,soal){
-  const scores=[];
-  for(let oi=0;oi<5;oi++){
-    const{cx,cy,outerPx,innerPx}=getRoiCenter(soal.opsi[oi],W,H);
-    scores.push(localContrastScore(d,W,H,cx,cy,outerPx,innerPx).score);
-  }
-  return decideFromScores(scores,'ABCDE');
-}
-
-// ══════════════════════════════════════════════════════════════
-// SCAN FORMAT KOTAK — Silang X / Centang / Garis
-// ══════════════════════════════════════════════════════════════
-// Grid kotak: deteksi otomatis dari garis-garis tabel
-
-let kotakGrid=null; // cache grid koordinat kotak
-
-function detectKotakGrid(d,W,H){
-  // Cari garis vertikal & horizontal dari flatD
-  const step=Math.max(1,Math.floor(Math.min(W,H)/200));
-  const grayRow=new Float32Array(H),grayCol=new Float32Array(W);
-
-  // Rata-rata tiap baris dan kolom
-  for(let y=0;y<H;y+=step){
-    let s=0;for(let x=0;x<W;x+=step)s+=gv(d,(y*W+x)*4);
-    grayRow[y]=s/(W/step);
-  }
-  for(let x=0;x<W;x+=step){
-    let s=0;for(let y=0;y<H;y+=step)s+=gv(d,(y*W+x)*4);
-    grayCol[x]=s/(H/step);
-  }
-
-  // Temukan garis gelap (piksel rata-rata rendah = ada banyak tinta hitam)
-  // Garis tabel: nilai rata-rata rendah dibanding tetangga
-  function findLines(arr,size,minGap){
-    const lines=[];
-    for(let i=1;i<size-1;i+=step){
-      const v=arr[i];
-      if(v<180&&(v<arr[Math.max(0,i-step)]-8||v<arr[Math.min(size-1,i+step)]-8)){
-        if(!lines.length||i-lines[lines.length-1]>minGap)
-          lines.push(i);
-      }
-    }
-    return lines;
-  }
-
-  const hLines=findLines(grayRow,H,Math.floor(H/60));
-  const vLines=findLines(grayCol,W,Math.floor(W/20));
-
-  if(hLines.length<5||vLines.length<4)return null;
-
-  // Kolom: No, A, B, C, D, E  (kiri), No, A, B, C, D, E (kanan)
-  // Cari 2 cluster kolom (kiri dan kanan dari garis tengah)
-  const midX=W*0.5;
-  const leftCols =vLines.filter(x=>x<midX);
-  const rightCols=vLines.filter(x=>x>midX);
-
-  if(leftCols.length<4||rightCols.length<4)return null;
-
-  // Ambil 6 kolom pertama dari kiri dan kanan
-  const LC=leftCols.slice(0,7);
-  const RC=rightCols.slice(0,7);
-
-  // Baris data: skip header rows
-  const avgRowGap=(hLines[hLines.length-1]-hLines[0])/Math.max(hLines.length-1,1);
-  const dataRows=hLines.filter(y=>y>H*0.12); // skip header
-
-  // Hitung pusat sel
-  const grid=[];
-  const sides=[
-    {cols:LC,   nomor_start:1,  nomor_end:Math.floor(dataRows.length/2)+1},
-    {cols:RC,   nomor_start:Math.floor(dataRows.length/2)+1, nomor_end:dataRows.length+1}
-  ];
-
-  for(const side of sides){
-    if(side.cols.length<6)continue;
-    const cxA=Math.round((side.cols[1]+side.cols[2])/2);
-    const cxB=Math.round((side.cols[2]+side.cols[3])/2);
-    const cxC=Math.round((side.cols[3]+side.cols[4])/2);
-    const cxD=Math.round((side.cols[4]+side.cols[5])/2);
-    const cxE=side.cols[6]?Math.round((side.cols[5]+side.cols[6])/2):side.cols[5]+Math.round(avgRowGap*0.8);
-    const opsiCX={'A':cxA,'B':cxB,'C':cxC,'D':cxD,'E':cxE};
-    const opsiW =Math.round((side.cols[2]-side.cols[1])*0.7);
-    const opsiH =Math.round(avgRowGap*0.65);
-
-    for(let ri=0;ri<dataRows.length&&grid.filter(g=>g.side===side.cols[0]).length<20;ri++){
-      const y0r=dataRows[ri];
-      const y1r=dataRows[ri+1]||y0r+Math.round(avgRowGap);
-      const cy =Math.round((y0r+y1r)/2);
-      const nomor=side.nomor_start+ri;
-      if(nomor>50)break;
-      grid.push({
-        nomor,
-        cy,opsiCX,opsiW,opsiH,
-        side:side.cols[0]
-      });
-    }
-  }
-
-  if(grid.length<10)return null;
-
-  return{grid,avgCellW:Math.round(avgRowGap*0.8),avgCellH:Math.round(avgRowGap*0.65)};
+function scnN(d,W,H,n){
+  const sc='ABCDE'.split('').map(op=>{const{cx,cy,r}=cPx(n,op);return sBub(d,W,H,cx,cy,r);});
+  const md=KAL.md||10,ms=KAL.ms||6;
+  const mx=Math.max(...sc);
+  if(mx<ms)return{jaw:'',sc,conf:0};
+  const gap=[...sc].sort((a,b)=>b-a);const gp=gap[0]-gap[1];
+  if(gp<md&&sc.filter(s=>s>=mx-md*.5&&s>=ms).length>=2)return{jaw:'?',sc,conf:15};
+  const idx=sc.indexOf(mx);
+  return{jaw:'ABCDE'[idx],sc,conf:Math.min(99,Math.round(20+Math.min(gp,70)+Math.min(mx,20)))};
 }
 
-function sampleCell(d,W,H,cx,cy,cw,ch){
-  const x0=Math.max(0,Math.floor(cx-cw/2)),x1=Math.min(W,Math.ceil(cx+cw/2));
-  const y0=Math.max(0,Math.floor(cy-ch/2)),y1=Math.min(H,Math.ceil(cy+ch/2));
-  let dark=0,total=0,sum=0;
-  for(let py=y0;py<y1;py++)for(let px=x0;px<x1;px++){
-    const g=gv(d,(py*W+px)*4);
-    sum+=g;if(g<170)dark++;total++;
+// ═══ PREVIEW ═══
+async function doPrev(){
+  if(!iD){toast('Upload dulu!');return;}
+  document.getElementById('bP').disabled=true;sb('wrk','🔍 Preview...');await sl(15);
+  const d=iD.data,W=iW,H=iH,gr=document.getElementById('pvg');gr.innerHTML='';
+  let det=0,amb=0;
+  for(let n=1;n<=40;n++){
+    const res=scnN(d,W,H,n);
+    if(res.jaw&&res.jaw!=='?')det++;else if(res.jaw==='?')amb++;
+    const c=document.createElement('div');
+    c.className='pvc'+(res.jaw&&res.jaw!=='?'?' hit':res.jaw==='?'?' amb':'');
+    c.innerHTML=`<span class="pvn">${n}</span><span class="pva">${res.jaw||'—'}</span>`;
+    c.title=`Q${n}: ${res.jaw||'kosong'} ${res.conf}%`;
+    gr.appendChild(c);
+    if(n%10===0)await sl(0);
   }
-  const avg=total?sum/total:200;
-  const darkPct=total?dark/total:0;
-  return{score:200-avg,darkPct,avg}; // score: makin gelap makin tinggi
+  document.getElementById('pvi').textContent=`Terdeteksi: ${det}/40 | Ambigus: ${amb} | Kosong: ${40-det-amb}`;
+  document.getElementById('pvp').style.display='block';
+  document.getElementById('bP').disabled=false;
+  sb('ok','Preview: '+det+'/40');toast('🔍 '+det+'/40 terdeteksi');
 }
 
-function scanSoalKotak(d,W,H,soal,kg){
-  const scores=[];
-  for(const op of 'ABCDE'){
-    const cx=soal.opsiCX[op];
-    if(!cx){scores.push(0);continue;}
-    const s=sampleCell(d,W,H,cx,soal.cy,kg.avgCellW,kg.avgCellH);
-    scores.push(s.score);
-  }
-  return decideFromScores(scores,'ABCDE');
-}
-
-// ── Shared scoring logic ──────────────────────────────────────
-function decideFromScores(scores,opsiStr){
-  const maxScore=Math.max(...scores);
-  const minDiff=KAL.minDiff||12;
-  const minScore=KAL.minScore||5;
-  if(maxScore<minScore)
-    return{jaw:'',scores,conf:0,reason:'kosong',darkPcts:scores.map(s=>Math.max(0,s)/100)};
-  const domIdx=scores.indexOf(maxScore);
-  const sorted=[...scores].sort((a,b)=>b-a);
-  const scoreDiff=sorted[0]-sorted[1];
-  const closeCount=scores.filter(s=>s>=maxScore-minDiff*0.5&&s>=minScore).length;
-  if(closeCount>=2&&scoreDiff<minDiff)
-    return{jaw:'?',scores,conf:20,reason:`ambigus(diff=${scoreDiff.toFixed(1)})`,darkPcts:scores.map(s=>Math.max(0,s)/100)};
-  const conf=Math.min(99,Math.round(30+Math.min(scoreDiff,50)*1.2+Math.min(maxScore,30)));
-  return{jaw:opsiStr[domIdx],scores,conf,reason:'ok',darkPcts:scores.map(s=>Math.max(0,s)/100),scoreDiff,maxScore,domIdx};
-}
-
-// ── getBestData ───────────────────────────────────────────────
-function getBestData(){
-  return flatD?{d:flatD.data,W:flatW,H:flatH}
-              :{d:imgD.data,W:imgW,H:imgH};
-}
-
-// ══════════════════════════════════════════════════════════════
-// PREVIEW
-// ══════════════════════════════════════════════════════════════
-async function doPreview(){
-  if(!imgD){toast('Upload gambar dulu!');return;}
-  document.getElementById('btnPrev').disabled=true;
-  setSbar('work','🔍 Preview...');await sleep(20);
-
-  const{d,W,H}=getBestData();
-  const fmt=detectedFormat;
-
-  // Siapkan grid kotak jika perlu
-  let kg=null;
-  if(fmt==='kotak'){
-    kg=detectKotakGrid(flatD,flatW,flatH);
-    kotakGrid=kg;
-    if(!kg){
-      setSbar('err','❌ Grid kotak tidak terdeteksi. Coba adjust kalibrasi atau upload ulang.');
-      document.getElementById('btnPrev').disabled=false;return;
-    }
-  }
-
-  const grid_=document.getElementById('pvGrid');grid_.innerHTML='';
-  const detLog=[];let detCnt=0,ambCnt=0;
-
-  const soalList=fmt==='v4'?C.grid:((kg&&kg.grid)||[]);
-
-  for(let si=0;si<soalList.length;si++){
-    const soal=soalList[si];
-    const res=fmt==='v4'
-      ?scanSoalV4(d,W,H,soal)
-      :scanSoalKotak(d,W,H,soal,kg);
-
-    if(res.jaw&&res.jaw!=='?')detCnt++;
-    if(res.jaw==='?')ambCnt++;
-
-    const symIdx=(res.jaw&&res.jaw!=='?')
-      ?'ABCDE'.indexOf(res.jaw):-1;
-    const cell=document.createElement('div');
-    cell.className='pvcell'+(res.jaw&&res.jaw!=='?'?' hit':res.jaw==='?'?' amb':'');
-    cell.innerHTML=
-      `<span class="pvn">${soal.nomor}</span>`+
-      `<span class="pvsym" style="color:${symIdx>=0?SCOL[symIdx]:'var(--tx3)'}">`+
-      `${fmt==='v4'?(symIdx>=0?SYM[symIdx]:'○'):(symIdx>=0?res.jaw:'—')}</span>`+
-      `<span class="pva">${res.jaw||'—'}</span>`;
-    cell.title=`Q${soal.nomor}: ${res.jaw||'kosong'} conf=${res.conf}% ${res.reason}`;
-    grid_.appendChild(cell);
-
-    if(res.scores){
-      const sStr=res.scores.map(s=>s.toFixed(1)).join('|');
-      detLog.push(`Q${String(soal.nomor).padStart(2)}: ${res.jaw||'-'} [${sStr}] ${res.reason}`);
-    }
-    if(si%8===0)await sleep(0);
-  }
-
-  document.getElementById('pvInfo').textContent=
-    `Format: ${fmt} | Terdeteksi: ${detCnt}/${soalList.length} | Ambigus: ${ambCnt}`;
-  document.getElementById('pvDetail').textContent=
-    detLog.slice(0,20).join('\n')+(detLog.length>20?'\n...':'');
-  document.getElementById('pvPanel').style.display='block';
-  document.getElementById('btnPrev').disabled=false;
-  setSbar('ok',`🔍 Preview: ${detCnt}/${soalList.length}`);
-  toast(`Preview: ${detCnt}/${soalList.length}`);
-
-  // Gambar ROI overlay di flat canvas jika kotak
-  if(fmt==='kotak'&&kg)drawKotakROI(kg);
-}
-
-function drawKotakROI(kg){
-  const ov=document.getElementById('cvOverlay'),ctx=ov.getContext('2d');
-  ctx.clearRect(0,0,ov.width,ov.height);
-  const sx=ov.width/flatW,sy=ov.height/flatH;
-  ctx.strokeStyle='rgba(0,229,255,0.5)';ctx.lineWidth=1;
-  for(const soal of kg.grid){
-    for(const op of 'ABCDE'){
-      const cx=soal.opsiCX[op];if(!cx)continue;
-      const x=(cx-kg.avgCellW/2)*sx,y=(soal.cy-kg.avgCellH/2)*sy;
-      ctx.strokeRect(x,y,kg.avgCellW*sx,kg.avgCellH*sy);
-    }
-  }
-}
-
-// ══════════════════════════════════════════════════════════════
-// SCAN PENUH
-// ══════════════════════════════════════════════════════════════
+// ═══ SCAN PENUH ═══
 async function doScan(){
-  if(!imgD){toast('Upload gambar dulu!');return;}
-  const noKey=kunci.every(k=>!k);
-  if(noKey&&!confirm('Kunci belum diisi. Scan tanpa penilaian?'))return;
-
-  document.getElementById('btnScan').disabled=true;
-  setSbar('work','⚡ Scanning...');setPbar(0);await sleep(20);
-
-  const{d,W,H}=getBestData();
-  const fmt=detectedFormat;
-  let kg=kotakGrid;
-  if(fmt==='kotak'&&!kg){
-    kg=detectKotakGrid(flatD,flatW,flatH);
-    kotakGrid=kg;
+  if(!iD){toast('Upload dulu!');return;}
+  const noK=kunci.every(k=>!k);
+  if(noK&&!confirm('Kunci kosong. Lanjut?'))return;
+  document.getElementById('bS').disabled=true;sb('wrk','⚡ Scanning...');pb(0);await sl(15);
+  const d=iD.data,W=iW,H=iH,hs=[];let tc=0;
+  for(let n=1;n<=40;n++){
+    pb(Math.round(n/40*95));
+    const res=scnN(d,W,H,n);
+    const kj=kunci[n-1]||'';
+    const cor=!kj?null:(res.jaw&&res.jaw!=='?'&&kj.includes(res.jaw));
+    hs.push({nomor:n,jaw:res.jaw,kunci:kj,correct:cor,conf:res.conf});
+    tc+=res.conf;if(n%8===0)await sl(0);
   }
-
-  const soalList=fmt==='v4'?C.grid:(kg?kg.grid:[]);
-  if(!soalList.length){
-    setSbar('err','❌ Grid tidak terdeteksi');
-    document.getElementById('btnScan').disabled=false;return;
-  }
-
-  const hasil=[];let totConf=0;
-  for(let si=0;si<soalList.length;si++){
-    setPbar(Math.round(si/soalList.length*90));
-    const soal=soalList[si];
-    const res=fmt==='v4'
-      ?scanSoalV4(d,W,H,soal)
-      :scanSoalKotak(d,W,H,soal,kg);
-
-    const jaw=res.jaw==='?'?'?':res.jaw;
-    const kj=kunci[soal.nomor-1]||'';
-    const correct=kj===''?null
-      :kj.split(',').map(k=>k.trim()).includes(jaw);
-    hasil.push({
-      nomor:soal.nomor,jaw,kunci:kj,correct,
-      conf:res.conf,reason:res.reason,
-      symIdx:'ABCDE'.indexOf(jaw)
-    });
-    totConf+=res.conf;
-    if(si%5===0)await sleep(0);
-  }
-
-  setPbar(100);await sleep(60);setPbar(-1);
-  const n=soalList.length;
-  const benar=hasil.filter(h=>h.correct===true).length;
-  const salah=hasil.filter(h=>h.correct===false).length;
-  const kosong=hasil.filter(h=>h.jaw===''||h.jaw==='?').length;
-  const nilai=noKey?null:Math.round(benar/n*100);
-  const grade=nilai===null?null:nilai>=90?'A':nilai>=80?'B':nilai>=70?'C':nilai>=60?'D':'E';
-
-  last={
-    nama:document.getElementById('inNama').value||'—',
-    absen:document.getElementById('inAbsen').value||'—',
-    kelas:document.getElementById('inKelas').value||'—',
-    waktu:new Date().toLocaleString('id-ID'),
-    hasil,benar,salah,kosong,nilai,grade,
-    avgConf:Math.round(totConf/n),
-    format:fmt,totalSoal:n
-  };
-  document.getElementById('btnScan').disabled=false;
-  setSbar('ok',`✅ Selesai! ${benar}/${n} benar`);
-  renderHasil();goTab(2);toast('✅ Scan selesai!');
+  pb(100);await sl(40);pb(-1);
+  const bn=hs.filter(h=>h.correct===true).length;
+  const sl2=hs.filter(h=>h.correct===false).length;
+  const ko=hs.filter(h=>!h.jaw||h.jaw==='?').length;
+  const ni=noK?null:Math.round(bn/40*100);
+  const gr=ni===null?null:ni>=90?'A':ni>=80?'B':ni>=70?'C':ni>=60?'D':'E';
+  last={nama:document.getElementById('iNm').value||'—',absen:document.getElementById('iAb').value||'—',kelas:document.getElementById('iKl').value||'—',waktu:new Date().toLocaleString('id-ID'),hasil:hs,benar:bn,salah:sl2,kosong:ko,nilai:ni,grade:gr,avgConf:Math.round(tc/40)};
+  document.getElementById('bS').disabled=false;
+  sb('ok','✅ '+bn+'/40 benar');rnHs();T(2);toast('✅ Selesai!');
 }
 
-// ══════════════════════════════════════════════════════════════
-// BW / ROI OVERLAY
-// ══════════════════════════════════════════════════════════════
-function normBrightness(imgData,W,H){
-  const d=imgData.data,samples=[];
-  const st=Math.max(1,Math.floor(W/20));
-  for(let y=Math.floor(H*.2);y<Math.floor(H*.8);y+=st)
-    for(let x=Math.floor(W*.1);x<Math.floor(W*.9);x+=st)
-      samples.push(gv(d,(y*W+x)*4));
-  samples.sort((a,b)=>a-b);
-  const p80=samples[Math.floor(samples.length*.80)]||230;
-  const sc=Math.max(0.6,Math.min(1.8,220/Math.max(p80,30)));
-  if(sc>0.92&&sc<1.08)return imgData;
-  const out=new ImageData(new Uint8ClampedArray(d.length),W,H);
-  for(let i=0;i<d.length;i+=4){
-    out.data[i]  =Math.min(255,d[i]  *sc);
-    out.data[i+1]=Math.min(255,d[i+1]*sc);
-    out.data[i+2]=Math.min(255,d[i+2]*sc);
-    out.data[i+3]=d[i+3];
-  }
-  return out;
-}
-function applyBWBlur(){
-  const cv=document.getElementById('cvMain'),ctx=cv.getContext('2d');
-  // Tampilkan flatD di canvas jika tersedia (sudah datar/normalized)
-  if(flatD){
-    const tmp=document.createElement('canvas');tmp.width=flatW;tmp.height=flatH;
-    tmp.getContext('2d').putImageData(flatD,0,0);
-    cv.width=flatW;cv.height=flatH;
-    const c2=cv.getContext('2d');c2.drawImage(tmp,0,0);
-    // BW
-    const id=c2.getImageData(0,0,flatW,flatH),dd=id.data;
-    for(let i=0;i<dd.length;i+=4){const v=Math.round(0.299*dd[i]+0.587*dd[i+1]+0.114*dd[i+2]);dd[i]=dd[i+1]=dd[i+2]=v;}
-    c2.putImageData(id,0,0);
-    // Sync overlay size
-    const ov=document.getElementById('cvOverlay');ov.width=flatW;ov.height=flatH;
-    if(flatCorners)drawCornersOverlay(flatCorners,flatW,flatH);
-    return;
-  }
-  // Fallback: BW dari imgD
-  const W=imgW,H=imgH,src=imgD.data;
-  const gray=new Float32Array(W*H);
-  for(let i=0;i<W*H;i++){const p=i*4;gray[i]=0.299*src[p]+0.587*src[p+1]+0.114*src[p+2];}
-  const blr=new Float32Array(W*H),k=[1,2,1,2,4,2,1,2,1];
-  for(let y=1;y<H-1;y++)for(let x=1;x<W-1;x++){
-    let s=0,ki=0;for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++)s+=gray[(y+dy)*W+(x+dx)]*k[ki++];
-    blr[y*W+x]=s/16;
-  }
-  for(let x=0;x<W;x++){blr[x]=gray[x];blr[(H-1)*W+x]=gray[(H-1)*W+x];}
-  for(let y=0;y<H;y++){blr[y*W]=gray[y*W];blr[y*W+W-1]=gray[y*W+W-1];}
-  const out=ctx.createImageData(W,H);
-  for(let i=0;i<W*H;i++){const v=Math.round(blr[i]),p=i*4;out.data[p]=out.data[p+1]=out.data[p+2]=v;out.data[p+3]=255;}
+// ═══ CANVAS ═══
+function shBW(){
+  if(!iD)return;
+  const cv=document.getElementById('cvm'),ctx=cv.getContext('2d');
+  const src=iD.data,W=iW,H=iH,out=ctx.createImageData(W,H);
+  for(let i=0;i<W*H;i++){const p=i*4,g=Math.round(gv(src,p));out.data[p]=out.data[p+1]=out.data[p+2]=g;out.data[p+3]=255;}
   ctx.putImageData(out,0,0);
 }
-function restoreCanvas(){
-  if(!imgD)return;
-  const cv=document.getElementById('cvMain'),ov=document.getElementById('cvOverlay');
-  cv.width=ov.width=imgW;cv.height=ov.height=imgH;
-  cv.getContext('2d').putImageData(imgD,0,0);
-  ov.getContext('2d').clearRect(0,0,imgW,imgH);
-  if(flatCorners)drawCornersOverlay(flatCorners,imgW,imgH);
-}
-function toggleBW(){
-  if(!imgD)return;
-  isBW=!isBW;
-  const btn=document.getElementById('btnBW');
-  if(isBW){applyBWBlur();btn.textContent='🎨 Lihat Asli';}
-  else{restoreCanvas();btn.textContent='🔲 BW Mode';}
-}
-function toggleROI(){
-  hasROI=!hasROI;
-  const ov=document.getElementById('cvOverlay'),ctx=ov.getContext('2d');
+function drBB(){
+  if(!hasBB)return;
+  const ov=document.getElementById('cvo'),ctx=ov.getContext('2d');
   ctx.clearRect(0,0,ov.width,ov.height);
-  document.getElementById('btnRoi').textContent=hasROI?'🚫 ROI':'👁 ROI';
-  if(!hasROI){if(flatCorners)drawCornersOverlay(flatCorners,ov.width,ov.height);return;}
-  const W=ov.width,H=ov.height;
-  const lw=Math.max(0.5,W/800);
-  if(detectedFormat==='v4'){
-    C.grid.forEach(soal=>{
-      soal.opsi.forEach((op,oi)=>{
-        const{cx,cy,outerPx,innerPx}=getRoiCenter(op,flatW||W,flatH||H);
-        ctx.strokeStyle=SCOL[oi];ctx.lineWidth=lw;
-        ctx.beginPath();ctx.arc(cx,cy,outerPx*.88,0,Math.PI*2);ctx.stroke();
-        ctx.strokeStyle='rgba(255,255,255,.65)';ctx.lineWidth=lw*.7;
-        ctx.beginPath();ctx.arc(cx,cy,innerPx*.9,0,Math.PI*2);ctx.stroke();
-      });
-    });
-  } else if(kotakGrid){
-    drawKotakROI(kotakGrid);
+  ctx.strokeStyle='#58a6ff';ctx.lineWidth=Math.max(1.5,iW/400);ctx.setLineDash([6,3]);
+  ctx.strokeRect(bx0,by0,bx1-bx0,by1-by0);ctx.setLineDash([]);
+}
+function togBW(){
+  if(!iD)return;bwM=!bwM;
+  const cv=document.getElementById('cvm'),ov=document.getElementById('cvo');
+  if(bwM){shBW();drBB();document.getElementById('bBW').textContent='🎨 Asli';}
+  else{cv.getContext('2d').putImageData(iD,0,0);ov.getContext('2d').clearRect(0,0,ov.width,ov.height);drBB();document.getElementById('bBW').textContent='🔲 BW';}
+}
+function togROI(){
+  roiOn=!roiOn;
+  const ov=document.getElementById('cvo'),ctx=ov.getContext('2d');
+  ctx.clearRect(0,0,ov.width,ov.height);
+  document.getElementById('bR').textContent=roiOn?'🚫 ROI':'👁 ROI';
+  if(!roiOn){drBB();return;}
+  ctx.lineWidth=Math.max(.5,iW/700);
+  for(let n=1;n<=40;n++)for(const op of 'ABCDE'){
+    const{cx,cy,r}=cPx(n,op);
+    ctx.strokeStyle='rgba(88,166,255,.55)';
+    ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.stroke();
   }
 }
 
-// ══════════════════════════════════════════════════════════════
-// RENDER HASIL
-// ══════════════════════════════════════════════════════════════
-function renderHasil(){
-  if(!last)return;
-  const h=last;
-  document.getElementById('hEmpty').style.display='none';
-  document.getElementById('hContent').style.display='block';
-  document.getElementById('hNilai').textContent=h.nilai!==null?h.nilai:'—';
-  const ge=document.getElementById('hGrade');ge.textContent=h.grade||'—';
-  ge.className='sgrade'+(h.grade?' g'+h.grade:'');
-  document.getElementById('hDet').textContent=
-    `Benar: ${h.benar}  Salah: ${h.salah}  Kosong: ${h.kosong}  (${h.totalSoal} soal)`;
-  document.getElementById('hConf').textContent=
-    `Conf: ${h.avgConf}%  |  ${h.nama}  |  Format: ${h.format}  |  ${h.waktu}`;
-  const grid=document.getElementById('hGrid');grid.innerHTML='';
+// ═══ RENDER HASIL ═══
+function rnHs(){
+  if(!last)return;const h=last;
+  document.getElementById('hE').style.display='none';document.getElementById('hC').style.display='block';
+  document.getElementById('hN').textContent=h.nilai!==null?h.nilai:'—';
+  const ge=document.getElementById('hG');ge.textContent=h.grade||'—';ge.className='sg'+(h.grade?' g'+h.grade:'');
+  document.getElementById('hD').textContent=`Benar: ${h.benar}  Salah: ${h.salah}  Kosong: ${h.kosong}  /40`;
+  document.getElementById('hI').textContent=`${h.nama} | ${h.kelas} | Conf: ${h.avgConf}% | ${h.waktu}`;
+  const gr=document.getElementById('hgr');gr.innerHTML='';
   h.hasil.forEach(s=>{
-    const cls=s.correct===true?'ok':s.correct===false?'ng':(s.jaw===''||s.jaw==='?')?'ko':'';
-    const lbl=h.format==='v4'&&s.symIdx>=0
-      ?`<span class="hsym" style="color:${SCOL[s.symIdx]}">${SYM[s.symIdx]}</span>`
-      :`<span style="font-weight:700">${s.jaw||'—'}</span>`;
-    const cell=document.createElement('div');cell.className='hcell '+cls;
-    cell.innerHTML=`<div class="hn">${s.nomor}</div>${lbl}<div class="ha">${s.jaw||'—'}</div>`;
-    cell.title=`Q${s.nomor}: Jawab=${s.jaw||'-'} Kunci=${s.kunci||'-'} Conf=${s.conf}%`;
-    grid.appendChild(cell);
+    const cls=s.correct===true?'ok':s.correct===false?'ng':(!s.jaw||s.jaw==='?')?'ko':'';
+    const c=document.createElement('div');c.className='hc '+cls;
+    c.innerHTML=`<div class="hn">${s.nomor}</div><div class="ha">${s.jaw||'—'}</div>`;
+    c.title=`Q${s.nomor}: Jawab=${s.jaw||'-'} Kunci=${s.kunci||'-'} Conf=${s.conf}%`;
+    gr.appendChild(c);
   });
-  const ibar=document.getElementById('ibar');ibar.innerHTML='';
-  h.hasil.forEach(s=>{
-    const seg=document.createElement('div');seg.className='iseg';
-    seg.style.background=s.correct===true?'#00ff9d':s.correct===false?'#ff3d5a':
-      (s.jaw===''||s.jaw==='?')?'#ffab00':'#4a6d94';
-    seg.title=`Q${s.nomor}:${s.jaw}(${s.conf}%)`;ibar.appendChild(seg);
-  });
-  const ambs=h.hasil.filter(r=>r.jaw==='?').length;
-  document.getElementById('hConf2').textContent=
-    `🟢${h.benar}  🔴${h.salah}  🟡${h.kosong-ambs}  ❓${ambs}  |  Conf: ${h.avgConf}%`;
+  const ib=document.getElementById('ibr');ib.innerHTML='';
+  h.hasil.forEach(s=>{const sg=document.createElement('div');sg.className='iseg';sg.style.background=s.correct===true?'#3fb950':s.correct===false?'#f85149':(!s.jaw||s.jaw==='?')?'#d29922':'#484f58';ib.appendChild(sg);});
+  document.getElementById('hI2').textContent=`🟢${h.benar}  🔴${h.salah}  🟡${h.kosong-h.hasil.filter(r=>r.jaw==='?').length}  ❓${h.hasil.filter(r=>r.jaw==='?').length}`;
 }
 
-// ══════════════════════════════════════════════════════════════
-// EXPORT
-// ══════════════════════════════════════════════════════════════
-function hSimpan(){
-  if(!last){toast('Tidak ada hasil!');return;}
-  rekap.push({...last});
-  try{localStorage.setItem('bb41_rekap',JSON.stringify(rekap));}catch{}
-  renderRekap();updateStats();toast('✅ Disimpan!');goTab(3);
+// ═══ EXPORT ═══
+function hSv(){if(!last){toast('Tidak ada hasil!');return;}rekap.push({...last});try{localStorage.setItem('bb6_r',JSON.stringify(rekap));}catch{}rnRk();upSt();toast('✅ Disimpan!');T(3);}
+function hTX(){
+  if(!last){toast('Tidak ada hasil!');return;}const h=last,N='\n';
+  let t='HASIL LJK — BENYAMIN BATAU v6'+N+'='.repeat(44)+N;
+  t+=`Nama: ${h.nama} | Kelas: ${h.kelas} | ${h.waktu}${N}`;
+  t+=`Nilai: ${h.nilai!==null?h.nilai:'—'} | Grade: ${h.grade||'—'} | Benar: ${h.benar}/40${N+N}`;
+  t+='No  Jawab  Kunci  Status    Conf'+N+'-'.repeat(35)+N;
+  h.hasil.forEach(s=>{const st=s.correct===true?'BENAR':s.correct===false?'SALAH':!s.jaw?'KOSONG':'AMBIGUS';t+=`${String(s.nomor).padStart(2)}  ${(s.jaw||'-').padEnd(6)} ${(s.kunci||'-').padEnd(6)} ${st.padEnd(9)} ${s.conf}%${N}`;});
+  dlT(t,`hasil_${h.nama.replace(/\s+/g,'_')}.txt`);
 }
-function hTXT(){
-  if(!last){toast('Tidak ada hasil!');return;}
-  const h=last,NL='\n';
-  let t='HASIL LJK — BENYAMIN BATAU SCANNER v5.0'+NL+'='.repeat(50)+NL;
-  t+=`Nama: ${h.nama} | Absen: ${h.absen} | Kelas: ${h.kelas}`+NL;
-  t+=`Waktu: ${h.waktu} | Format: ${h.format}`+NL;
-  t+=`Nilai: ${h.nilai!==null?h.nilai:'—'} | Grade: ${h.grade||'—'} | Benar: ${h.benar}/${h.totalSoal}`+NL+NL;
-  t+='No   Jawab  Kunci  Status    Conf'+NL+'-'.repeat(38)+NL;
-  h.hasil.forEach(s=>{
-    const sym=h.format==='v4'&&s.symIdx>=0?SYM[s.symIdx]:s.jaw||'-';
-    const st=s.correct===true?'BENAR':s.correct===false?'SALAH':s.jaw===''?'KOSONG':'AMBIGUS';
-    t+=`${String(s.nomor).padStart(2)}   ${sym.padEnd(6)} ${(s.kunci||'-').padEnd(6)} ${st.padEnd(9)} ${s.conf}%`+NL;
-  });
-  dlText(t,`hasil_${h.nama.replace(/\s+/g,'_')}_${Date.now()}.txt`);
-}
-function hPDF(){
-  if(!last){toast('Tidak ada hasil!');return;}
-  const h=last;let rows='';
-  h.hasil.forEach(s=>{
-    const col=s.correct===true?'#007a3d':s.correct===false?'#c0001a':s.jaw===''?'#d97000':'#888';
-    const sym=h.format==='v4'&&s.symIdx>=0?SYM[s.symIdx]:s.jaw||'—';
-    const st=s.correct===true?'✓':s.correct===false?'✗':s.jaw===''?'—':'?';
-    rows+=`<tr><td>${s.nomor}</td><td>${sym}</td><td style="font-weight:700">${s.jaw||'—'}</td>`+
-          `<td>${s.kunci||'—'}</td><td style="color:${col};font-weight:700">${st}</td><td>${s.conf}%</td></tr>`;
-  });
-  const html='<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Hasil LJK</title>'+
-    '<style>body{font-family:Arial;padding:16px;font-size:11px}table{border-collapse:collapse;width:100%}'+
-    'th,td{border:1px solid #ccc;padding:3px 6px;text-align:center}th{background:#0f3460;color:#fff}'+
-    '.skb{font-size:40px;font-weight:700;color:#0f3460}</style></head>'+
-    '<body onload="window.print()"><h2>HASIL LJK — BENYAMIN BATAU SCANNER v5.0</h2>'+
-    `<p>Nama: <b>${h.nama}</b> | Kelas: <b>${h.kelas}</b> | ${h.waktu} | Format: ${h.format}</p>`+
-    `<p><span class="skb">${h.nilai!==null?h.nilai:'—'}</span> <b>${h.grade||''}</b> &nbsp;|&nbsp; `+
-    `Benar: <b>${h.benar}/${h.totalSoal}</b></p>`+
-    '<table><thead><tr><th>No</th><th>Simbol</th><th>Jawab</th><th>Kunci</th><th>Status</th><th>Conf</th></tr></thead>'+
-    `<tbody>${rows}</tbody></table></body></html>`;
-  const w=window.open('','_blank');if(w){w.document.write(html);w.document.close();}
-  else toast('⚠️ Aktifkan popup');
+function hPD(){
+  if(!last){toast('Tidak ada hasil!');return;}const h=last;let rows='';
+  h.hasil.forEach(s=>{const col=s.correct===true?'#1a7f37':s.correct===false?'#cf222e':!s.jaw?'#9a6700':'#888';const st=s.correct===true?'✓':s.correct===false?'✗':!s.jaw?'—':'?';rows+=`<tr><td>${s.nomor}</td><td style="font-weight:700">${s.jaw||'—'}</td><td>${s.kunci||'—'}</td><td style="color:${col};font-weight:700">${st}</td><td>${s.conf}%</td></tr>`;});
+  pop(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Hasil</title><style>body{font-family:Arial;padding:16px;font-size:11px}table{border-collapse:collapse;width:100%}th,td{border:1px solid #ccc;padding:3px 6px;text-align:center}th{background:#0d1117;color:#fff}.nb{font-size:40px;font-weight:900}</style></head><body onload="window.print()"><h2>HASIL LJK — BENYAMIN BATAU v6</h2><p>Nama: <b>${h.nama}</b> | Kelas: <b>${h.kelas}</b> | ${h.waktu}</p><p><span class="nb">${h.nilai!==null?h.nilai:'—'}</span> <b>${h.grade||''}</b> | Benar: <b>${h.benar}/40</b> | Conf: ${h.avgConf}%</p><table><thead><tr><th>No</th><th>Jawab</th><th>Kunci</th><th>Status</th><th>Conf</th></tr></thead><tbody>${rows}</tbody></table></body></html>`);
 }
 
-// ══════════════════════════════════════════════════════════════
-// REKAP
-// ══════════════════════════════════════════════════════════════
-function renderRekap(){
-  const tb=document.getElementById('rBody');tb.innerHTML='';
-  if(!rekap.length){
-    tb.innerHTML='<tr><td colspan="6" style="color:var(--tx3);padding:14px;text-align:center">Belum ada data</td></tr>';
-    return;
-  }
-  rekap.forEach((r,i)=>{
-    const tr=document.createElement('tr');
-    const gc=r.grade?`<span class="gchip cg${r.grade}">${r.grade}</span>`:'—';
-    tr.innerHTML=`<td>${i+1}</td><td class="tdnama" title="${r.nama}">${r.nama}</td>`+
-      `<td>${r.kelas||'—'}</td><td>${r.benar}/${r.totalSoal||50}</td>`+
-      `<td style="font-weight:700;color:var(--cy)">${r.nilai!==null?r.nilai:'—'}</td><td>${gc}</td>`;
-    tb.appendChild(tr);
-  });
+// ═══ REKAP ═══
+function rnRk(){
+  const tb=document.getElementById('rB');tb.innerHTML='';
+  if(!rekap.length){tb.innerHTML='<tr><td colspan="6" style="color:var(--tx3);padding:12px;text-align:center">Belum ada data</td></tr>';return;}
+  rekap.forEach((r,i)=>{const tr=document.createElement('tr');const gc=r.grade?`<span class="gch cg${r.grade}">${r.grade}</span>`:'—';tr.innerHTML=`<td>${i+1}</td><td class="tnm">${r.nama}</td><td>${r.kelas||'—'}</td><td>${r.benar}/40</td><td style="font-weight:700;color:var(--cy)">${r.nilai!==null?r.nilai:'—'}</td><td>${gc}</td>`;tb.appendChild(tr);});
 }
-function updateStats(){
-  document.getElementById('rJml').textContent=rekap.length;
-  const vals=rekap.filter(r=>r.nilai!==null).map(r=>r.nilai);
-  if(!vals.length){
-    document.getElementById('rRata').textContent='—';
-    document.getElementById('rLulus').textContent='0%';
-    document.getElementById('barChart').innerHTML='';return;
-  }
-  document.getElementById('rRata').textContent=Math.round(vals.reduce((a,b)=>a+b,0)/vals.length);
-  document.getElementById('rLulus').textContent=
-    Math.round(rekap.filter(r=>r.nilai>=75).length/rekap.length*100)+'%';
-  const bc=document.getElementById('barChart');bc.innerHTML='';
+function upSt(){
+  document.getElementById('rJ').textContent=rekap.length;
+  const vs=rekap.filter(r=>r.nilai!==null).map(r=>r.nilai);
+  if(!vs.length){document.getElementById('rR').textContent='—';document.getElementById('rL').textContent='0%';document.getElementById('bch').innerHTML='';return;}
+  document.getElementById('rR').textContent=Math.round(vs.reduce((a,b)=>a+b)/vs.length);
+  document.getElementById('rL').textContent=Math.round(rekap.filter(r=>r.nilai>=75).length/rekap.length*100)+'%';
+  const bc=document.getElementById('bch');bc.innerHTML='';
   const gc={A:0,B:0,C:0,D:0,E:0};rekap.forEach(r=>{if(r.grade)gc[r.grade]++;});
-  const mx=Math.max(...Object.values(gc),1);
-  const cols={A:'#00ff9d',B:'#76ff03',C:'#ffab00',D:'#ff9100',E:'#ff3d5a'};
-  Object.entries(gc).forEach(([g,n])=>{
-    const h2=Math.round(n/mx*44)+4,col=document.createElement('div');col.className='barcol';
-    col.innerHTML=`<div class="barnum" style="color:${cols[g]}">${n}</div>`+
-      `<div class="barbg" style="height:${h2}px;background:${cols[g]}"></div>`+
-      `<div class="barlbl" style="color:${cols[g]}">${g}</div>`;
-    bc.appendChild(col);
-  });
+  const mx=Math.max(...Object.values(gc),1),cl={A:'#3fb950',B:'#58a6ff',C:'#d29922',D:'#ffa657',E:'#f85149'};
+  Object.entries(gc).forEach(([g,n])=>{const h=Math.round(n/mx*44)+3;const c=document.createElement('div');c.className='bcol';c.innerHTML=`<div class="bnum" style="color:${cl[g]}">${n}</div><div class="bbg" style="height:${h}px;background:${cl[g]}"></div><div class="blbl" style="color:${cl[g]}">${g}</div>`;bc.appendChild(c);});
 }
-function rPDF(){
-  if(!rekap.length){toast('Rekap kosong!');return;}
-  let rows='';
-  rekap.forEach((r,i)=>rows+=`<tr><td>${i+1}</td><td>${r.nama}</td><td>${r.kelas||'—'}</td>`+
-    `<td>${r.absen||'—'}</td><td>${r.benar}/${r.totalSoal||50}</td>`+
-    `<td>${r.nilai!==null?r.nilai:'—'}</td><td>${r.grade||'—'}</td></tr>`);
-  const vals=rekap.filter(r=>r.nilai!==null).map(r=>r.nilai);
-  const rata=vals.length?Math.round(vals.reduce((a,b)=>a+b,0)/vals.length):'—';
-  const html='<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Rekap</title>'+
-    '<style>body{font-family:Arial;padding:16px;font-size:11px}table{border-collapse:collapse;width:100%}'+
-    'th,td{border:1px solid #ccc;padding:4px 6px}th{background:#0f3460;color:#fff}</style></head>'+
-    `<body onload="window.print()"><h2>REKAP — BENYAMIN BATAU SCANNER v5.0</h2>`+
-    `<p>${new Date().toLocaleString('id-ID')}</p>`+
-    '<table><thead><tr><th>#</th><th>Nama</th><th>Kelas</th><th>Absen</th><th>Benar</th><th>Nilai</th><th>Grade</th></tr></thead>'+
-    `<tbody>${rows}</tbody></table><p>Jumlah: ${rekap.length} | Rata-rata: ${rata}</p></body></html>`;
-  const w=window.open('','_blank');if(w){w.document.write(html);w.document.close();}
-  else toast('⚠️ Aktifkan popup');
+function rTX(){
+  if(!rekap.length){toast('Rekap kosong!');return;}const N='\n';
+  let t='REKAP — BENYAMIN BATAU LJK v6'+N+'='.repeat(38)+N;
+  rekap.forEach((r,i)=>t+=`${String(i+1).padStart(2)}  ${r.nama.padEnd(20)} ${(r.kelas||'').padEnd(8)} ${String(r.benar).padEnd(4)} ${String(r.nilai!==null?r.nilai:'—').padEnd(4)} ${r.grade||'—'}${N}`);
+  dlT(t,`rekap_${Date.now()}.txt`);
 }
-function rTXT(){
-  if(!rekap.length){toast('Rekap kosong!');return;}
-  const NL='\n';
-  let t='REKAP BENYAMIN BATAU SCANNER v5.0'+NL+'='.repeat(45)+NL;
-  rekap.forEach((r,i)=>
-    t+=`${String(i+1).padStart(2)}  ${r.nama.padEnd(20)} ${(r.kelas||'').padEnd(8)} `+
-       `${String(r.benar).padEnd(4)} ${String(r.nilai!==null?r.nilai:'—').padEnd(4)} ${r.grade||'—'}`+NL);
-  dlText(t,`rekap_${Date.now()}.txt`);
+function rPD(){
+  if(!rekap.length){toast('Rekap kosong!');return;}let rows='';
+  rekap.forEach((r,i)=>rows+=`<tr><td>${i+1}</td><td>${r.nama}</td><td>${r.kelas||'—'}</td><td>${r.absen||'—'}</td><td>${r.benar}/40</td><td>${r.nilai!==null?r.nilai:'—'}</td><td>${r.grade||'—'}</td></tr>`);
+  const vs=rekap.filter(r=>r.nilai!==null).map(r=>r.nilai);
+  const rata=vs.length?Math.round(vs.reduce((a,b)=>a+b)/vs.length):'—';
+  pop(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Rekap</title><style>body{font-family:Arial;padding:16px;font-size:11px}table{border-collapse:collapse;width:100%}th,td{border:1px solid #ccc;padding:4px 6px}th{background:#0d1117;color:#fff}</style></head><body onload="window.print()"><h2>REKAP — BENYAMIN BATAU LJK v6</h2><p>${new Date().toLocaleString('id-ID')}</p><table><thead><tr><th>#</th><th>Nama</th><th>Kelas</th><th>Absen</th><th>Benar</th><th>Nilai</th><th>Grade</th></tr></thead><tbody>${rows}</tbody></table><p>Total: ${rekap.length} | Rata-rata: ${rata}</p></body></html>`);
 }
-function rHapus(){
-  if(!confirm('Hapus semua rekap?'))return;
-  rekap=[];try{localStorage.setItem('bb41_rekap','[]');}catch{}
-  renderRekap();updateStats();toast('🗑 Rekap dihapus');
-}
+function rDl(){if(!confirm('Hapus semua rekap?'))return;rekap=[];try{localStorage.setItem('bb6_r','[]');}catch{}rnRk();upSt();toast('🗑 Dihapus');}
 
-// ══════════════════════════════════════════════════════════════
-// KUNCI
-// ══════════════════════════════════════════════════════════════
-function buildKunci(){
-  const wrap=document.getElementById('kunciWrap');wrap.innerHTML='';
-  for(let i=0;i<50;i++){
-    const cell=document.createElement('div');cell.className='kcell';
-    const num=document.createElement('div');num.className='knum';num.textContent=i+1;
-    const sel=document.createElement('select');sel.className='ksel';sel.id='ks'+i;
-    ['','A','B','C','D','E'].forEach(v=>{
-      const o=document.createElement('option');o.value=v;o.textContent=v||'—';sel.appendChild(o);
-    });
+// ═══ KUNCI ═══
+function bldK(){
+  const wrap=document.getElementById('kw');wrap.innerHTML='';
+  for(let i=0;i<40;i++){
+    const cell=document.createElement('div');cell.className='kc';
+    const num=document.createElement('div');num.className='kn';num.textContent=i+1;
+    const sel=document.createElement('select');sel.className='ks';sel.id='ks'+i;
+    ['','A','B','C','D','E'].forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v||'—';sel.appendChild(o);});
     sel.value=kunci[i]||'';if(kunci[i])sel.classList.add('isi');
-    sel.addEventListener('change',function(){
-      kunci[i]=this.value;this.classList.toggle('isi',!!this.value);
-      updateKCount();
-      try{localStorage.setItem('bb41_kunci',JSON.stringify(kunci));}catch{}
-    });
+    sel.addEventListener('change',function(){kunci[i]=this.value;this.classList.toggle('isi',!!this.value);upKC();try{localStorage.setItem('bb6_k',JSON.stringify(kunci));}catch{};});
     cell.appendChild(num);cell.appendChild(sel);wrap.appendChild(cell);
   }
-  updateKCount();
+  upKC();
 }
-function updateKCount(){document.getElementById('kCount').textContent=kunci.filter(k=>!!k).length;}
-function kSave(){
-  for(let i=0;i<50;i++){const el=document.getElementById('ks'+i);if(el)kunci[i]=el.value;}
-  try{localStorage.setItem('bb41_kunci',JSON.stringify(kunci));}catch{}
-  updateKCount();toast('✅ Tersimpan!');
-}
-function kRandom(){
-  kunci=Array.from({length:50},()=>'ABCDE'[Math.floor(Math.random()*5)]);
-  for(let i=0;i<50;i++){const el=document.getElementById('ks'+i);if(el){el.value=kunci[i];el.classList.add('isi');}}
-  try{localStorage.setItem('bb41_kunci',JSON.stringify(kunci));}catch{}
-  updateKCount();toast('🎲 Diacak!');
-}
-function kClear(){
-  kunci=new Array(50).fill('');
-  for(let i=0;i<50;i++){const el=document.getElementById('ks'+i);if(el){el.value='';el.classList.remove('isi');}}
-  try{localStorage.setItem('bb41_kunci',JSON.stringify(kunci));}catch{}
-  updateKCount();toast('🗑 Dikosongkan');
-}
-function kImport(){
-  const raw=prompt('Paste jawaban (A-E), max 50:');if(!raw)return;
-  const pts=raw.toUpperCase().match(/[A-E]/g);
-  if(!pts||!pts.length){alert('Tidak ada jawaban A-E yang ditemukan');return;}
-  kunci=new Array(50).fill('');
-  pts.forEach((v,i)=>{if(i<50)kunci[i]=v;});
-  for(let i=0;i<50;i++){const el=document.getElementById('ks'+i);if(el){el.value=kunci[i];el.classList.toggle('isi',!!kunci[i]);}}
-  try{localStorage.setItem('bb41_kunci',JSON.stringify(kunci));}catch{}
-  updateKCount();toast(`✅ Import ${pts.length} jawaban!`);
-}
+function upKC(){document.getElementById('kCt').textContent=kunci.filter(k=>!!k).length;}
+function kSv(){for(let i=0;i<40;i++){const el=document.getElementById('ks'+i);if(el)kunci[i]=el.value;}try{localStorage.setItem('bb6_k',JSON.stringify(kunci));}catch{}upKC();toast('✅ Tersimpan!');}
+function kCl(){kunci=new Array(40).fill('');for(let i=0;i<40;i++){const el=document.getElementById('ks'+i);if(el){el.value='';el.classList.remove('isi');}}try{localStorage.setItem('bb6_k',JSON.stringify(kunci));}catch{}upKC();toast('🗑 Dikosongkan');}
+function kIm(){const raw=prompt('Paste jawaban A–E (40):');if(!raw)return;const pts=raw.toUpperCase().match(/[A-E]/g)||[];if(!pts.length){alert('Tidak ada A–E');return;}kunci=new Array(40).fill('');pts.slice(0,40).forEach((v,i)=>kunci[i]=v);for(let i=0;i<40;i++){const el=document.getElementById('ks'+i);if(el){el.value=kunci[i];el.classList.toggle('isi',!!kunci[i]);}}try{localStorage.setItem('bb6_k',JSON.stringify(kunci));}catch{}upKC();toast('✅ '+Math.min(pts.length,40)+' diimport');}
 
-// ══════════════════════════════════════════════════════════════
-// KALIBRASI
-// ══════════════════════════════════════════════════════════════
-function kalSync(){
-  KAL.arsirThr=parseInt(document.getElementById('sArsirThr').value);
-  KAL.minDiff =parseInt(document.getElementById('sMinDiff').value);
-  KAL.minScore=parseInt(document.getElementById('sMinScore').value);
-  KAL.ofsx    =parseInt(document.getElementById('sOfsX').value);
-  KAL.ofsy    =parseInt(document.getElementById('sOfsY').value);
-  KAL.sx      =parseInt(document.getElementById('sSX').value)/100;
-  KAL.sy      =parseInt(document.getElementById('sSY').value)/100;
-  document.getElementById('vArsirThr').textContent=KAL.arsirThr;
-  document.getElementById('vMinDiff').textContent =KAL.minDiff;
-  document.getElementById('vMinScore').textContent=KAL.minScore;
-  document.getElementById('vOfsX').textContent    =KAL.ofsx+'px';
-  document.getElementById('vOfsY').textContent    =KAL.ofsy+'px';
-  document.getElementById('vSX').textContent      =KAL.sx.toFixed(2);
-  document.getElementById('vSY').textContent      =KAL.sy.toFixed(2);
-}
-function kalUI(){
-  document.getElementById('sArsirThr').value=KAL.arsirThr||170;
-  document.getElementById('sMinDiff').value =KAL.minDiff ||12;
-  document.getElementById('sMinScore').value=KAL.minScore||5;
-  document.getElementById('sOfsX').value    =KAL.ofsx    ||0;
-  document.getElementById('sOfsY').value    =KAL.ofsy    ||0;
-  document.getElementById('sSX').value      =Math.round((KAL.sx||1)*100);
-  document.getElementById('sSY').value      =Math.round((KAL.sy||1)*100);
-  kalSync();
-}
-function kalSave(){kalSync();try{localStorage.setItem('bb41_kal',JSON.stringify(KAL));}catch{}toast('✅ Tersimpan!');}
-function kalReset(){KAL={arsirThr:170,minDiff:12,minScore:5,ofsx:0,ofsy:0,sx:1,sy:1};kalUI();toast('🔄 Default');}
-function kalLoad(){try{return JSON.parse(localStorage.getItem('bb41_kal'))||{};}catch{return{};}}
+// ═══ KALIBRASI ═══
+function kSy(){KAL.md=parseInt(document.getElementById('sMD').value);KAL.ms=parseInt(document.getElementById('sMS').value);KAL.ox=parseInt(document.getElementById('sOX').value);KAL.oy=parseInt(document.getElementById('sOY').value);KAL.sx=parseInt(document.getElementById('sSX').value)/100;KAL.sy=parseInt(document.getElementById('sSY').value)/100;document.getElementById('vMD').textContent=KAL.md;document.getElementById('vMS').textContent=KAL.ms;document.getElementById('vOX').textContent=KAL.ox+'px';document.getElementById('vOY').textContent=KAL.oy+'px';document.getElementById('vSX').textContent=KAL.sx.toFixed(2);document.getElementById('vSY').textContent=KAL.sy.toFixed(2);}
+function kUI(){document.getElementById('sMD').value=KAL.md||10;document.getElementById('sMS').value=KAL.ms||6;document.getElementById('sOX').value=KAL.ox||0;document.getElementById('sOY').value=KAL.oy||0;document.getElementById('sSX').value=Math.round((KAL.sx||1)*100);document.getElementById('sSY').value=Math.round((KAL.sy||1)*100);kSy();}
+function kSv2(){kSy();try{localStorage.setItem('bb6_kal',JSON.stringify(KAL));}catch{}toast('✅ Tersimpan!');}
+function kRs(){KAL={md:10,ms:6,ox:0,oy:0,sx:1,sy:1};kUI();toast('🔄 Default');}
+function kLd(){try{return JSON.parse(localStorage.getItem('bb6_kal'))||{};}catch{return{};}}
 
-// ══════════════════════════════════════════════════════════════
-// UTILITIES
-// ══════════════════════════════════════════════════════════════
-function clearCanvas(){
-  document.getElementById('canvasWrap').style.display='none';
-  document.getElementById('pvPanel').style.display='none';
-  const ov=document.getElementById('cvOverlay');
-  ov.getContext('2d').clearRect(0,0,ov.width||1,ov.height||1);
-  hasROI=false;isBW=false;flatD=null;kotakGrid=null;
-  setFlatInfo('');
-  ['btnRoi','btnPrev','btnScan','btnBW'].forEach(id=>
-    document.getElementById(id).disabled=true);
-  document.getElementById('btnRoi').textContent='👁 ROI';
-  document.getElementById('btnBW').textContent='🔲 BW Mode';
-}
-function doReset(){
-  imgD=null;imgW=0;imgH=0;flatD=null;flatCorners=null;
-  clearCanvas();
-  document.getElementById('fileInput').value='';
-  setPbar(-1);setSbar('idle','Upload LJK terlebih dahulu');
-}
-function dlText(txt,fname){
-  const a=document.createElement('a');
-  a.href='data:text/plain;charset=utf-8,'+encodeURIComponent(txt);
-  a.download=fname;document.body.appendChild(a);a.click();document.body.removeChild(a);
-}
-
+// ═══ UTILS ═══
+function clrSt(){document.getElementById('cvw').style.display='none';document.getElementById('pvp').style.display='none';const ov=document.getElementById('cvo');if(ov.width)ov.getContext('2d').clearRect(0,0,ov.width,ov.height);bwM=false;roiOn=false;hasBB=false;['bR','bP','bS','bBW'].forEach(id=>document.getElementById(id).disabled=true);document.getElementById('bR').textContent='👁 ROI';document.getElementById('bBW').textContent='🔲 BW';}
+function doReset(){iD=null;iW=0;iH=0;clrSt();document.getElementById('fi').value='';pb(-1);sb('','Upload LJK terlebih dahulu');}
+function dlT(txt,fname){const a=document.createElement('a');a.href='data:text/plain;charset=utf-8,'+encodeURIComponent(txt);a.download=fname;document.body.appendChild(a);a.click();document.body.removeChild(a);}
+function pop(html){const w=window.open('','_blank');if(w){w.document.write(html);w.document.close();}else toast('⚠️ Aktifkan popup');}
 </script>
 </body>
 </html>
