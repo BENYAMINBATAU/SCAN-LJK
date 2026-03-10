@@ -86,19 +86,54 @@ body{background:var(--bg);color:var(--tx1);font-family:system-ui,sans-serif;font
 .mov.show{display:flex}
 .mbox{background:var(--bg2);border:1px solid var(--bd);border-radius:12px;padding:18px;max-width:320px;width:90%}
 .mtit{font-weight:700;font-size:14px;color:var(--rd);margin-bottom:6px}
+
+/* ─── VIEWFINDER KAMERA ─── */
+.camWrap{position:relative;background:#000;border-radius:10px;overflow:hidden;
+  margin:8px 0;display:none;}
+.camWrap.show{display:block;}
+#camVid{width:100%;display:block;border-radius:10px;}
+/* Overlay garis pandu LJK */
+.vfOverlay{position:absolute;inset:0;pointer-events:none;}
+/* 4 sudut L-bracket */
+.corner{position:absolute;width:22px;height:22px;}
+.corner.tl{top:8%;left:6%;border-top:3px solid #00ff99;border-left:3px solid #00ff99;}
+.corner.tr{top:8%;right:6%;border-top:3px solid #00ff99;border-right:3px solid #00ff99;}
+.corner.bl{bottom:8%;left:6%;border-bottom:3px solid #00ff99;border-left:3px solid #00ff99;}
+.corner.br{bottom:8%;right:6%;border-bottom:3px solid #00ff99;border-right:3px solid #00ff99;}
+/* Garis tengah tipis */
+.vfHLine{position:absolute;top:50%;left:8%;right:8%;height:1px;
+  background:rgba(0,255,153,.25);}
+.vfVLine{position:absolute;left:50%;top:10%;bottom:10%;width:1px;
+  background:rgba(0,255,153,.25);}
+/* Label panduan */
+.vfLabel{position:absolute;top:3%;left:0;right:0;text-align:center;
+  font-size:11px;font-weight:700;color:#00ff99;letter-spacing:.5px;
+  text-shadow:0 0 8px #00ff99;}
+/* Kotak zona LJK */
+.vfBox{position:absolute;top:8%;left:6%;right:6%;bottom:8%;
+  border:1.5px dashed rgba(0,255,153,.45);border-radius:4px;
+  box-shadow:inset 0 0 30px rgba(0,255,153,.06);}
+/* Tombol capture */
+.camBtns{display:flex;gap:8px;margin-top:6px;}
+.btnCap{flex:1;padding:9px;border:none;border-radius:8px;
+  background:#00ff99;color:#0d1117;font-weight:700;font-size:13px;cursor:pointer;}
+.btnCap:active{opacity:.8}
+.btnCamClose{flex:0 0 auto;padding:9px 14px;border:none;border-radius:8px;
+  background:var(--bg3);color:var(--tx2);border:1px solid var(--bd);
+  font-size:13px;cursor:pointer;}
+
 </style>
 </head>
 <body>
 <div class="hdr">
   <div class="hdr-l">📋 LJK <span>Bubble</span></div>
-  <div class="hdr-r">v6 · Benyamin Batau</div>
+  <div class="hdr-r">v7 · Benyamin Batau</div>
 </div>
 <div class="tabs">
   <div class="tab on" onclick="T(0)"><i>📷</i>SCAN</div>
   <div class="tab"    onclick="T(1)"><i>🗝️</i>KUNCI</div>
   <div class="tab"    onclick="T(2)"><i>📊</i>HASIL</div>
   <div class="tab"    onclick="T(3)"><i>📋</i>REKAP</div>
-  <div class="tab"    onclick="T(4)"><i>⚙️</i>KALIBR</div>
 </div>
 <div id="toast" class="toast"></div>
 <div id="mod" class="mov">
@@ -123,12 +158,36 @@ body{background:var(--bg);color:var(--tx1);font-family:system-ui,sans-serif;font
   </div>
   <div class="card">
     <div class="ct">📄 Upload LJK</div>
-    <div class="ibox">Metode: <b>hitamkan bulatan ●</b> dengan pulpen/spidol hitam.<br>Foto miring / gelap / kuning → tetap diproses otomatis.</div>
-    <div class="upz" id="dz">
-      <input type="file" id="fi" accept="image/*,application/pdf" capture="environment" onchange="onF(event)">
+    <div class="ibox">Metode: <b>hitamkan bulatan ●</b> dengan pulpen/spidol hitam.<br>⚡ Tips: tekan <b>BUKA KAMERA</b> → sejajarkan LJK dengan garis pandu hijau → tekan 📸 FOTO LJK</div>
+    <!-- Viewfinder Kamera -->
+    <div class="camWrap" id="camWrap">
+      <video id="camVid" autoplay playsinline muted></video>
+      <div class="vfOverlay">
+        <div class="vfBox"></div>
+        <div class="corner tl"></div>
+        <div class="corner tr"></div>
+        <div class="corner bl"></div>
+        <div class="corner br"></div>
+        <div class="vfHLine"></div>
+        <div class="vfVLine"></div>
+        <div class="vfLabel" id="vfLbl">📐 Sejajarkan LJK dengan garis pandu</div>
+      </div>
+    </div>
+    <div class="camBtns" id="camBtns" style="display:none">
+      <button class="btnCap" onclick="captureCam()">📸 FOTO LJK</button>
+      <button class="btnCamClose" onclick="stopCam()">✕ Batal</button>
+    </div>
+    <!-- Upload file biasa -->
+    <div class="upz" id="dz" onclick="startCam()" style="margin-top:6px">
+      <input type="file" id="fi" accept="image/*,application/pdf" onchange="onF(event)" style="display:none">
       <div class="ui">📷</div>
-      <div class="ut">Foto / Upload LJK</div>
-      <div class="us">JPG · PNG · PDF</div>
+      <div class="ut">BUKA KAMERA</div>
+      <div class="us">Arahkan HP ke LJK · Ikuti garis pandu</div>
+    </div>
+    <div style="text-align:center;margin:4px 0">
+      <span style="font-size:10px;color:var(--tx3)">atau</span>
+      <button class="btn btn-gh" style="display:inline-block;margin-left:6px;padding:4px 10px;font-size:11px" 
+        onclick="document.getElementById('fi').click()">📁 Upload File</button>
     </div>
   </div>
   <div id="cvw"><canvas id="cvm"></canvas><canvas id="cvo"></canvas></div>
@@ -207,10 +266,6 @@ body{background:var(--bg);color:var(--tx1);font-family:system-ui,sans-serif;font
   </div>
 </div>
 
-<!-- KALIBRASI -->
-<div class="pg" id="pg4">
-  <div class="card">
-    <div class="ct">⚙️ Kalibrasi Bubble</div>
     <div class="ibox" style="font-size:10px">
       Scan langsung di gambar asli — <b>tanpa warp</b> → cepat.<br>
       Deteksi: bandingkan gelap dalam vs luar setiap bubble.
@@ -251,12 +306,12 @@ let bx0=0,by0=0,bx1=0,by1=0,hasBB=false;
 let bwM=false,roiOn=false,last=null;
 let kunci=new Array(40).fill('');
 let rekap=[];
-let KAL=kLd();
+const KAL={md:10,ms:6,ox:0,oy:0,sx:1,sy:1};
 
 document.addEventListener('DOMContentLoaded',()=>{
   try{const s=localStorage.getItem('bb6_k');if(s)kunci=JSON.parse(s);}catch{}
   try{const s=localStorage.getItem('bb6_r');if(s)rekap=JSON.parse(s);}catch{}
-  bldK();rnRk();upSt();kUI();
+  bldK();rnRk();upSt();
   const dz=document.getElementById('dz');
   dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag');});
   dz.addEventListener('dragleave',()=>dz.classList.remove('drag'));
@@ -275,6 +330,79 @@ function toast(m,d=2500){const e=document.getElementById('toast');e.textContent=
 function sb(c,m){document.getElementById('sb').className='sbar '+c;document.getElementById('sbt').textContent=m;}
 function pb(p){const w=document.getElementById('pbw');w.style.display=(p>=0&&p<100)?'block':'none';document.getElementById('pb').style.width=p+'%';}
 function sl(ms){return new Promise(r=>setTimeout(r,ms));}
+
+
+// ═══ KAMERA LIVE + VIEWFINDER ═══
+let camStream=null;
+const CAM_W=1280, CAM_H=720; // ideal 16:9, nanti crop jadi portrait
+
+async function startCam(){
+  // Kalau browser tidak support getUserMedia, langsung ke file input
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
+    document.getElementById('fi').click();return;
+  }
+  try{
+    // Minta kamera belakang, resolusi tinggi
+    camStream=await navigator.mediaDevices.getUserMedia({
+      video:{
+        facingMode:{ideal:'environment'},
+        width:{ideal:1920},height:{ideal:1080}
+      },audio:false
+    });
+    const vid=document.getElementById('camVid');
+    vid.srcObject=camStream;
+    document.getElementById('camWrap').classList.add('show');
+    document.getElementById('camBtns').style.display='flex';
+    document.getElementById('dz').style.display='none';
+    // Update label
+    setVfLabel();
+  }catch(e){
+    // Kalau gagal (misal browser lama), fallback ke file input
+    console.warn('Kamera gagal:',e);
+    document.getElementById('fi').click();
+  }
+}
+
+function stopCam(){
+  if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null;}
+  document.getElementById('camWrap').classList.remove('show');
+  document.getElementById('camBtns').style.display='none';
+  document.getElementById('dz').style.display='';
+}
+
+async function captureCam(){
+  const vid=document.getElementById('camVid');
+  if(!vid.videoWidth){toast('⚠️ Kamera belum siap');return;}
+  
+  // Ambil frame dari video
+  const tmpC=document.createElement('canvas');
+  tmpC.width=vid.videoWidth;tmpC.height=vid.videoHeight;
+  tmpC.getContext('2d').drawImage(vid,0,0);
+  
+  stopCam(); // matikan kamera
+  
+  // Proses gambar yang diambil
+  sb('wrk','⏳ Memproses foto...');
+  const dataUrl=tmpC.toDataURL('image/jpeg',0.92);
+  try{await ldImg(dataUrl);}catch(e){sb('err','❌ '+e.message);}
+}
+
+let _vfT;
+function setVfLabel(){
+  const msgs=[
+    '📐 Sejajarkan LJK dalam kotak hijau',
+    '✅ Pastikan semua sudut LJK terlihat',
+    '📏 Jaga HP tetap lurus & stabil',
+    '💡 Pastikan cahaya cukup, tidak ada bayangan',
+  ];
+  let i=0;
+  function cycle(){
+    const el=document.getElementById('vfLbl');
+    if(el)el.textContent=msgs[i%msgs.length];
+    i++;_vfT=setTimeout(cycle,2500);
+  }
+  clearTimeout(_vfT);cycle();
+}
 
 // ═══ FILE LOAD ═══
 function onF(e){const f=e.target.files[0];e.target.value='';if(f)prcF(f);}
@@ -569,16 +697,9 @@ function kSv(){for(let i=0;i<40;i++){const el=document.getElementById('ks'+i);if
 function kCl(){kunci=new Array(40).fill('');for(let i=0;i<40;i++){const el=document.getElementById('ks'+i);if(el){el.value='';el.classList.remove('isi');}}try{localStorage.setItem('bb6_k',JSON.stringify(kunci));}catch{}upKC();toast('🗑 Dikosongkan');}
 function kIm(){const raw=prompt('Paste jawaban A–E (40):');if(!raw)return;const pts=raw.toUpperCase().match(/[A-E]/g)||[];if(!pts.length){alert('Tidak ada A–E');return;}kunci=new Array(40).fill('');pts.slice(0,40).forEach((v,i)=>kunci[i]=v);for(let i=0;i<40;i++){const el=document.getElementById('ks'+i);if(el){el.value=kunci[i];el.classList.toggle('isi',!!kunci[i]);}}try{localStorage.setItem('bb6_k',JSON.stringify(kunci));}catch{}upKC();toast('✅ '+Math.min(pts.length,40)+' diimport');}
 
-// ═══ KALIBRASI ═══
-function kSy(){KAL.md=parseInt(document.getElementById('sMD').value);KAL.ms=parseInt(document.getElementById('sMS').value);KAL.ox=parseInt(document.getElementById('sOX').value);KAL.oy=parseInt(document.getElementById('sOY').value);KAL.sx=parseInt(document.getElementById('sSX').value)/100;KAL.sy=parseInt(document.getElementById('sSY').value)/100;document.getElementById('vMD').textContent=KAL.md;document.getElementById('vMS').textContent=KAL.ms;document.getElementById('vOX').textContent=KAL.ox+'px';document.getElementById('vOY').textContent=KAL.oy+'px';document.getElementById('vSX').textContent=KAL.sx.toFixed(2);document.getElementById('vSY').textContent=KAL.sy.toFixed(2);}
-function kUI(){document.getElementById('sMD').value=KAL.md||10;document.getElementById('sMS').value=KAL.ms||6;document.getElementById('sOX').value=KAL.ox||0;document.getElementById('sOY').value=KAL.oy||0;document.getElementById('sSX').value=Math.round((KAL.sx||1)*100);document.getElementById('sSY').value=Math.round((KAL.sy||1)*100);kSy();}
-function kSv2(){kSy();try{localStorage.setItem('bb6_kal',JSON.stringify(KAL));}catch{}toast('✅ Tersimpan!');}
-function kRs(){KAL={md:10,ms:6,ox:0,oy:0,sx:1,sy:1};kUI();toast('🔄 Default');}
-function kLd(){try{return JSON.parse(localStorage.getItem('bb6_kal'))||{};}catch{return{};}}
-
 // ═══ UTILS ═══
 function clrSt(){document.getElementById('cvw').style.display='none';document.getElementById('pvp').style.display='none';const ov=document.getElementById('cvo');if(ov.width)ov.getContext('2d').clearRect(0,0,ov.width,ov.height);bwM=false;roiOn=false;hasBB=false;['bR','bP','bS','bBW'].forEach(id=>document.getElementById(id).disabled=true);document.getElementById('bR').textContent='👁 ROI';document.getElementById('bBW').textContent='🔲 BW';}
-function doReset(){iD=null;iW=0;iH=0;clrSt();document.getElementById('fi').value='';pb(-1);sb('','Upload LJK terlebih dahulu');}
+function doReset(){iD=null;iW=0;iH=0;clrSt();stopCam();document.getElementById('fi').value='';pb(-1);sb('','Upload LJK terlebih dahulu');}
 function dlT(txt,fname){const a=document.createElement('a');a.href='data:text/plain;charset=utf-8,'+encodeURIComponent(txt);a.download=fname;document.body.appendChild(a);a.click();document.body.removeChild(a);}
 function pop(html){const w=window.open('','_blank');if(w){w.document.write(html);w.document.close();}else toast('⚠️ Aktifkan popup');}
 </script>
