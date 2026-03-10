@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <meta name="theme-color" content="#0d1117">
-<title>LJK Scanner Bubble - BB</title>
+<title>LJK Scanner v8 - Benyamin Batau</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{--bg:#0d1117;--bg2:#161b22;--bg3:#1c2330;--bd:#30363d;--tx1:#e6edf3;--tx2:#8b949e;--tx3:#484f58;--cy:#58a6ff;--gn:#3fb950;--ye:#d29922;--rd:#f85149;--am:#ffa657}
@@ -122,12 +122,35 @@ body{background:var(--bg);color:var(--tx1);font-family:system-ui,sans-serif;font
   background:var(--bg3);color:var(--tx2);border:1px solid var(--bd);
   font-size:13px;cursor:pointer;}
 
+
+/* ─── MODAL VALIDASI LJK ─── */
+.vmov{position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:300;
+  display:none;align-items:center;justify-content:center;}
+.vmov.show{display:flex;}
+.vmbox{background:var(--bg2);border-radius:14px;padding:20px 18px;
+  max-width:310px;width:92%;border:1px solid var(--bd);}
+.vmicon{font-size:2.8rem;text-align:center;margin-bottom:8px;}
+.vmtit{font-weight:700;font-size:15px;text-align:center;margin-bottom:6px;}
+.vmtit.ok{color:var(--gn);}
+.vmtit.err{color:var(--rd);}
+.vmtit.warn{color:var(--ye);}
+.vmchecks{margin:10px 0;background:var(--bg3);border-radius:8px;padding:10px 12px;}
+.vmcheck{font-size:11px;color:var(--tx2);padding:3px 0;
+  display:flex;gap:6px;align-items:center;border-bottom:1px solid var(--bd);}
+.vmcheck:last-child{border:none;}
+.vmcheck .vik{font-size:13px;flex-shrink:0;}
+.vmcheck .vtx{flex:1;}
+.vmscore{text-align:center;font-size:13px;font-weight:700;
+  margin:8px 0 4px;color:var(--cy);}
+.vmhint{font-size:10px;color:var(--tx3);text-align:center;
+  background:var(--bg3);padding:7px 10px;border-radius:6px;line-height:1.5;margin:8px 0;}
+
 </style>
 </head>
 <body>
 <div class="hdr">
   <div class="hdr-l">📋 LJK <span>Bubble</span></div>
-  <div class="hdr-r">v7 · Benyamin Batau</div>
+  <div class="hdr-r">v8 · Benyamin Batau</div>
 </div>
 <div class="tabs">
   <div class="tab on" onclick="T(0)"><i>📷</i>SCAN</div>
@@ -158,7 +181,7 @@ body{background:var(--bg);color:var(--tx1);font-family:system-ui,sans-serif;font
   </div>
   <div class="card">
     <div class="ct">📄 Upload LJK</div>
-    <div class="ibox">Metode: <b>hitamkan bulatan ●</b> dengan pulpen/spidol hitam.<br>⚡ Tips: tekan <b>BUKA KAMERA</b> → sejajarkan LJK dengan garis pandu hijau → tekan 📸 FOTO LJK</div>
+    <div class="ibox">Metode: <b>hitamkan bulatan ●</b> dengan pulpen/spidol hitam.<br>⚡ Hanya menerima <b>LJK resmi SMKN 1 Sumarorong</b>. Format lain otomatis ditolak.<br>📐 Tekan <b>BUKA KAMERA</b> → sejajarkan LJK dengan garis pandu hijau → 📸 FOTO LJK</div>
     <!-- Viewfinder Kamera -->
     <div class="camWrap" id="camWrap">
       <video id="camVid" autoplay playsinline muted></video>
@@ -332,6 +355,160 @@ function pb(p){const w=document.getElementById('pbw');w.style.display=(p>=0&&p<1
 function sl(ms){return new Promise(r=>setTimeout(r,ms));}
 
 
+
+// ═══ VALIDASI FORMAT LJK ═══
+// Mengenali apakah foto yang diupload adalah LJK SMKN 1 Sumarorong
+// 5 check struktural — perlu ≥ 3 untuk diterima
+
+function grayPx(d,i){return .299*d[i*4]+.587*d[i*4+1]+.114*d[i*4+2];}
+
+function validateLJKFormat(imgData, W, H){
+  const d = imgData.data;
+  const checks = [];
+  let score = 0;
+
+  // ── CHECK 1: Rasio portrait (W/H 0.60–0.85, A4-like) ──────────────
+  const ratio = W / H;
+  const c1 = ratio >= 0.58 && ratio <= 0.88;
+  if(c1) score++;
+  checks.push({ok:c1, label:'Orientasi portrait ('+ratio.toFixed(2)+')',
+    hint: c1 ? 'Rasio sesuai A4 portrait' : 'Foto harus portrait, bukan landscape'});
+
+  // ── Bangun grayscale cepat ─────────────────────────────────────────
+  const G = new Uint8Array(W*H);
+  const STEP = Math.max(1, Math.floor(Math.min(W,H)/120));
+  for(let y=0;y<H;y+=STEP) for(let x=0;x<W;x+=STEP){
+    G[y*W+x] = Math.round(grayPx(d, y*W+x));
+  }
+  function zMean(x0,y0,x1,y1){
+    let s=0,n=0;
+    for(let y=y0;y<y1;y+=STEP) for(let x=x0;x<x1;x+=STEP){s+=G[y*W+x];n++;}
+    return n?s/n:128;
+  }
+  function zStd(x0,y0,x1,y1){
+    const m=zMean(x0,y0,x1,y1);let s=0,n=0;
+    for(let y=y0;y<y1;y+=STEP) for(let x=x0;x<x1;x+=STEP){
+      const v=G[y*W+x]-m;s+=v*v;n++;
+    }
+    return n?Math.sqrt(s/n):0;
+  }
+  function zMin(x0,y0,x1,y1){
+    let mn=255;
+    for(let y=y0;y<y1;y+=STEP) for(let x=x0;x<x1;x+=STEP) if(G[y*W+x]<mn) mn=G[y*W+x];
+    return mn;
+  }
+
+  const TX0=Math.floor(W*.04), TX1=Math.floor(W*.96);
+
+  // ── CHECK 2: Tabel punya variasi lebih tinggi dari header ──────────
+  // Header (Y 0–17%): biasanya hanya teks + garis = std lebih rendah
+  // Tabel (Y 20–95%): banyak garis horizontal & vertikal = std lebih tinggi
+  const stdHdr = zStd(TX0, 0,         TX1, Math.floor(H*.17));
+  const stdTbl = zStd(TX0, Math.floor(H*.20), TX1, Math.floor(H*.95));
+  const c2 = stdTbl > stdHdr * 1.15;
+  if(c2) score++;
+  checks.push({ok:c2, label:'Pola grid tabel terdeteksi',
+    hint: c2 ? 'Grid bubble terdeteksi jelas' : 'Tidak ada pola grid tabel LJK'});
+
+  // ── CHECK 3: Garis tepi tabel header (Y ~18.2–19.5% sangat gelap) ──
+  // Ada garis horizontal tebal pemisah baris header dan baris soal
+  const hdrRowMin = zMin(TX0, Math.floor(H*.180), TX1, Math.floor(H*.200));
+  const hdrRowStd = zStd(TX0, Math.floor(H*.180), TX1, Math.floor(H*.200));
+  const c3 = hdrRowMin < 130 || hdrRowStd > 12;
+  if(c3) score++;
+  checks.push({ok:c3, label:'Garis pembatas kolom header (Y≈19%)',
+    hint: c3 ? 'Garis tabel pembatas ditemukan' : 'Tidak ada garis horizontal tabel'});
+
+  // ── CHECK 4: DIP di X 46–57% (garis border antar blok L/R) ────────
+  // Di antara blok kiri dan kanan ada garis border → titik minimum gelap
+  const tY0=Math.floor(H*.22), tY1=Math.floor(H*.95);
+  const dipMin  = zMin(Math.floor(W*.44), tY0, Math.floor(W*.57), tY1);
+  const leftMn  = zMean(Math.floor(W*.10), tY0, Math.floor(W*.44), tY1);
+  const rightMn = zMean(Math.floor(W*.57), tY0, Math.floor(W*.96), tY1);
+  const c4 = dipMin < 160;
+  if(c4) score++;
+  checks.push({ok:c4, label:'Garis pemisah blok kiri-kanan (X≈50%)',
+    hint: c4 ? 'Pemisah dua blok soal ditemukan' : 'Tidak ada pemisah blok kiri-kanan'});
+
+  // ── CHECK 5: Banyak garis vertikal di zona tabel ───────────────────
+  // Tiap kolom A/B/C/D/E punya garis vertikal → std per kolom tinggi
+  let colStdSum=0, colStdN=0;
+  for(let x=Math.floor(W*.05);x<Math.floor(W*.95);x+=STEP*2){
+    let s=0,m=0,n=0;
+    for(let y=tY0;y<tY1;y+=STEP){s+=G[y*W+x];n++;}
+    m=n?s/n:128;s=0;
+    for(let y=tY0;y<tY1;y+=STEP){const v=G[y*W+x]-m;s+=v*v;}
+    colStdSum+=(n?Math.sqrt(s/n):0);colStdN++;
+  }
+  const avgColStd = colStdN ? colStdSum/colStdN : 0;
+  const c5 = avgColStd > 16;
+  if(c5) score++;
+  checks.push({ok:c5, label:'Pola garis vertikal (kolom A–E)',
+    hint: c5 ? 'Kolom A-E terdeteksi di kedua blok' : 'Kolom jawaban A-E tidak jelas'});
+
+  // ── Keputusan ─────────────────────────────────────────────────────
+  let valid=false, level='', mainMsg='';
+  if(score>=4){
+    valid=true; level='ok';
+    mainMsg = score===5 ? '✅ Format LJK Valid!' : '✅ Format LJK Dikenali';
+  } else if(score===3){
+    valid=true; level='warn';
+    mainMsg='⚠️ LJK Dikenali (kualitas rendah)';
+  } else if(score===2){
+    valid=false; level='warn';
+    mainMsg='⚠️ Format Tidak Jelas';
+  } else {
+    valid=false; level='err';
+    mainMsg='❌ Bukan LJK yang Dikenali';
+  }
+
+  return {valid, score, level, mainMsg, checks};
+}
+
+// ─── Tampilkan modal validasi ────────────────────────────────────────
+let _vmCb=null;
+function showVM(result, onOk){
+  _vmCb=onOk;
+  const el=id=>document.getElementById(id);
+  // Icon
+  el('vmIcon').textContent = result.level==='ok'?'✅':result.level==='warn'?'⚠️':'❌';
+  // Judul
+  el('vmTit').textContent  = result.mainMsg;
+  el('vmTit').className    = 'vmtit '+result.level;
+  // Skor
+  el('vmScore').textContent = `Skor: ${result.score}/5 pemeriksaan`;
+  // Checklist
+  el('vmChecks').innerHTML = result.checks.map(c=>
+    `<div class="vmcheck">
+      <span class="vik">${c.ok?'✅':'❌'}</span>
+      <span class="vtx">${c.label}</span>
+    </div>`
+  ).join('');
+  // Hint
+  let hint='';
+  if(!result.valid){
+    const fails = result.checks.filter(c=>!c.ok).map(c=>c.hint);
+    hint = fails.join(' · ');
+    if(result.score<=1) hint = '💡 Upload foto LJK SMKN 1 Sumarorong yang sesuai.';
+  } else if(result.score<5){
+    hint = '💡 Hasil scan mungkin kurang akurat. Coba foto lebih lurus & terang.';
+  } else {
+    hint = '✨ Foto LJK berkualitas baik. Siap di-scan!';
+  }
+  el('vmHint').textContent = hint;
+  // Tombol
+  el('vmBtnOk').style.display = result.valid ? '' : 'none';
+  el('vmBtnCancel').textContent = result.valid ? '✕ Batal' : '✕ Tutup';
+  // Tampilkan
+  el('vmov').classList.add('show');
+}
+function closeVM(proceed){
+  document.getElementById('vmov').classList.remove('show');
+  if(proceed && _vmCb) _vmCb();
+  _vmCb=null;
+}
+
+
 // ═══ KAMERA LIVE + VIEWFINDER ═══
 let camStream=null;
 const CAM_W=1280, CAM_H=720; // ideal 16:9, nanti crop jadi portrait
@@ -462,13 +639,33 @@ async function pipe(){
   by1=scnE(gray,iW,iH,'B',MRG,thr,STEP);
   hasBB=(bx0>=0&&bx1>bx0+iW*.3&&by0>=0&&by1>by0+iH*.3);
   if(!hasBB){bx0=0;bx1=iW;by0=0;by1=iH;}
-  // Validate
+  // Validate dasar (portrait, brightness)
   if(!vld(d,iW,iH))return;
   shBW();drBB();
-  sb('ok','✅ Siap'+(hasBB?' | Batas ✓':'')+' | '+iW+'×'+iH);
-  toast('✅ Siap di-scan');bwM=true;
+  
+  // ── VALIDASI FORMAT LJK ──
+  sb('wrk','🔍 Memeriksa format LJK...');await sl(30);
+  const vRes = validateLJKFormat(iD, iW, iH);
+  
+  if(!vRes.valid){
+    // Tampilkan modal gagal — blokir scan
+    sb('err','❌ Format tidak dikenali (skor '+vRes.score+'/5)');
+    showVM(vRes, null);
+    return;
+  }
+  
+  // Valid: tampilkan modal info sebentar lalu lanjut
+  sb('ok','✅ Format LJK valid ('+vRes.score+'/5) | '+iW+'×'+iH);
+  bwM=true;
   document.getElementById('bBW').textContent='🎨 Asli';
   ['bR','bP','bS','bBW'].forEach(id=>document.getElementById(id).disabled=false);
+  
+  // Kalau skor 5 = langsung OK, skor 3-4 = tampilkan warning tapi boleh lanjut
+  if(vRes.score<5){
+    showVM(vRes, ()=>toast('✅ '+vRes.score+'/5 · Siap di-scan'));
+  } else {
+    toast('✅ LJK valid · Siap di-scan');
+  }
 }
 
 function scnE(gray,W,H,dir,MRG,thr,STEP){
@@ -643,7 +840,23 @@ function hTX(){
 function hPD(){
   if(!last){toast('Tidak ada hasil!');return;}const h=last;let rows='';
   h.hasil.forEach(s=>{const col=s.correct===true?'#1a7f37':s.correct===false?'#cf222e':!s.jaw?'#9a6700':'#888';const st=s.correct===true?'✓':s.correct===false?'✗':!s.jaw?'—':'?';rows+=`<tr><td>${s.nomor}</td><td style="font-weight:700">${s.jaw||'—'}</td><td>${s.kunci||'—'}</td><td style="color:${col};font-weight:700">${st}</td><td>${s.conf}%</td></tr>`;});
-  pop(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Hasil</title><style>body{font-family:Arial;padding:16px;font-size:11px}table{border-collapse:collapse;width:100%}th,td{border:1px solid #ccc;padding:3px 6px;text-align:center}th{background:#0d1117;color:#fff}.nb{font-size:40px;font-weight:900}</style></head><body onload="window.print()"><h2>HASIL LJK — BENYAMIN BATAU v6</h2><p>Nama: <b>${h.nama}</b> | Kelas: <b>${h.kelas}</b> | ${h.waktu}</p><p><span class="nb">${h.nilai!==null?h.nilai:'—'}</span> <b>${h.grade||''}</b> | Benar: <b>${h.benar}/40</b> | Conf: ${h.avgConf}%</p><table><thead><tr><th>No</th><th>Jawab</th><th>Kunci</th><th>Status</th><th>Conf</th></tr></thead><tbody>${rows}</tbody></table></body></html>`);
+  pop(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Hasil</title><style>body{font-family:Arial;padding:16px;font-size:11px}table{border-collapse:collapse;width:100%}th,td{border:1px solid #ccc;padding:3px 6px;text-align:center}th{background:#0d1117;color:#fff}.nb{font-size:40px;font-weight:900}</style></head><body onload="window.print()"><h2>HASIL LJK — BENYAMIN BATAU v6</h2><p>Nama: <b>${h.nama}</b> | Kelas: <b>${h.kelas}</b> | ${h.waktu}</p><p><span class="nb">${h.nilai!==null?h.nilai:'—'}</span> <b>${h.grade||''}</b> | Benar: <b>${h.benar}/40</b> | Conf: ${h.avgConf}%</p><table><thead><tr><th>No</th><th>Jawab</th><th>Kunci</th><th>Status</th><th>Conf</th></tr></thead><tbody>${rows}</tbody></table>
+<!-- MODAL VALIDASI FORMAT LJK -->
+<div class="vmov" id="vmov">
+  <div class="vmbox">
+    <div class="vmicon" id="vmIcon">🔍</div>
+    <div class="vmtit" id="vmTit">Memeriksa Format...</div>
+    <div class="vmchecks" id="vmChecks"></div>
+    <div class="vmscore" id="vmScore"></div>
+    <div class="vmhint" id="vmHint"></div>
+    <div class="g2" style="margin-top:10px">
+      <button class="btn btn-gh" id="vmBtnCancel" onclick="closeVM()">✕ Batal</button>
+      <button class="btn btn-cy" id="vmBtnOk" style="display:none" onclick="closeVM(true)">✅ Lanjut Scan</button>
+    </div>
+  </div>
+</div>
+
+</body></html>`);
 }
 
 // ═══ REKAP ═══
