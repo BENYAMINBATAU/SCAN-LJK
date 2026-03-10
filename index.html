@@ -857,13 +857,13 @@ async function ldImg(src){
   return new Promise((ok,fail)=>{
     const img=new Image();
     img.onload=async()=>{
-      const cv=document.getElementById('cvm'),ov=document.getElementById('cvo');
-      cv.width=ov.width=img.naturalWidth;cv.height=ov.height=img.naturalHeight;
+      const cv=document.getElementById('cvm');
+      cv.width=img.naturalWidth; cv.height=img.naturalHeight;
       cv.getContext('2d').drawImage(img,0,0);
       iD=cv.getContext('2d').getImageData(0,0,cv.width,cv.height);
-      iW=cv.width;iH=cv.height;
+      iW=cv.width; iH=cv.height;
       document.getElementById('cvw').style.display='block';
-      await pipe();ok();
+      await pipe(); ok();
     };
     img.onerror=()=>fail(new Error('Gambar tidak valid'));
     img.src=src;
@@ -968,7 +968,7 @@ function sBub(d,W,H,cx,cy,r){
 }
 function scnN(d,W,H,n){
   const sc='ABCDE'.split('').map(op=>{const{cx,cy,r}=cPx(n,op);return sBub(d,W,H,cx,cy,r);});
-  const md=KAL.md||10,ms=KAL.ms||6;
+  const md=10,ms=6;
   const mx=Math.max(...sc);
   if(mx<ms)return{jaw:'',sc,conf:0};
   const gap=[...sc].sort((a,b)=>b-a);const gp=gap[0]-gap[1];
@@ -980,7 +980,7 @@ function scnN(d,W,H,n){
 // ═══ PREVIEW ═══
 async function doPrev(){
   if(!iD){toast('Upload dulu!');return;}
-  document.getElementById('bP').disabled=true;sb('wrk','🔍 Preview...');await sl(15);
+  sb('wrk','🔍 Preview...');await sl(15);
   const d=iD.data,W=iW,H=iH,gr=document.getElementById('pvg');gr.innerHTML='';
   let det=0,amb=0;
   for(let n=1;n<=40;n++){
@@ -994,8 +994,8 @@ async function doPrev(){
     if(n%10===0)await sl(0);
   }
   document.getElementById('pvi').textContent=`Terdeteksi: ${det}/40 | Ambigus: ${amb} | Kosong: ${40-det-amb}`;
-  document.getElementById('pvp').style.display='block';
-  document.getElementById('bP').disabled=false;
+  
+  
   sb('ok','Preview: '+det+'/40');toast('🔍 '+det+'/40 terdeteksi');
 }
 
@@ -1033,14 +1033,8 @@ function shBW(){
   for(let i=0;i<W*H;i++){const p=i*4,g=Math.round(gv(src,p));out.data[p]=out.data[p+1]=out.data[p+2]=g;out.data[p+3]=255;}
   ctx.putImageData(out,0,0);
 }
-function drBB(){
-  if(!hasBB)return;
-  const ov=document.getElementById('cvo'),ctx=ov.getContext('2d');
-  ctx.clearRect(0,0,ov.width,ov.height);
-  ctx.strokeStyle='#58a6ff';ctx.lineWidth=Math.max(1.5,iW/400);ctx.setLineDash([6,3]);
-  ctx.strokeRect(bx0,by0,bx1-bx0,by1-by0);ctx.setLineDash([]);
-}
-  else{cv.getContext('2d').putImageData(iD,0,0);ov.getContext('2d').clearRect(0,0,ov.width,ov.height);drBB();document.getElementById('bBW').textContent='🔲 BW';}
+function drBB(){/* overlay via SVG adjSvg, tidak perlu cvo */}
+  else{cv.getContext('2d').putImageData(iD,0,0);ov.getContext('2d').clearRect(0,0,ov.width,ov.height);drBB();}
 }
 
 
@@ -1150,7 +1144,7 @@ function kCl(){kunci=new Array(40).fill('');for(let i=0;i<40;i++){const el=docum
 function kIm(){const raw=prompt('Paste jawaban A–E (40):');if(!raw)return;const pts=raw.toUpperCase().match(/[A-E]/g)||[];if(!pts.length){alert('Tidak ada A–E');return;}kunci=new Array(40).fill('');pts.slice(0,40).forEach((v,i)=>kunci[i]=v);for(let i=0;i<40;i++){const el=document.getElementById('ks'+i);if(el){el.value=kunci[i];el.classList.toggle('isi',!!kunci[i]);}}try{localStorage.setItem('bb6_k',JSON.stringify(kunci));}catch{}upKC();toast('✅ '+Math.min(pts.length,40)+' diimport');}
 
 // ═══ UTILS ═══
-function clrSt(){document.getElementById('cvw').style.display='none';document.getElementById('pvp').style.display='none';const ov=document.getElementById('cvo');if(ov.width)ov.getContext('2d').clearRect(0,0,ov.width,ov.height);bwM=false;roiOn=false;hasBB=false;const _bS2=document.getElementById('bS');if(_bS2)_bS2.disabled=true;}
+function clrSt(){document.getElementById('cvw').style.display='none';/* cvo dihapus - clear handled by adjSvg */bwM=false;roiOn=false;hasBB=false;const _bS2=document.getElementById('bS');if(_bS2)_bS2.disabled=true;}
 function doReset(){iD=null;iW=0;iH=0;clrSt();stopCam();document.getElementById('fi').value='';pb(-1);sb('','Upload LJK terlebih dahulu');resetAdj();adjModeOn=false;const bAdj=document.getElementById('bAdj');if(bAdj){bAdj.textContent='✋ Adjust';bAdj.style.background='';bAdj.style.color='';}}
 function dlT(txt,fname){const a=document.createElement('a');a.href='data:text/plain;charset=utf-8,'+encodeURIComponent(txt);a.download=fname;document.body.appendChild(a);a.click();document.body.removeChild(a);}
 function pop(html){const w=window.open('','_blank');if(w){w.document.write(html);w.document.close();}else toast('⚠️ Aktifkan popup');}
