@@ -253,17 +253,12 @@ body{background:var(--bg);color:var(--tx1);font-family:system-ui,sans-serif;
 
   <!-- Preview canvas -->
   <div id="cvWrap">
-    <div id="adjBar" style="display:none;background:rgba(0,255,153,.08);
-      border:1px solid rgba(0,255,153,.3);border-radius:8px;
-      padding:8px 10px;margin-bottom:6px;font-size:11px">
+    
+    <div id="adjBar" style="display:none;background:rgba(0,255,153,.08);border:1px solid rgba(0,255,153,.3);border-radius:8px;padding:8px 10px;margin-bottom:6px;font-size:11px">
       <b style="color:#00ff99">✏️ Gambar Kotak LJK</b><br>
-      <span style="color:#8b949e">
-        Seret dari sudut soal <b style="color:#3fb950">No.1</b> ke sudut soal
-        <b style="color:#58a6ff">No.40</b> · kotak otomatis lurus<br>
-        Lalu seret <b style="color:#ffcc00">↖↗↙↘</b> untuk fine-tune sudut
-      </span>
+      <span style="color:#8b949e">Seret dari sudut <b style="color:#3fb950">No.1</b> ke sudut <b style="color:#58a6ff">No.40</b> · lalu seret <b style="color:#ffcc00">↖↗↙↘</b> fine-tune</span>
     </div>
-    <div id="anchorPanel" style="display:none"></div>
+
     <div class="cvCont" id="cvCont">
       <canvas id="cvMain"></canvas>
       <canvas id="cvAdj"></canvas>
@@ -352,9 +347,9 @@ body{background:var(--bg);color:var(--tx1);font-family:system-ui,sans-serif;
 </div>
 
 <script>
-// ════════════════════════════════════════════════════
-// KOORDINAT BUBBLE (relatif 0–1, LJK 794×1123px)
-// ════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
+// STATE GLOBAL — satu deklarasi, tidak ada duplikat
+// ═══════════════════════════════════════════════
 const CLX={A:.10579,B:.19270,C:.27960,D:.36650,E:.45340};
 const CRX={A:.60831,B:.69521,C:.78212,D:.86902,E:.95592};
 const RY=[.19590,.23508,.27516,.31523,.35530,.39537,.43544,.47551,
@@ -362,40 +357,42 @@ const RY=[.19590,.23508,.27516,.31523,.35530,.39537,.43544,.47551,
           .83615,.87622,.91630,.95637];
 const BR=.01637;
 
-// ════════════════════════════════════════════════════
-// STATE
-// ════════════════════════════════════════════════════
-let imgData=null, imgW=0, imgH=0;   // gambar asli
+let imgData=null, imgW=0, imgH=0;
 let kunci=new Array(40).fill('');
 let rekap=[];
 let last=null;
 let camStream=null, vfTimer=null;
-// Adjust berbasis titik kontrol
-// (state adjMode, ctrlPts, activeAnchor didefinisikan di blok adj)
 
-// ════════════════════════════════════════════════════
+// Adjust box
+let adjMode=false;
+let box=null;        // {x,y,w,h} dalam koordinat display canvas
+let drawing=null;    // {x0,y0} titik start drag
+let dragH=null;      // handle aktif: 'TL'|'TR'|'BL'|'BR'|null
+const HRAD=22;       // radius touch handle
+
+// ═══════════════════════════════════════════════
 // INIT
-// ════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded',()=>{
   try{const s=localStorage.getItem('bb_k');if(s)kunci=JSON.parse(s);}catch{}
   try{const s=localStorage.getItem('bb_r');if(s)rekap=JSON.parse(s);}catch{}
-  bldK(); rnRk(); upSt(); initAnchorUI(); initTapHandler();
-  // Drag-drop
+  bldK(); rnRk(); upSt();
+  initBoxDraw();
+  // Drag-drop zone
   const dz=document.getElementById('dz');
-  dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag')});
-  dz.addEventListener('dragleave',()=>dz.classList.remove('drag'));
-  dz.addEventListener('drop',e=>{
-    e.preventDefault();dz.classList.remove('drag');
-    const f=e.dataTransfer.files[0];
-    if(f)loadFile(f);
-  });
-  // Touch adjust
-  initTouchAdj();
+  if(dz){
+    dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag')});
+    dz.addEventListener('dragleave',()=>dz.classList.remove('drag'));
+    dz.addEventListener('drop',e=>{
+      e.preventDefault();dz.classList.remove('drag');
+      const f=e.dataTransfer.files[0];if(f)loadFile(f);
+    });
+  }
 });
 
-// ════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
 // TAB
-// ════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
 function T(n){
   document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('on',i===n));
   document.querySelectorAll('.pg') .forEach((p,i)=>p.classList.toggle('on',i===n));
@@ -403,9 +400,9 @@ function T(n){
   if(n===1)upKC();
 }
 
-// ════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
 // UI HELPERS
-// ════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
 let _tt;
 function toast(m,d=2800){
   const e=document.getElementById('toast');
@@ -429,13 +426,11 @@ function shM(msg){
 }
 function closeM(){document.getElementById('mod').classList.remove('show');}
 
-// ════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
 // KAMERA
-// ════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
 function startCam(){
-  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
-    pickFile(); return;
-  }
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){pickFile();return;}
   navigator.mediaDevices.getUserMedia({
     video:{facingMode:{ideal:'environment'},width:{ideal:1920},height:{ideal:1080}},
     audio:false
@@ -449,25 +444,25 @@ function startCam(){
     vfRotate();
   }).catch(()=>pickFile());
 }
-
 function stopCam(){
   if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null;}
-  document.getElementById('camWrap').classList.remove('show');
-  document.getElementById('camBtns').style.display='none';
-  document.getElementById('dz').style.display='';
+  const cw=document.getElementById('camWrap');
+  const cb=document.getElementById('camBtns');
+  const dz=document.getElementById('dz');
+  if(cw)cw.classList.remove('show');
+  if(cb)cb.style.display='none';
+  if(dz)dz.style.display='';
   clearTimeout(vfTimer);
 }
-
 function captureCam(){
   const vid=document.getElementById('camVid');
-  if(!vid.videoWidth){toast('⚠️ Kamera belum siap, tunggu sebentar');return;}
+  if(!vid.videoWidth){toast('⚠️ Kamera belum siap');return;}
   const c=document.createElement('canvas');
-  c.width=vid.videoWidth; c.height=vid.videoHeight;
+  c.width=vid.videoWidth;c.height=vid.videoHeight;
   c.getContext('2d').drawImage(vid,0,0);
   stopCam();
   processDataURL(c.toDataURL('image/jpeg',.92));
 }
-
 function vfRotate(){
   const msgs=['📐 Sejajarkan LJK dalam kotak hijau',
               '✅ Pastikan semua sudut LJK terlihat',
@@ -479,43 +474,35 @@ function vfRotate(){
     if(el)el.textContent=msgs[i++%msgs.length];
     vfTimer=setTimeout(next,2500);
   }
-  clearTimeout(vfTimer); next();
+  clearTimeout(vfTimer);next();
 }
 
-// ════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
 // FILE INPUT
-// ════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
 function pickFile(){document.getElementById('fi').click();}
-function onFile(e){
-  const f=e.target.files[0];
-  e.target.value='';
-  if(f)loadFile(f);
-}
+function onFile(e){const f=e.target.files[0];e.target.value='';if(f)loadFile(f);}
 function loadFile(f){
   doReset();
   sb('wrk','⏳ Memuat...');
   if(f.type==='application/pdf'||f.name.toLowerCase().endsWith('.pdf')){
     loadPDF(f);
   } else {
-    const url=URL.createObjectURL(f);
-    processDataURL(url,true);
+    processDataURL(URL.createObjectURL(f),true);
   }
 }
 function loadPDF(f){
   sb('wrk','⏳ Render PDF...');
-  const loadLib=()=>{
-    if(window.pdfjsLib){doPDF(f);return;}
-    const s=document.createElement('script');
-    s.src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
-    s.onload=()=>{
-      pdfjsLib.GlobalWorkerOptions.workerSrc=
-        'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-      doPDF(f);
-    };
-    s.onerror=()=>sb('err','❌ Gagal load PDF library (butuh internet)');
-    document.head.appendChild(s);
+  if(window.pdfjsLib){doPDF(f);return;}
+  const s=document.createElement('script');
+  s.src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+  s.onload=()=>{
+    pdfjsLib.GlobalWorkerOptions.workerSrc=
+      'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    doPDF(f);
   };
-  loadLib();
+  s.onerror=()=>sb('err','❌ Gagal load PDF library');
+  document.head.appendChild(s);
 }
 async function doPDF(f){
   try{
@@ -530,58 +517,236 @@ async function doPDF(f){
   }catch(e){sb('err','❌ Gagal baca PDF: '+e.message);}
 }
 
-function processDataURL(url, revoke){
+function processDataURL(url,revoke){
   sb('wrk','⏳ Memuat gambar...');
   const img=new Image();
   img.onload=()=>{
     if(revoke)URL.revokeObjectURL(url);
-    // Simpan ke canvas utama
     const cv=document.getElementById('cvMain');
     cv.width=img.naturalWidth; cv.height=img.naturalHeight;
     cv.getContext('2d').drawImage(img,0,0);
     imgData=cv.getContext('2d').getImageData(0,0,cv.width,cv.height);
     imgW=cv.width; imgH=cv.height;
-    // Tampilkan langsung (grayscale via CSS, tidak blocking)
-    document.getElementById('cvMain').style.filter='grayscale(1)';
-    // Tampilkan
+    cv.style.filter='grayscale(1)';
     document.getElementById('cvWrap').style.display='block';
-    // Reset transform
-    TR={tx:0,ty:0,sc:1,rot:0};
-    // Aktifkan tombol — LANGSUNG, tidak ada proses tambahan
     document.getElementById('bAdj').disabled=false;
     document.getElementById('bScan').disabled=false;
-    sb('ok','✅ Foto siap · '+imgW+'×'+imgH+' · Adjust atau langsung Scan');
-    toast('✅ Foto siap!');
+    sb('ok','✅ Foto siap · '+imgW+'×'+imgH);
+    toast('✅ Foto siap! Adjust kotak lalu Scan');
   };
-  img.onerror=()=>sb('err','❌ Gambar tidak valid atau rusak');
+  img.onerror=()=>sb('err','❌ Gambar tidak valid');
   img.src=url;
 }
 
-// Grayscale in-place ke cvMain
-function applyGrayscale(){
-  // Tampilkan asli dulu (sudah di-drawImage di processDataURL)
-  // Grayscale dilakukan ringan via CSS filter saja
-  document.getElementById('cvMain').style.filter='grayscale(1)';
+// ═══════════════════════════════════════════════
+// ONE-BOX ADJUST
+// Seret → buat kotak → seret sudut → fine-tune
+// ═══════════════════════════════════════════════
+function initBoxDraw(){
+  const cont=document.getElementById('cvCont');
+  if(!cont)return;
+
+  function getPos(e){
+    const r=cont.getBoundingClientRect();
+    const s=e.touches?e.touches[0]:e;
+    return{x:s.clientX-r.left, y:s.clientY-r.top};
+  }
+
+  function hitHandle(p){
+    if(!box)return null;
+    const hs={
+      TL:{x:box.x,       y:box.y},
+      TR:{x:box.x+box.w, y:box.y},
+      BL:{x:box.x,       y:box.y+box.h},
+      BR:{x:box.x+box.w, y:box.y+box.h}
+    };
+    for(const[k,h]of Object.entries(hs)){
+      if(Math.hypot(p.x-h.x,p.y-h.y)<HRAD)return k;
+    }
+    return null;
+  }
+
+  function onStart(e){
+    if(!adjMode)return;
+    e.preventDefault();
+    const p=getPos(e);
+    const h=hitHandle(p);
+    if(h){dragH=h;return;}
+    drawing={x0:p.x,y0:p.y};
+    dragH=null;
+  }
+
+  function onMove(e){
+    if(!adjMode)return;
+    e.preventDefault();
+    const p=getPos(e);
+    if(dragH&&box){
+      // Drag handle sudut
+      let{x,y,w,h}=box;
+      let x2=x+w,y2=y+h;
+      if(dragH[1]==='L') x =Math.min(p.x,x2-30);
+      else               x2=Math.max(p.x,x+30);
+      if(dragH[0]==='T') y =Math.min(p.y,y2-30);
+      else               y2=Math.max(p.y,y+30);
+      box={x,y,w:x2-x,h:y2-y};
+      renderBox();
+    } else if(drawing){
+      renderBox(drawing.x0,drawing.y0,p.x,p.y);
+    }
+  }
+
+  function onEnd(e){
+    if(!adjMode)return;
+    e.preventDefault();
+    if(dragH){dragH=null;renderBox();return;}
+    if(!drawing)return;
+    const p=getPos(e.changedTouches?{touches:e.changedTouches}:e);
+    const dx=Math.abs(p.x-drawing.x0),dy=Math.abs(p.y-drawing.y0);
+    if(dx>25&&dy>25){
+      const cv=document.getElementById('cvMain');
+      const W=cv.clientWidth,H=cv.clientHeight;
+      const x=Math.max(0,Math.min(drawing.x0,p.x));
+      const y=Math.max(0,Math.min(drawing.y0,p.y));
+      const w=Math.min(Math.abs(p.x-drawing.x0),W-x);
+      const h=Math.min(Math.abs(p.y-drawing.y0),H-y);
+      box={x,y,w,h};
+      renderBox();
+      toast('✅ Kotak terbentuk · seret ↖↗↙↘ untuk fine-tune');
+    }
+    drawing=null;
+  }
+
+  cont.addEventListener('mousedown', onStart);
+  cont.addEventListener('mousemove', onMove);
+  cont.addEventListener('mouseup',   onEnd);
+  cont.addEventListener('touchstart',onStart,{passive:false});
+  cont.addEventListener('touchmove', onMove, {passive:false});
+  cont.addEventListener('touchend',  onEnd,  {passive:false});
 }
 
-// ════════════════════════════════════════════════════
-// TOUCHSCREEN ADJUST
-// 1 jari = geser | 2 jari = zoom+putar
-// ════════════════════════════════════════════════════
+function togAdj(){
+  adjMode=!adjMode;
+  const bar  =document.getElementById('adjBar');
+  const rrow =document.getElementById('adjRotRow');
+  const btn  =document.getElementById('bAdj');
+  const cvRoi=document.getElementById('cvRoi');
 
+  if(adjMode){
+    bar.style.display  ='block';
+    rrow.style.display ='flex';
+    cvRoi.style.display='block';
+    btn.textContent='✅ Selesai';
+    btn.className  ='btn btn-gn';
+    renderBox();
+    toast(box?'↖↗↙↘ Seret sudut kotak untuk fine-tune':'✏️ Seret dari sudut No.1 ke sudut No.40');
+  } else {
+    bar.style.display  ='none';
+    rrow.style.display ='none';
+    cvRoi.style.display= box ? 'block' : 'none'; // tetap tampil patron
+    btn.textContent='✋ Adjust';
+    btn.className  ='btn btn-gh';
+    drawing=null; dragH=null;
+    if(box) renderBox(); // biarkan patron terlihat
+    toast('✅ Kotak disimpan · siap scan');
+  }
+}
 
+function renderBox(px0,py0,px1,py1){
+  const cvMain=document.getElementById('cvMain');
+  const cvRoi =document.getElementById('cvRoi');
+  if(!cvMain||!cvRoi)return;
+  const W=cvMain.clientWidth, H=cvMain.clientHeight;
+  if(!W||!H)return;
+  cvRoi.width=W; cvRoi.height=H;
+  const ctx=cvRoi.getContext('2d');
+  ctx.clearRect(0,0,W,H);
 
+  // Preview saat drag awal
+  if(px0!==undefined){
+    const x=Math.min(px0,px1),y=Math.min(py0,py1);
+    const w=Math.abs(px1-px0),h=Math.abs(py1-py0);
+    ctx.strokeStyle='rgba(255,204,0,.65)';
+    ctx.lineWidth=1.5; ctx.setLineDash([6,4]);
+    ctx.strokeRect(x,y,w,h); ctx.setLineDash([]);
+    return;
+  }
 
+  if(!box)return;
 
+  // Garis kotak
+  ctx.strokeStyle='rgba(255,204,0,.9)';
+  ctx.lineWidth=2; ctx.setLineDash([]);
+  ctx.strokeRect(box.x,box.y,box.w,box.h);
 
+  // Grid patron semua 40 soal
+  // X range: CLX.A → CRX.E  Y range: RY[0] → RY[19]
+  const xL=CLX.A, xR=CRX.E, yT=RY[0], yB=RY[19];
+  const xRng=xR-xL, yRng=yB-yT;
+  const bubR=Math.max(2.5, box.w*(BR/xRng)*0.85);
 
-// ════════════════════════════════════════════════════
+  for(let n=1;n<=40;n++){
+    const isL=n<=20, row=(n-1)%20;
+    for(const op of 'ABCDE'){
+      const relX=((isL?CLX[op]:CRX[op])-xL)/xRng;
+      const relY=(RY[row]-yT)/yRng;
+      ctx.beginPath();
+      ctx.arc(box.x+relX*box.w, box.y+relY*box.h, bubR, 0, Math.PI*2);
+      ctx.strokeStyle=isL?'rgba(0,255,153,.8)':'rgba(88,166,255,.8)';
+      ctx.lineWidth=1.3; ctx.stroke();
+    }
+  }
+
+  // Label
+  ctx.font='bold 10px system-ui';
+  ctx.fillStyle='rgba(0,255,153,.9)';
+  ctx.fillText('1–20',box.x+3,box.y-4);
+  ctx.fillStyle='rgba(88,166,255,.9)';
+  ctx.fillText('21–40',box.x+box.w/2+3,box.y-4);
+
+  // Handle sudut (hanya saat adjMode)
+  if(!adjMode)return;
+  const corners={TL:[box.x,box.y],TR:[box.x+box.w,box.y],
+                 BL:[box.x,box.y+box.h],BR:[box.x+box.w,box.y+box.h]};
+  Object.entries(corners).forEach(([id,[hx,hy]])=>{
+    ctx.beginPath(); ctx.arc(hx,hy,11,0,Math.PI*2);
+    ctx.fillStyle='rgba(255,204,0,.3)'; ctx.fill();
+    ctx.strokeStyle='#ffcc00'; ctx.lineWidth=2.5; ctx.stroke();
+    ctx.fillStyle='#ffcc00'; ctx.font='bold 13px system-ui';
+    ctx.fillText({TL:'↖',TR:'↗',BL:'↙',BR:'↘'}[id],hx-8,hy+5);
+  });
+}
+
+function resetPatron(){
+  box=null; drawing=null; dragH=null;
+  const cvRoi=document.getElementById('cvRoi');
+  if(cvRoi){cvRoi.getContext('2d').clearRect(0,0,cvRoi.width,cvRoi.height);}
+  toast('↺ Kotak dihapus · gambar ulang');
+}
+
+// ═══════════════════════════════════════════════
 // KOORDINAT BUBBLE → PIKSEL
-// ════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
+function cPx(nomor,opsi){
+  const isL=nomor<=20, row=(nomor-1)%20;
+  const relX=isL?CLX[opsi]:CRX[opsi];
+  const relY=RY[row];
+  if(box){
+    const cv=document.getElementById('cvMain');
+    const scX=imgW/cv.clientWidth, scY=imgH/cv.clientHeight;
+    const xL=CLX.A,xR=CRX.E,yT=RY[0],yB=RY[19];
+    const rx=(relX-xL)/(xR-xL), ry=(relY-yT)/(yB-yT);
+    return{
+      cx:(box.x+rx*box.w)*scX,
+      cy:(box.y+ry*box.h)*scY,
+      r :box.w*scX*(BR/(xR-xL))*0.85
+    };
+  }
+  return{cx:relX*imgW, cy:relY*imgH, r:BR*imgW};
+}
 
-// ════════════════════════════════════════════════════
-// SCAN BUBBLE
-// ════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
+// SCAN
+// ═══════════════════════════════════════════════
 function gv(d,i){return .299*d[i]+.587*d[i+1]+.114*d[i+2];}
 function sBub(d,W,H,cx,cy,r){
   const rIn=r*.80,rOut=r*1.6;
@@ -613,7 +778,7 @@ function scnN(d,W,H,n){
 async function doScan(){
   if(!imgData){toast('⚠️ Upload foto dulu!');return;}
   const noK=kunci.every(k=>!k);
-  if(noK&&!confirm('Kunci jawaban belum diisi. Lanjut scan tanpa kunci?'))return;
+  if(noK&&!confirm('Kunci belum diisi. Lanjut scan tanpa kunci?'))return;
   document.getElementById('bScan').disabled=true;
   sb('wrk','⚡ Scanning...'); pb(0); await sl(10);
   const d=imgData.data,W=imgW,H=imgH,hs=[];
@@ -646,329 +811,31 @@ async function doScan(){
   rnHs(); T(2); toast('✅ Scan selesai! '+bn+'/40 benar');
 }
 
-// ════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
 // RESET
-// ════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
 function doReset(){
   imgData=null; imgW=0; imgH=0;
-  // Hentikan kamera
   stopCam();
-  // Reset adjust
-  adjMode=false; box=null; drawing=null; dragH=null; window._lastDraw=null;
-  document.getElementById('adjBar').style.display='none';
-  
-  document.getElementById('adjInfo').style.display='none';
-  document.getElementById('adjRotRow').style.display='none';
-  document.getElementById('bAdj').textContent='✋ Adjust';
-  document.getElementById('bAdj').className='btn btn-gh';
-  
-  document.getElementById('cvRoi').style.display='none';
-  
-  
-  
-  // Hide canvas
+  adjMode=false; box=null; drawing=null; dragH=null;
+  const adjBar=document.getElementById('adjBar');
+  const adjRR =document.getElementById('adjRotRow');
+  const bAdj  =document.getElementById('bAdj');
+  const cvRoi =document.getElementById('cvRoi');
+  const cvMain=document.getElementById('cvMain');
+  if(adjBar) adjBar.style.display='none';
+  if(adjRR)  adjRR.style.display='none';
+  if(bAdj){  bAdj.textContent='✋ Adjust'; bAdj.className='btn btn-gh'; bAdj.disabled=true;}
+  if(cvRoi)  cvRoi.style.display='none';
+  if(cvMain) cvMain.style.filter='';
   document.getElementById('cvWrap').style.display='none';
-  // Disable tombol
-  document.getElementById('bAdj').disabled=true;
   document.getElementById('bScan').disabled=true;
-  // Reset status
   pb(-1); sb('','Upload foto LJK');
 }
 
-
-
-// ════════════════════════════════════════════════════════════════
-// BOX-DRAW PATRON ADJUST
-// User menggambar 2 kotak bebas mengikuti tepi blok LJK:
-//   Kotak L = blok kiri  (soal 1-20)
-//   Kotak R = blok kanan (soal 21-40)
-// Sistem otomatis meluruskan sisi-sisi kotak → persegi sempurna
-// Patron bubble langsung fit ke dalam kotak tsb
-// ════════════════════════════════════════════════════════════════
-
-let adjMode   = false;
-let drawPhase = 'L';          // 'L' atau 'R' — kotak mana yang sedang digambar
-let boxes     = {L:null, R:null}; // {x,y,w,h} dalam koordinat display pixel
-let drawing   = null;         // {x0,y0} titik awal drag saat ini
-
-// ── Toggle adjust ─────────────────────────────────────────────
-// ════════════════════════════════════════════════════════
-// ONE-BOX PATRON ADJUST
-//
-// Satu kotak mencakup SEMUA 40 soal:
-//   Sudut TL = bubble soal 1  kolom A  (CLX.A, RY[0])
-//   Sudut TR = bubble soal 20 kolom E  (CRX.E, RY[0])  ← kanan atas
-//   Sudut BL = bubble soal 21 kolom A  (CLX.A, RY[19]) ← kiri bawah
-//   Sudut BR = bubble soal 40 kolom E  (CRX.E, RY[19])
-//
-// Alur:
-//   1. User seret untuk gambar kotak awal
-//   2. Kotak lurus otomatis + 4 handle sudut muncul
-//   3. User bisa drag tiap sudut untuk fine-tune
-//   4. Tekan Selesai → scan pakai koordinat kotak
-// ════════════════════════════════════════════════════════
-
-let adjMode  = false;
-let box      = null;    // {x,y,w,h} koordinat display pixel
-let drawing  = null;    // saat drag awal: {x0,y0}
-let dragH    = null;    // handle yang sedang di-drag: 'TL'/'TR'/'BL'/'BR'/null
-const HRAD   = 18;      // radius sentuh handle (px)
-
-// ── Toggle ────────────────────────────────────────────────────
-function togAdj(){
-  adjMode = !adjMode;
-  const bar   = document.getElementById('adjBar');
-  const rrow  = document.getElementById('adjRotRow');
-  const btn   = document.getElementById('bAdj');
-  const cvRoi = document.getElementById('cvRoi');
-
-  if(adjMode){
-    bar.style.display  = 'block';
-    rrow.style.display = 'flex';
-    cvRoi.style.display= 'block';
-    btn.textContent    = '✅ Selesai Adjust';
-    btn.className      = 'btn btn-gn';
-    renderBox();
-    if(box) toast('↔ Seret sudut biru untuk fine-tune kotak');
-    else    toast('✏️ Seret jari dari sudut kiri-atas ke kanan-bawah LJK');
-  } else {
-    bar.style.display  = 'none';
-    rrow.style.display = 'none';
-    cvRoi.style.display= 'none';
-    btn.textContent    = '✋ Adjust';
-    btn.className      = 'btn btn-gh';
-    drawing = null; dragH = null;
-    renderBox(); // biarkan patron tetap kelihatan saat scan
-    toast('✅ Kotak disimpan · siap scan');
-  }
-}
-
-// ── Input handlers ────────────────────────────────────────────
-function initBoxDraw(){
-  const cont = document.getElementById('cvCont');
-  if(!cont) return;
-
-  function pos(e){
-    const r = cont.getBoundingClientRect();
-    const s = e.touches ? e.touches[0] : e;
-    return { x: s.clientX - r.left, y: s.clientY - r.top };
-  }
-
-  // Cek apakah p dekat handle h
-  function nearHandle(p, h){
-    const hx = h.includes('L') ? box.x : box.x+box.w;
-    const hy = h.includes('T') ? box.y : box.y+box.h;
-    return Math.hypot(p.x-hx, p.y-hy) < HRAD;
-  }
-
-  function onStart(e){
-    if(!adjMode) return;
-    e.preventDefault();
-    const p = pos(e);
-    // Cek apakah kena handle
-    if(box){
-      for(const h of ['TL','TR','BL','BR']){
-        if(nearHandle(p, h)){ dragH = h; return; }
-      }
-    }
-    // Mulai gambar kotak baru
-    drawing = { x0: p.x, y0: p.y };
-    dragH   = null;
-  }
-
-  function onMove(e){
-    if(!adjMode) return;
-    e.preventDefault();
-    const p = pos(e);
-
-    if(dragH && box){
-      // Drag handle: update sudut kotak
-      let {x,y,w,h} = box;
-      let x2=x+w, y2=y+h;
-      if(dragH[1]==='L') x  = Math.min(p.x, x2-20);
-      else               x2 = Math.max(p.x, x +20);
-      if(dragH[0]==='T') y  = Math.min(p.y, y2-20);
-      else               y2 = Math.max(p.y, y +20);
-      box = { x, y, w: x2-x, h: y2-y };
-      renderBox();
-    } else if(drawing){
-      // Preview kotak sementara
-      renderBox(drawing.x0, drawing.y0, p.x, p.y);
-    }
-  }
-
-  function onEnd(e){
-    if(!adjMode) return;
-    e.preventDefault();
-    if(dragH){ dragH=null; renderBox(); return; }
-    const lx=window._lastDraw;
-    if(!lx) return;
-    const r=cont.getBoundingClientRect();
-    const s=e.changedTouches?e.changedTouches[0]:e;
-    const ex=s.clientX-r.left, ey=s.clientY-r.top;
-    const dx=Math.abs(ex-lx.x0), dy=Math.abs(ey-lx.y0);
-    window._lastDraw=null;
-    if(dx<20||dy<20) return;
-    const cv=document.getElementById('cvMain');
-    const W=cv.clientWidth, H=cv.clientHeight;
-    box={
-      x: Math.max(0,Math.min(lx.x0,ex)),
-      y: Math.max(0,Math.min(lx.y0,ey)),
-      w: Math.min(Math.abs(ex-lx.x0), W),
-      h: Math.min(Math.abs(ey-lx.y0), H)
-    };
-    box.w=Math.min(box.w, W-box.x);
-    box.h=Math.min(box.h, H-box.y);
-    renderBox();
-    toast('✅ Kotak terbentuk · seret ↖↗↙↘ untuk fine-tune');
-  }
-
-  // Simpan startpoint di window untuk akses di onEnd
-  const origStart = onStart;
-  cont.addEventListener('mousedown', e=>{
-    if(!adjMode) return;
-    const r = cont.getBoundingClientRect();
-    window._lastDraw = { x0: e.clientX-r.left, y0: e.clientY-r.top };
-    origStart(e);
-  });
-  cont.addEventListener('mousemove',  onMove);
-  cont.addEventListener('mouseup',    onEnd);
-  cont.addEventListener('touchstart', e=>{
-    if(!adjMode) return;
-    const r = cont.getBoundingClientRect();
-    window._lastDraw={ x0:e.touches[0].clientX-r.left, y0:e.touches[0].clientY-r.top };
-    origStart(e);
-  },{passive:false});
-  cont.addEventListener('touchmove', onMove, {passive:false});
-  cont.addEventListener('touchend',  onEnd,  {passive:false});
-}
-
-// ── Render ────────────────────────────────────────────────────
-function renderBox(px0, py0, px1, py1){
-  const cvMain = document.getElementById('cvMain');
-  const cvRoi  = document.getElementById('cvRoi');
-  if(!cvMain||!cvRoi) return;
-  const W = cvMain.clientWidth, H = cvMain.clientHeight;
-  cvRoi.width = W; cvRoi.height = H;
-  const ctx = cvRoi.getContext('2d');
-  ctx.clearRect(0,0,W,H);
-
-  // Preview kotak sementara saat drag awal
-  if(px0 !== undefined){
-    const x=Math.min(px0,px1), y=Math.min(py0,py1);
-    const w=Math.abs(px1-px0), h=Math.abs(py1-py0);
-    ctx.strokeStyle='rgba(255,204,0,.7)';
-    ctx.lineWidth=1.5; ctx.setLineDash([6,4]);
-    ctx.strokeRect(x,y,w,h);
-    ctx.setLineDash([]);
-    return;
-  }
-
-  if(!box) return;
-
-  // ── Garis kotak ──
-  ctx.strokeStyle='rgba(0,255,153,.85)';
-  ctx.lineWidth=2; ctx.setLineDash([]);
-  ctx.strokeRect(box.x, box.y, box.w, box.h);
-
-  // ── Grid patron di dalam kotak ──
-  // Semua 40 soal: blok L (soal 1-20) di kiri, blok R (soal 21-40) di kanan
-  // Koordinat relatif dari ujung terluar:
-  //   X: CLX.A sampai CRX.E  (full width)
-  //   Y: RY[0] sampai RY[19] (full height)
-  const xL = CLX.A, xR = CRX.E;
-  const yT = RY[0],  yB = RY[19];
-  const xRange = xR - xL, yRange = yB - yT;
-
-  // Radius bubble
-  const r = Math.max(2, box.w * (BR / xRange) * 0.85);
-
-  ctx.lineWidth = 1.3;
-
-  for(let n=1; n<=40; n++){
-    const isL = n<=20, row=(n-1)%20;
-    for(const op of 'ABCDE'){
-      const relX = ((isL ? CLX[op] : CRX[op]) - xL) / xRange;
-      const relY = (RY[row] - yT) / yRange;
-      const px   = box.x + relX * box.w;
-      const py   = box.y + relY * box.h;
-
-      // Warna beda untuk dua blok
-      ctx.strokeStyle = isL
-        ? 'rgba(0,255,153,.8)'
-        : 'rgba(88,166,255,.8)';
-      ctx.beginPath(); ctx.arc(px,py,r,0,Math.PI*2); ctx.stroke();
-    }
-  }
-
-  // Label blok
-  ctx.font='bold 10px system-ui'; ctx.fillStyle='rgba(0,255,153,.8)';
-  ctx.fillText('1–20', box.x+3, box.y-3);
-  ctx.fillStyle='rgba(88,166,255,.8)';
-  ctx.fillText('21–40', box.x+box.w/2+3, box.y-3);
-
-  // ── Handle sudut (hanya saat adjMode) ──
-  if(adjMode){
-    const handles = {
-      TL:[box.x,       box.y      ],
-      TR:[box.x+box.w, box.y      ],
-      BL:[box.x,       box.y+box.h],
-      BR:[box.x+box.w, box.y+box.h]
-    };
-    Object.entries(handles).forEach(([id,[hx,hy]])=>{
-      // Lingkaran handle
-      ctx.beginPath(); ctx.arc(hx,hy,10,0,Math.PI*2);
-      ctx.fillStyle='rgba(255,204,0,.25)'; ctx.fill();
-      ctx.strokeStyle='#ffcc00'; ctx.lineWidth=2; ctx.stroke();
-      // Ikon arah
-      ctx.fillStyle='#ffcc00'; ctx.font='bold 11px system-ui';
-      const lbl={TL:'↖',TR:'↗',BL:'↙',BR:'↘'}[id];
-      ctx.fillText(lbl, hx-7, hy+5);
-    });
-  }
-}
-
-// ── cPx: koordinat bubble dari kotak ─────────────────────────
-function cPx(nomor, opsi){
-  const row   = (nomor-1)%20;
-  const isL   = nomor<=20;
-  const xL    = CLX.A, xR = CRX.E;
-  const yT    = RY[0], yB = RY[19];
-  const xRange= xR-xL, yRange= yB-yT;
-
-  if(box){
-    const cv   = document.getElementById('cvMain');
-    const scX  = imgW / cv.clientWidth;
-    const scY  = imgH / cv.clientHeight;
-    const relX = ((isL ? CLX[opsi] : CRX[opsi]) - xL) / xRange;
-    const relY = (RY[row] - yT) / yRange;
-    return {
-      cx: (box.x + relX * box.w) * scX,
-      cy: (box.y + relY * box.h) * scY,
-      r : box.w * scX * (BR / xRange) * 0.85
-    };
-  }
-  // Fallback koordinat default
-  return { cx:(isL?CLX[opsi]:CRX[opsi])*imgW, cy:RY[row]*imgH, r:BR*imgW };
-}
-
-// ── Reset ─────────────────────────────────────────────────────
-function resetPatron(){
-  box=null; drawing=null; dragH=null;
-  window._lastDraw=null;
-  const cvRoi=document.getElementById('cvRoi');
-  if(cvRoi){const c=cvRoi.getContext('2d');c.clearRect(0,0,cvRoi.width,cvRoi.height);}
-  toast('↺ Kotak dihapus · gambar ulang');
-}
-
-// ── Alias ─────────────────────────────────────────────────────
-function initAnchorUI(){}
-function initTapHandler(){ initBoxDraw(); }
-function setPhase(){}
-
-// ════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
 // RENDER HASIL
-// ════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
 function rnHs(){
   if(!last)return;
   const h=last;
@@ -1005,9 +872,9 @@ function rnHs(){
     `🟢${h.benar}  🔴${h.salah}  🟡${kos}  ❓${amb}`;
 }
 
-// ════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
 // EXPORT
-// ════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
 function dlT(txt,fname){
   const a=document.createElement('a');
   a.href='data:text/plain;charset=utf-8,'+encodeURIComponent(txt);
@@ -1035,7 +902,7 @@ function hTX(){
   h.hasil.forEach(s=>{
     const st=s.correct===true?'BENAR':s.correct===false?'SALAH':
       !s.jaw?'KOSONG':'AMBIGUS';
-    t+=`${String(s.nomor).padStart(2)}  ${(s.jaw||'-').padEnd(6)} `+
+    t+=`${String(s.nomor).padStart(2)}  ${(s.jaw||'-').padEnd(6)}`+
       `${(s.kunci||'-').padEnd(6)} ${st.padEnd(9)} ${s.conf}%\n`;
   });
   dlT(t,`hasil_${h.nama.replace(/\s+/g,'_')}.txt`);
@@ -1069,9 +936,9 @@ th{background:#0d1117;color:#fff}.nb{font-size:40px;font-weight:900}</style>
 <tbody>${rows}</tbody></table></body></html>`);
 }
 
-// ════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
 // REKAP
-// ════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
 function rnRk(){
   const tb=document.getElementById('rB');tb.innerHTML='';
   if(!rekap.length){
@@ -1118,8 +985,8 @@ function rTX(){
   if(!rekap.length){toast('Rekap kosong!');return;}
   let t='REKAP — BB LJK SCANNER v11\n'+'='.repeat(36)+'\n';
   rekap.forEach((r,i)=>
-    t+=`${String(i+1).padStart(2)}  ${r.nama.padEnd(20)} `+
-      `${(r.kelas||'').padEnd(8)} ${String(r.benar).padEnd(4)} `+
+    t+=`${String(i+1).padStart(2)}  ${r.nama.padEnd(20)}`+
+      `${(r.kelas||'').padEnd(8)} ${String(r.benar).padEnd(4)}`+
       `${String(r.nilai!==null?r.nilai:'—').padEnd(4)} ${r.grade||'—'}\n`);
   dlT(t,`rekap_${Date.now()}.txt`);
 }
@@ -1153,9 +1020,9 @@ function rDl(){
   rnRk();upSt();toast('🗑 Rekap dihapus');
 }
 
-// ════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
 // KUNCI JAWABAN
-// ════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
 function bldK(){
   const wrap=document.getElementById('kw');wrap.innerHTML='';
   for(let i=0;i<40;i++){
@@ -1212,6 +1079,7 @@ function kIm(){
   try{localStorage.setItem('bb_k',JSON.stringify(kunci));}catch{}
   upKC();toast('✅ '+Math.min(pts.length,40)+' jawaban diimport');
 }
+
 </script>
 </body>
 </html>
