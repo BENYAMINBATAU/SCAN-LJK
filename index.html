@@ -755,7 +755,7 @@ async function ldImg(src){
 
 // ─── PIPELINE ──────────────────────────────────────────────────
 async function pipe(){
-  sb('wrk','🔍 Deteksi kertas...'); await sl(15);
+  sb('wrk','🔍 Memproses foto...'); await sl(15);
   const d=iD.data;
   const STEP=Math.max(1,Math.floor(Math.min(iW,iH)/80));
   const gray=new Uint8Array(iW*iH);
@@ -772,26 +772,18 @@ async function pipe(){
   if(!hasBB){bx0=0;bx1=iW;by0=0;by1=iH;}
   if(!vld(d,iW,iH))return;
 
-  // Validasi format LJK
-  sb('wrk','🔍 Validasi format LJK...'); await sl(20);
-  const vr=validateLJK(iD,iW,iH);
-  if(!vr.valid){
-    sb('err','❌ Format tidak dikenali ('+vr.score+'/5)');
-    showVM(vr,null); return;
-  }
-
-  // Grayscale + tampilkan
+  // Tampilkan grayscale
   shBW(iD,iW,iH);
   syncAdj();
 
-  sb('ok','✅ LJK valid ('+vr.score+'/5) · '+iW+'×'+iH);
-  toast('✅ Siap — tekan ✋ Adjust jika perlu, lalu ⚡ Scan');
+  // Validasi format — hanya tampilkan badge, TIDAK memblokir scan
+  const vr=validateLJK(iD,iW,iH);
+  showBadge(vr);
+
+  sb('ok','✅ Foto siap · '+iW+'×'+iH+(hasBB?' · Kertas terdeteksi':''));
+  toast('✅ Siap scan'+(vr.score<3?' · ⚠️ Cek format LJK':''));
   document.getElementById('bAdj').disabled=false;
   document.getElementById('bS').disabled=false;
-
-  if(vr.score<5){
-    showVM(vr,()=>toast('⚠️ Kualitas rendah, adjust dulu bila perlu'));
-  }
 }
 
 function scnE(gray,W,H,dir,MRG,thr,STEP){
@@ -893,6 +885,31 @@ function closeVM(proceed){
   document.getElementById('vmod').classList.remove('show');
   if(proceed&&_vmCb)_vmCb();
   _vmCb=null;
+}
+
+// Badge kecil di bawah status bar — tidak memblokir apapun
+function showBadge(vr){
+  let el=document.getElementById('ljkBadge');
+  if(!el){
+    el=document.createElement('div');
+    el.id='ljkBadge';
+    el.style.cssText='font-size:10px;padding:4px 8px;border-radius:6px;margin:3px 0;text-align:center;cursor:pointer';
+    el.onclick=()=>showVM(vr,null);
+    // Masukkan setelah sbar
+    const sb=document.getElementById('sb');
+    if(sb)sb.after(el);
+  }
+  if(vr.score>=3){
+    el.style.background='rgba(63,185,80,.12)';
+    el.style.border='1px solid rgba(63,185,80,.3)';
+    el.style.color='#3fb950';
+    el.textContent='✅ Format LJK dikenali ('+vr.score+'/4) — ketuk untuk detail';
+  } else {
+    el.style.background='rgba(210,153,34,.12)';
+    el.style.border='1px solid rgba(210,153,34,.3)';
+    el.style.color='#d29922';
+    el.textContent='⚠️ Format tidak jelas ('+vr.score+'/4) — tetap bisa scan, ketuk detail';
+  }
 }
 
 // ─── TOUCHSCREEN ADJUST ────────────────────────────────────────
