@@ -2,141 +2,181 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#0d1117">
-<title>BB LJK Scanner v10</title>
+<title>BB LJK Scanner v11</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#0d1117;--bg2:#161b22;--bg3:#1c2330;--bd:#30363d;--tx1:#e6edf3;--tx2:#8b949e;--tx3:#484f58;--cy:#58a6ff;--gn:#3fb950;--ye:#d29922;--rd:#f85149;--am:#ffa657}
-body{background:var(--bg);color:var(--tx1);font-family:system-ui,sans-serif;font-size:14px;max-width:460px;margin:0 auto;padding-bottom:32px}
-.hdr{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--bg2);border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:10}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{--bg:#0d1117;--bg2:#161b22;--bg3:#1c2330;--bd:#30363d;
+  --tx1:#e6edf3;--tx2:#8b949e;--tx3:#484f58;
+  --cy:#58a6ff;--gn:#3fb950;--ye:#d29922;--rd:#f85149;--am:#ffa657}
+html,body{height:100%}
+body{background:var(--bg);color:var(--tx1);font-family:system-ui,sans-serif;
+  font-size:14px;max-width:480px;margin:0 auto;padding-bottom:40px}
+/* ─ Header ─ */
+.hdr{display:flex;justify-content:space-between;align-items:center;
+  padding:10px 14px;background:var(--bg2);border-bottom:1px solid var(--bd);
+  position:sticky;top:0;z-index:50}
 .hdr-l{font-weight:700;font-size:15px}.hdr-l span{color:var(--cy)}
-.hdr-r{font-size:10px;color:var(--tx2);background:var(--bg3);padding:2px 7px;border-radius:10px;border:1px solid var(--bd)}
+.hdr-r{font-size:10px;color:var(--tx2);background:var(--bg3);
+  padding:2px 7px;border-radius:10px;border:1px solid var(--bd)}
+/* ─ Tabs ─ */
 .tabs{display:flex;border-bottom:1px solid var(--bd);background:var(--bg2)}
-.tab{flex:1;padding:9px 4px;text-align:center;font-size:11px;font-weight:600;color:var(--tx2);cursor:pointer;border-bottom:2px solid transparent;transition:.15s}
+.tab{flex:1;padding:9px 4px;text-align:center;font-size:11px;font-weight:600;
+  color:var(--tx2);cursor:pointer;border-bottom:2px solid transparent;transition:.15s}
 .tab i{display:block;font-style:normal;font-size:13px;margin-bottom:1px}
 .tab.on{color:var(--cy);border-color:var(--cy)}
+/* ─ Pages ─ */
 .pg{display:none;padding:12px}.pg.on{display:block}
-.card{background:var(--bg2);border:1px solid var(--bd);border-radius:10px;padding:12px;margin-bottom:10px}
+/* ─ Card ─ */
+.card{background:var(--bg2);border:1px solid var(--bd);border-radius:10px;
+  padding:12px;margin-bottom:10px}
 .ct{font-weight:700;font-size:12px;color:var(--cy);margin-bottom:8px}
+/* ─ Form ─ */
 .lbl{display:block;font-size:11px;color:var(--tx2);margin:6px 0 3px}
-.fi{width:100%;background:var(--bg3);border:1px solid var(--bd);border-radius:6px;padding:7px 10px;color:var(--tx1);font-size:13px}
+.fi{width:100%;background:var(--bg3);border:1px solid var(--bd);border-radius:6px;
+  padding:7px 10px;color:var(--tx1);font-size:13px}
 .fi:focus{outline:none;border-color:var(--cy)}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
-.mt6{margin-top:6px}.mt10{margin-top:10px}
-.upz{border:2px dashed var(--bd);border-radius:10px;padding:20px 14px;text-align:center;cursor:pointer;position:relative;transition:.15s;margin:8px 0}
-.upz:hover,.upz.drag{border-color:var(--cy);background:rgba(88,166,255,.05)}
-.upz input{position:absolute;inset:0;opacity:0;cursor:pointer}
-.ui{font-size:28px;margin-bottom:4px}.ut{font-weight:700;font-size:13px}.us{font-size:10px;color:var(--tx2);margin-top:3px}
-.sbar{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:7px;font-size:11px;margin:6px 0;background:var(--bg3);border:1px solid var(--bd);transition:.2s}
-.sbar.ok{border-color:var(--gn);background:rgba(63,185,80,.07)}.sbar.err{border-color:var(--rd);background:rgba(248,81,73,.07)}.sbar.wrk{border-color:var(--ye);background:rgba(210,153,34,.07)}
+.mt6{margin-top:6px}.mt8{margin-top:8px}.mt10{margin-top:10px}
+/* ─ Buttons ─ */
+.btn{padding:9px 10px;border:none;border-radius:7px;font-size:12px;font-weight:600;
+  cursor:pointer;width:100%;transition:.1s;touch-action:manipulation}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.btn:active:not(:disabled){opacity:.75}
+.btn-cy{background:var(--cy);color:#0d1117}
+.btn-gh{background:var(--bg3);color:var(--tx1);border:1px solid var(--bd)}
+.btn-gn{background:var(--gn);color:#0d1117}
+.btn-rd{background:rgba(248,81,73,.15);color:var(--rd);border:1px solid var(--rd)}
+.btn-am{background:var(--am);color:#0d1117}
+/* ─ Upload zone ─ */
+.upz{border:2px dashed var(--bd);border-radius:10px;padding:24px 14px;
+  text-align:center;cursor:pointer;transition:.15s;margin:8px 0;
+  touch-action:manipulation}
+.upz:active,.upz.drag{border-color:var(--cy);background:rgba(88,166,255,.06)}
+.ui{font-size:32px;margin-bottom:6px}
+.ut{font-weight:700;font-size:14px}.us{font-size:11px;color:var(--tx2);margin-top:3px}
+/* ─ Status bar ─ */
+.sbar{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:7px;
+  font-size:11px;margin:6px 0;background:var(--bg3);border:1px solid var(--bd);transition:.2s}
+.sbar.ok{border-color:var(--gn);background:rgba(63,185,80,.07)}
+.sbar.err{border-color:var(--rd);background:rgba(248,81,73,.07)}
+.sbar.wrk{border-color:var(--ye);background:rgba(210,153,34,.07)}
 .sd{width:7px;height:7px;border-radius:50%;background:var(--tx3);flex-shrink:0}
-.ok .sd{background:var(--gn)}.err .sd{background:var(--rd)}.wrk .sd{background:var(--ye);animation:p 1s infinite}
-@keyframes p{0%,100%{opacity:1}50%{opacity:.25}}
+.ok .sd{background:var(--gn)}.err .sd{background:var(--rd)}
+.wrk .sd{background:var(--ye);animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+/* ─ Progress ─ */
 .pbw{height:3px;background:var(--bg3);border-radius:2px;margin:3px 0;display:none}
 .pbi{height:100%;background:var(--cy);border-radius:2px;transition:width .08s}
-#cvw{display:none;position:relative;margin:6px 0}
-#cvm{width:100%;border-radius:8px;display:block}
-#cvo{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none}
-.ibox{background:var(--bg3);border:1px solid var(--bd);border-radius:6px;padding:7px 10px;font-size:11px;color:var(--tx2);margin-bottom:8px}
-.btn{padding:7px 10px;border:none;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;width:100%;transition:.1s}
-.btn:disabled{opacity:.3;cursor:not-allowed}
-.btn-cy{background:var(--cy);color:#0d1117}.btn-gh{background:var(--bg3);color:var(--tx1);border:1px solid var(--bd)}.btn-rd{background:rgba(248,81,73,.15);color:var(--rd);border:1px solid var(--rd)}.btn-am{background:var(--am);color:#0d1117}
-.pvg{display:grid;grid-template-columns:repeat(10,1fr);gap:3px;margin:6px 0}
-.pvc{border-radius:5px;padding:3px 2px;text-align:center;background:var(--bg3);border:1px solid var(--bd)}
-.pvc.hit{background:rgba(88,166,255,.15);border-color:var(--cy)}.pvc.amb{background:rgba(210,153,34,.14);border-color:var(--ye)}
-.pvn{display:block;font-size:8px;color:var(--tx3)}.pva{display:block;font-size:12px;font-weight:700;color:var(--cy)}
-.pvc.amb .pva{color:var(--ye)}.pvc:not(.hit):not(.amb) .pva{color:var(--tx3)}
+/* ─ Ibox ─ */
+.ibox{background:var(--bg3);border:1px solid var(--bd);border-radius:6px;
+  padding:7px 10px;font-size:11px;color:var(--tx2);margin-bottom:8px}
+/* ─ Camera ─ */
+.camWrap{position:relative;background:#000;border-radius:10px;overflow:hidden;
+  margin:8px 0;display:none}
+.camWrap.show{display:block}
+#camVid{width:100%;display:block}
+.vfOvr{position:absolute;inset:0;pointer-events:none}
+.vfBox{position:absolute;top:7%;left:4%;right:4%;bottom:7%;
+  border:2px dashed rgba(0,255,153,.6);border-radius:6px}
+.corner{position:absolute;width:22px;height:22px}
+.corner.tl{top:7%;left:4%;border-top:3px solid #00ff99;border-left:3px solid #00ff99}
+.corner.tr{top:7%;right:4%;border-top:3px solid #00ff99;border-right:3px solid #00ff99}
+.corner.bl{bottom:7%;left:4%;border-bottom:3px solid #00ff99;border-left:3px solid #00ff99}
+.corner.br{bottom:7%;right:4%;border-bottom:3px solid #00ff99;border-right:3px solid #00ff99}
+.vfLbl{position:absolute;top:2%;left:0;right:0;text-align:center;font-size:11px;
+  font-weight:700;color:#00ff99;text-shadow:0 0 8px #00ff99}
+.camBtns{display:flex;gap:8px;margin-top:6px}
+.btnCap{flex:1;padding:11px;border:none;border-radius:8px;background:#00ff99;
+  color:#0d1117;font-weight:700;font-size:14px;cursor:pointer;touch-action:manipulation}
+.btnCap:active{opacity:.75}
+.btnCamX{padding:11px 14px;border:none;border-radius:8px;background:var(--bg3);
+  color:var(--tx2);border:1px solid var(--bd);cursor:pointer;touch-action:manipulation}
+/* ─ Canvas preview ─ */
+#cvWrap{display:none;margin:8px 0}
+.cvCont{position:relative;border-radius:10px;overflow:hidden;background:#111;
+  touch-action:none;user-select:none;-webkit-user-select:none}
+#cvMain{width:100%;display:block}
+#cvAdj{position:absolute;top:0;left:0;width:100%;height:100%;display:none}
+#cvRoi{position:absolute;top:0;left:0;width:100%;height:100%;
+  pointer-events:none;display:none}
+/* ─ Adjust info ─ */
+#adjBar{display:none;background:rgba(0,255,153,.08);border:1px solid rgba(0,255,153,.25);
+  border-radius:7px;padding:7px 10px;font-size:10px;color:#00ff99;
+  text-align:center;margin-bottom:6px;line-height:1.8}
+#adjInfo{font-size:10px;color:var(--tx3);text-align:center;margin:3px 0;display:none}
+/* ─ Action buttons ─ */
+#actRow{display:flex;gap:6px;margin-top:6px}
+#adjRotRow{display:none;gap:5px;margin-top:4px;flex-wrap:wrap}
+/* ─ Hasil ─ */
 .skb{text-align:center;padding:14px 0 6px}
 .sv{font-size:62px;font-weight:900;color:var(--cy);line-height:1}
 .sg{font-size:26px;font-weight:700;margin-top:3px}
 .gA{color:#3fb950}.gB{color:#58a6ff}.gC{color:#d29922}.gD{color:#ffa657}.gE{color:#f85149}
 .hg{display:grid;grid-template-columns:repeat(10,1fr);gap:3px;margin:8px 0}
-.hc{border-radius:5px;padding:3px 2px;text-align:center;background:var(--bg3);border:1px solid var(--bd)}
-.hc.ok{background:rgba(63,185,80,.14);border-color:var(--gn)}.hc.ng{background:rgba(248,81,73,.13);border-color:var(--rd)}.hc.ko{background:rgba(210,153,34,.11);border-color:var(--ye)}
+.hc{border-radius:5px;padding:3px 2px;text-align:center;
+  background:var(--bg3);border:1px solid var(--bd)}
+.hc.ok{background:rgba(63,185,80,.14);border-color:var(--gn)}
+.hc.ng{background:rgba(248,81,73,.13);border-color:var(--rd)}
+.hc.ko{background:rgba(210,153,34,.11);border-color:var(--ye)}
 .hn{font-size:8px;color:var(--tx3)}.ha{font-size:12px;font-weight:700}
 .hc.ok .ha{color:var(--gn)}.hc.ng .ha{color:var(--rd)}.hc.ko .ha{color:var(--ye)}
-.ibar{display:flex;height:7px;border-radius:3px;overflow:hidden;margin:5px 0}.iseg{flex:1}
+.ibar{display:flex;height:7px;border-radius:3px;overflow:hidden;margin:5px 0}
+.iseg{flex:1}
 .sm{font-size:11px;color:var(--tx2);text-align:center}
-.kw{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin:8px 0}
-.kc{text-align:center}.kn{font-size:9px;color:var(--tx3);margin-bottom:2px}
-.ks{width:100%;background:var(--bg3);border:1px solid var(--bd);border-radius:5px;color:var(--tx2);font-size:12px;padding:3px 0;cursor:pointer}
-.ks.isi{color:var(--cy);border-color:var(--cy);font-weight:700}
-.cnt{color:var(--cy);font-weight:700}
+/* ─ Rekap ─ */
 .s3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
-.stc{background:var(--bg3);border:1px solid var(--bd);border-radius:8px;padding:8px;text-align:center}
+.stc{background:var(--bg3);border:1px solid var(--bd);border-radius:8px;
+  padding:8px;text-align:center}
 .stv{font-size:24px;font-weight:800}.stl{font-size:10px;color:var(--tx2);margin-top:2px}
 .rt{width:100%;border-collapse:collapse;font-size:11px}
-.rt th{background:var(--bg3);padding:5px 4px;color:var(--tx2);font-weight:600;border-bottom:1px solid var(--bd);text-align:left}
+.rt th{background:var(--bg3);padding:5px 4px;color:var(--tx2);font-weight:600;
+  border-bottom:1px solid var(--bd);text-align:left}
 .rt td{padding:4px;border-bottom:1px solid var(--bg3)}
 .tnm{max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .gch{padding:1px 5px;border-radius:8px;font-size:10px;font-weight:700}
-.cgA{background:rgba(63,185,80,.2);color:#3fb950}.cgB{background:rgba(88,166,255,.2);color:#58a6ff}.cgC{background:rgba(210,153,34,.2);color:#d29922}.cgD{background:rgba(255,166,87,.2);color:#ffa657}.cgE{background:rgba(248,81,73,.2);color:#f85149}
+.cgA{background:rgba(63,185,80,.2);color:#3fb950}
+.cgB{background:rgba(88,166,255,.2);color:#58a6ff}
+.cgC{background:rgba(210,153,34,.2);color:#d29922}
+.cgD{background:rgba(255,166,87,.2);color:#ffa657}
+.cgE{background:rgba(248,81,73,.2);color:#f85149}
 .bch{display:flex;align-items:flex-end;gap:6px;height:56px;margin:6px 0}
 .bcol{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px}
-.bnum{font-size:9px;font-weight:700}.bbg{width:100%;border-radius:3px 3px 0 0;min-height:3px}.blbl{font-size:10px;font-weight:700}
-.slw{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-.slw input[type=range]{flex:1;accent-color:var(--cy)}
-.slv{font-size:11px;font-weight:700;color:var(--cy);min-width:36px;text-align:right}
-.sep{border-top:1px solid var(--bd);margin:10px 0}
-.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--bg2);color:var(--tx1);border:1px solid var(--bd);border-radius:20px;padding:7px 16px;font-size:12px;opacity:0;transition:.2s;pointer-events:none;z-index:100;white-space:nowrap}
+.bnum{font-size:9px;font-weight:700}
+.bbg{width:100%;border-radius:3px 3px 0 0;min-height:3px}
+.blbl{font-size:10px;font-weight:700}
+/* ─ Kunci ─ */
+.kw{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin:8px 0}
+.kc{text-align:center}.kn{font-size:9px;color:var(--tx3);margin-bottom:2px}
+.ks{width:100%;background:var(--bg3);border:1px solid var(--bd);border-radius:5px;
+  color:var(--tx2);font-size:12px;padding:3px 0;cursor:pointer}
+.ks.isi{color:var(--cy);border-color:var(--cy);font-weight:700}
+.cnt{color:var(--cy);font-weight:700}
+/* ─ Toast ─ */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
+  background:var(--bg2);color:var(--tx1);border:1px solid var(--bd);
+  border-radius:20px;padding:8px 18px;font-size:12px;opacity:0;
+  transition:.2s;pointer-events:none;z-index:999;white-space:nowrap;
+  max-width:90vw;text-align:center}
 .toast.show{opacity:1}
-.mov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:200;align-items:center;justify-content:center}
+/* ─ Modal error ─ */
+.mov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);
+  z-index:200;align-items:center;justify-content:center}
 .mov.show{display:flex}
-.mbox{background:var(--bg2);border:1px solid var(--bd);border-radius:12px;padding:18px;max-width:320px;width:90%}
+.mbox{background:var(--bg2);border:1px solid var(--bd);border-radius:12px;
+  padding:18px;max-width:320px;width:92%}
 .mtit{font-weight:700;font-size:14px;color:var(--rd);margin-bottom:6px}
-
-/* ─── KAMERA VIEWFINDER ─── */
-.camWrap{position:relative;background:#000;border-radius:10px;overflow:hidden;margin:8px 0;display:none}
-.camWrap.show{display:block}
-#camVid{width:100%;display:block}
-.vfOvr{position:absolute;inset:0;pointer-events:none}
-.vfBox{position:absolute;top:8%;left:5%;right:5%;bottom:8%;border:1.5px dashed rgba(0,255,153,.5);border-radius:4px}
-.corner{position:absolute;width:20px;height:20px}
-.corner.tl{top:8%;left:5%;border-top:3px solid #00ff99;border-left:3px solid #00ff99}
-.corner.tr{top:8%;right:5%;border-top:3px solid #00ff99;border-right:3px solid #00ff99}
-.corner.bl{bottom:8%;left:5%;border-bottom:3px solid #00ff99;border-left:3px solid #00ff99}
-.corner.br{bottom:8%;right:5%;border-bottom:3px solid #00ff99;border-right:3px solid #00ff99}
-.vfLbl{position:absolute;top:3%;left:0;right:0;text-align:center;font-size:11px;font-weight:700;
-  color:#00ff99;text-shadow:0 0 8px #00ff99}
-.camBtns{display:flex;gap:8px;margin-top:6px}
-.btnCap{flex:1;padding:10px;border:none;border-radius:8px;background:#00ff99;color:#0d1117;font-weight:700;font-size:13px;cursor:pointer}
-.btnCamX{padding:10px 14px;border:none;border-radius:8px;background:var(--bg3);color:var(--tx2);border:1px solid var(--bd);cursor:pointer;font-size:13px}
-/* ─── ADJUST SVG HANDLES ─── */
-#adjSvg circle{cursor:grab}
-#adjSvg circle:active{cursor:grabbing}
-#hBub{filter:drop-shadow(0 0 3px #3fb950)}
-#hTL,#hTR,#hBL,#hBR{filter:drop-shadow(0 0 2px #58a6ff)}
-.adjRoi{pointer-events:none}
-@keyframes adjPulse{0%,100%{opacity:.5}50%{opacity:1}}
-#adjRect{animation:adjPulse 2s ease-in-out infinite}
-/* ─── MODAL VALIDASI ─── */
-.vmod{position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:300;display:none;align-items:center;justify-content:center}
-.vmod.show{display:flex}
-.vbox{background:var(--bg2);border-radius:14px;padding:20px;max-width:310px;width:92%;border:1px solid var(--bd)}
-.vicon{font-size:2.5rem;text-align:center;margin-bottom:8px}
-.vtit{font-weight:700;font-size:14px;text-align:center;margin-bottom:8px}
-.vtit.ok{color:var(--gn)}.vtit.err{color:var(--rd)}.vtit.warn{color:var(--ye)}
-.vcklist{background:var(--bg3);border-radius:8px;padding:8px 10px;margin:8px 0}
-.vck{font-size:11px;color:var(--tx2);padding:3px 0;display:flex;gap:6px;border-bottom:1px solid var(--bd)}
-.vck:last-child{border:none}
-.vscore{text-align:center;font-weight:700;font-size:13px;color:var(--cy);margin:6px 0}
-.vhint{font-size:10px;color:var(--tx3);background:var(--bg3);padding:7px;border-radius:6px;text-align:center;margin:6px 0}
-
-/* ─── TOUCHSCREEN TRANSFORM ADJUST ─── */
-#adjWrap { cursor: grab; }
-#adjWrap.dragging { cursor: grabbing; }
-#cvAdj { image-rendering: auto; }
-#cvRoi { image-rendering: auto; }
-#adjResetBar { display: none; }
-#adjResetBar.show { display: flex !important; }
+/* ─ Sep ─ */
+.sep{border-top:1px solid var(--bd);margin:10px 0}
 </style>
 </head>
 <body>
+
 <div class="hdr">
-  <div class="hdr-l">📋 LJK <span>Bubble</span></div>
-  <div class="hdr-r">v10 · Benyamin Batau</div>
+  <div class="hdr-l">📋 LJK <span>Scanner</span></div>
+  <div class="hdr-r">v11 · BB</div>
 </div>
 <div class="tabs">
   <div class="tab on" onclick="T(0)"><i>📷</i>SCAN</div>
@@ -145,29 +185,37 @@ body{background:var(--bg);color:var(--tx1);font-family:system-ui,sans-serif;font
   <div class="tab"    onclick="T(3)"><i>📋</i>REKAP</div>
 </div>
 <div id="toast" class="toast"></div>
+
+<!-- Modal error dasar -->
 <div id="mod" class="mov">
   <div class="mbox">
-    <div class="mtit">❌ Gambar Tidak Valid</div>
+    <div class="mtit">⚠️ Perhatian</div>
     <div id="mmsg" style="font-size:12px;color:var(--tx1);margin-bottom:4px"></div>
-    <div class="ibox mt6" style="font-size:10px">💡 Foto: seluruh lembar terlihat · tidak blur · HP tegak · jarak 20–40 cm</div>
-    <button class="btn btn-cy mt6" onclick="closeM()">Tutup</button>
+    <button class="btn btn-cy mt6" onclick="closeM()" style="margin-top:8px">Tutup</button>
   </div>
 </div>
 
-<!-- SCAN -->
+<!-- ═══ TAB SCAN ═══ -->
 <div class="pg on" id="pg0">
+  <!-- Identitas -->
   <div class="card">
     <div class="ct">👤 Identitas Siswa</div>
     <span class="lbl">Nama</span>
     <input class="fi" id="iNm" type="text" placeholder="Nama siswa..." autocomplete="off">
     <div class="g2 mt6">
-      <div><span class="lbl">No. Absen</span><input class="fi" id="iAb" type="number" placeholder="01" min="1" max="99"></div>
-      <div><span class="lbl">Kelas</span><input class="fi" id="iKl" type="text" placeholder="X-TKJ-1"></div>
+      <div><span class="lbl">No. Absen</span>
+        <input class="fi" id="iAb" type="number" placeholder="01" min="1" max="99"></div>
+      <div><span class="lbl">Kelas</span>
+        <input class="fi" id="iKl" type="text" placeholder="X-TKJ-1"></div>
     </div>
   </div>
+
+  <!-- Upload / Kamera -->
   <div class="card">
-    <div class="ct">📄 Upload LJK</div>
-    <div class="ibox">Metode: <b>hitamkan bulatan ●</b> dengan pulpen/spidol hitam.<br>Foto miring / gelap / kuning → tetap diproses otomatis.</div>
+    <div class="ct">📄 Foto LJK</div>
+    <div class="ibox">Hitamkan bulatan ● dengan pulpen/spidol hitam.<br>
+      Foto seluruh LJK · lurus · cukup cahaya</div>
+
     <!-- Viewfinder kamera -->
     <div class="camWrap" id="camWrap">
       <video id="camVid" autoplay playsinline muted></video>
@@ -179,70 +227,59 @@ body{background:var(--bg);color:var(--tx1);font-family:system-ui,sans-serif;font
       </div>
     </div>
     <div class="camBtns" id="camBtns" style="display:none">
-      <button class="btnCap" onclick="captureCam()">📸 FOTO LJK</button>
+      <button class="btnCap" id="btnSnap" onclick="captureCam()">📸 FOTO LJK</button>
       <button class="btnCamX" onclick="stopCam()">✕</button>
     </div>
-    <!-- Upload zone -->
+
+    <!-- Tombol upload -->
     <div class="upz" id="dz" onclick="startCam()">
-      <input type="file" id="fi" accept="image/*,application/pdf" onchange="onF(event)" style="display:none">
       <div class="ui">📷</div>
       <div class="ut">BUKA KAMERA</div>
-      <div class="us">Ikuti garis pandu hijau untuk foto LJK</div>
+      <div class="us">Ikuti garis pandu hijau · lurus · tidak miring</div>
     </div>
-    <div style="text-align:center;margin:3px 0 6px">
+    <div style="text-align:center;margin:4px 0 6px">
       <span style="font-size:10px;color:var(--tx3)">atau</span>
-      <button class="btn btn-gh" style="display:inline-block;width:auto;padding:4px 12px;font-size:11px;margin-left:6px"
-        onclick="document.getElementById('fi').click()">📁 Upload File</button>
+      <button class="btn btn-gh" onclick="pickFile()"
+        style="display:inline-block;width:auto;padding:5px 14px;font-size:11px;margin-left:8px">
+        📁 Pilih File</button>
+      <input type="file" id="fi" accept="image/*,application/pdf"
+        style="display:none" onchange="onFile(event)">
     </div>
   </div>
-  <!-- PREVIEW + TOUCHSCREEN ADJUST -->
-  <div id="cvw" style="display:none;margin:6px 0">
-    <!-- Hint adjust -->
-    <div id="adjHint" style="display:none;background:var(--bg3);border:1px solid var(--gn);
-      border-radius:7px;padding:7px 10px;margin-bottom:5px;font-size:10px;color:var(--tx2);
-      text-align:center;line-height:1.8">
-      <b style="color:#00ff99">Mode Adjust Aktif</b><br>
-      ✋ <b>1 jari</b> = geser foto &nbsp;·&nbsp;
-      🤏 <b>2 jari</b> = zoom &amp; putar &nbsp;·&nbsp;
-      🔄 ketuk <b>Reset</b> jika perlu
+
+  <!-- Preview canvas -->
+  <div id="cvWrap">
+    <div id="adjBar">
+      <b>✋ Mode Adjust Aktif</b><br>
+      1 jari = geser &nbsp;·&nbsp; 2 jari = zoom &amp; putar
     </div>
-    <!-- Container canvas: posisi relative, overflow hidden -->
-    <div id="adjWrap" style="position:relative;border-radius:10px;
-      overflow:hidden;background:#111;touch-action:none;user-select:none">
-      <!-- Canvas foto asli (background, tidak berubah) -->
-      <canvas id="cvm" style="width:100%;display:block;opacity:1"></canvas>
-      <!-- Canvas overlay: gambar foto yang sudah di-transform -->
-      <canvas id="cvAdj" style="position:absolute;top:0;left:0;
-        width:100%;height:100%;display:none"></canvas>
-      <!-- Canvas grid bubble overlay -->
-      <canvas id="cvRoi" style="position:absolute;top:0;left:0;
-        width:100%;height:100%;pointer-events:none;display:none"></canvas>
+    <div class="cvCont" id="cvCont">
+      <canvas id="cvMain"></canvas>
+      <canvas id="cvAdj"></canvas>
+      <canvas id="cvRoi"></canvas>
     </div>
-    <!-- Info transform -->
-    <div id="adjInfo" style="font-size:10px;color:var(--tx3);text-align:center;
-      margin:4px 0;display:none">
-      X: <span id="infoTx">0</span> &nbsp;
-      Y: <span id="infoTy">0</span> &nbsp;
-      Zoom: <span id="infoSc">1.00</span>× &nbsp;
-      Putar: <span id="infoRot">0</span>°
-    </div>
+    <div id="adjInfo"></div>
   </div>
-  <div class="sbar" id="sb"><div class="sd"></div><span id="sbt">Upload LJK terlebih dahulu</span></div>
+
+  <!-- Status + progress -->
+  <div class="sbar" id="sb"><div class="sd"></div><span id="sbt">Upload foto LJK</span></div>
   <div class="pbw" id="pbw"><div class="pbi" id="pb" style="width:0%"></div></div>
-  <div style="display:flex;gap:6px;margin-top:6px">
+
+  <!-- Tombol aksi -->
+  <div id="actRow">
     <button class="btn btn-gh" id="bAdj" onclick="togAdj()" disabled style="flex:1">✋ Adjust</button>
-    <button class="btn btn-cy" id="bS"   onclick="doScan()" disabled style="flex:2">⚡ Scan</button>
+    <button class="btn btn-cy" id="bScan" onclick="doScan()" disabled style="flex:2">⚡ Scan</button>
     <button class="btn btn-gh" onclick="doReset()" style="flex:1">🔄 Reset</button>
   </div>
-  <div id="adjResetBar" style="display:none;gap:6px;margin-top:4px;flex-wrap:wrap">
-    <button class="btn btn-gh" onclick="adjResetTransform()" style="flex:1;font-size:11px">↺ Reset Posisi</button>
-    <button class="btn btn-gh" onclick="adjRotate(-1)" style="flex:1;font-size:11px">↺ -1°</button>
-    <button class="btn btn-gh" onclick="adjRotate(1)"  style="flex:1;font-size:11px">↻ +1°</button>
-    <button class="btn btn-gh" onclick="adjRotate(-90)" style="flex:1;font-size:11px">↺ 90°</button>
+  <div id="adjRotRow">
+    <button class="btn btn-gh" onclick="adjReset()" style="flex:1;font-size:11px">↺ Reset</button>
+    <button class="btn btn-gh" onclick="adjRot(-1)"  style="flex:1;font-size:11px">◀ -1°</button>
+    <button class="btn btn-gh" onclick="adjRot(1)"   style="flex:1;font-size:11px">▶ +1°</button>
+    <button class="btn btn-gh" onclick="adjRot(-90)" style="flex:1;font-size:11px">↺ 90°</button>
   </div>
 </div>
 
-<!-- KUNCI -->
+<!-- ═══ TAB KUNCI ═══ -->
 <div class="pg" id="pg1">
   <div class="card">
     <div class="ct">🗝️ Kunci Jawaban — 40 Soal</div>
@@ -256,11 +293,14 @@ body{background:var(--bg);color:var(--tx1);font-family:system-ui,sans-serif;font
   </div>
 </div>
 
-<!-- HASIL -->
+<!-- ═══ TAB HASIL ═══ -->
 <div class="pg" id="pg2">
   <div class="ibox" id="hE">Belum ada hasil. Scan LJK di tab SCAN.</div>
   <div id="hC" style="display:none">
-    <div class="skb"><div class="sv" id="hN">—</div><div class="sg" id="hG">—</div></div>
+    <div class="skb">
+      <div class="sv" id="hN">—</div>
+      <div class="sg" id="hG">—</div>
+    </div>
     <div class="sm" id="hD"></div>
     <div class="sm" id="hI" style="font-size:9px;color:var(--tx3);margin-top:2px"></div>
     <div class="ibar" id="ibr"></div>
@@ -274,21 +314,25 @@ body{background:var(--bg);color:var(--tx1);font-family:system-ui,sans-serif;font
   </div>
 </div>
 
-<!-- REKAP -->
+<!-- ═══ TAB REKAP ═══ -->
 <div class="pg" id="pg3">
   <div class="card">
     <div class="ct">📊 Statistik</div>
     <div class="s3">
-      <div class="stc"><div class="stv" id="rJ" style="color:var(--cy)">0</div><div class="stl">Siswa</div></div>
-      <div class="stc"><div class="stv" id="rR" style="color:var(--gn)">—</div><div class="stl">Rata-rata</div></div>
-      <div class="stc"><div class="stv" id="rL" style="color:var(--ye)">0%</div><div class="stl">Lulus ≥75</div></div>
+      <div class="stc"><div class="stv" id="rJ" style="color:var(--cy)">0</div>
+        <div class="stl">Siswa</div></div>
+      <div class="stc"><div class="stv" id="rR" style="color:var(--gn)">—</div>
+        <div class="stl">Rata-rata</div></div>
+      <div class="stc"><div class="stv" id="rL" style="color:var(--ye)">0%</div>
+        <div class="stl">Lulus ≥75</div></div>
     </div>
     <div class="bch" id="bch"></div>
   </div>
   <div class="card">
     <div class="ct">📋 Daftar Hasil</div>
     <table class="rt">
-      <thead><tr><th>#</th><th>Nama</th><th>Kelas</th><th>Benar</th><th>Nilai</th><th>Grade</th></tr></thead>
+      <thead><tr><th>#</th><th>Nama</th><th>Kelas</th>
+        <th>Benar</th><th>Nilai</th><th>Grade</th></tr></thead>
       <tbody id="rB"></tbody>
     </table>
     <div class="g3 mt10">
@@ -300,11 +344,9 @@ body{background:var(--bg);color:var(--tx1);font-family:system-ui,sans-serif;font
 </div>
 
 <script>
-// ═══════════════════════════════════════════════════════════════
-// BB LJK SCANNER v10 — JavaScript Bersih
-// ═══════════════════════════════════════════════════════════════
-
-// ─── KOORDINAT BUBBLE (relatif 0–1 dari LJK 794×1123px) ───────
+// ════════════════════════════════════════════════════
+// KOORDINAT BUBBLE (relatif 0–1, LJK 794×1123px)
+// ════════════════════════════════════════════════════
 const CLX={A:.10579,B:.19270,C:.27960,D:.36650,E:.45340};
 const CRX={A:.60831,B:.69521,C:.78212,D:.86902,E:.95592};
 const RY=[.19590,.23508,.27516,.31523,.35530,.39537,.43544,.47551,
@@ -312,612 +354,438 @@ const RY=[.19590,.23508,.27516,.31523,.35530,.39537,.43544,.47551,
           .83615,.87622,.91630,.95637];
 const BR=.01637;
 
-// ─── STATE ─────────────────────────────────────────────────────
-let iD=null, iW=0, iH=0;           // imageData gambar asli
-let bx0=0, by0=0, bx1=0, by1=0;   // bounding box terdeteksi
-let hasBB=false;
-let last=null;
+// ════════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════════
+let imgData=null, imgW=0, imgH=0;   // gambar asli
 let kunci=new Array(40).fill('');
 let rekap=[];
+let last=null;
+let camStream=null, vfTimer=null;
+// Transform untuk adjust
+let TR={tx:0,ty:0,sc:1,rot:0};
+let adjOn=false;
+let drag=null;
+let t1=null,t2=null,trStart=null,midStart=null,distStart=null,angStart=null;
 
-// ═══════════════════════════════════════════════════════════════
-// TOUCHSCREEN TRANSFORM ADJUST
-// Sistem: foto bisa di-drag (1 jari), pinch-zoom & rotate (2 jari)
-// Canvas cvAdj menggambar foto dengan transform
-// Canvas cvRoi menggambar grid bubble di atas foto
-// cPx() memakai inverse transform untuk koordinat scan
-// ═══════════════════════════════════════════════════════════════
-
-// Transform state
-let TR = { tx:0, ty:0, scale:1, angle:0 };  // tx,ty = pixel di canvas display
-let adjMode = false;
-let adjDrag = null;
-
-// Touch tracking
-let _t1=null, _t2=null;         // touch points
-let _startTR = null;            // TR saat gesture mulai
-let _startMid = null;           // titik tengah 2 jari saat mulai
-let _startDist = null;          // jarak 2 jari saat mulai
-let _startAngle = null;         // sudut 2 jari saat mulai
-
-// ── Init adjWrap touch/mouse handlers ─────────────────────────
-function initAdj(){
-  const wrap = document.getElementById('adjWrap');
-  if(!wrap) return;
-
-  // === MOUSE ===
-  wrap.addEventListener('mousedown', e=>{
-    if(!adjMode) return;
-    e.preventDefault();
-    wrap.classList.add('dragging');
-    adjDrag = {sx: e.clientX - TR.tx, sy: e.clientY - TR.ty};
-  });
-  wrap.addEventListener('mousemove', e=>{
-    if(!adjDrag||!adjMode) return;
-    e.preventDefault();
-    TR.tx = e.clientX - adjDrag.sx;
-    TR.ty = e.clientY - adjDrag.sy;
-    renderAdj();
-  });
-  wrap.addEventListener('mouseup',   ()=>{ adjDrag=null; wrap.classList.remove('dragging'); });
-  wrap.addEventListener('mouseleave',()=>{ adjDrag=null; wrap.classList.remove('dragging'); });
-  // Scroll wheel = zoom
-  wrap.addEventListener('wheel', e=>{
-    if(!adjMode) return;
-    e.preventDefault();
-    const delta = e.deltaY > 0 ? 0.9 : 1.1;
-    TR.scale = Math.max(0.2, Math.min(5, TR.scale * delta));
-    renderAdj();
-  }, {passive:false});
-
-  // === TOUCH ===
-  wrap.addEventListener('touchstart', e=>{
-    if(!adjMode) return;
-    e.preventDefault();
-    const touches = e.touches;
-    if(touches.length === 1){
-      // 1 jari = drag
-      _t1 = {x: touches[0].clientX, y: touches[0].clientY};
-      _t2 = null;
-      _startTR = {...TR};
-    } else if(touches.length >= 2){
-      // 2 jari = pinch zoom + rotate
-      _t1 = {x: touches[0].clientX, y: touches[0].clientY};
-      _t2 = {x: touches[1].clientX, y: touches[1].clientY};
-      _startTR = {...TR};
-      _startMid  = midpoint(_t1, _t2);
-      _startDist = dist(_t1, _t2);
-      _startAngle= angle(_t1, _t2);
-    }
-  }, {passive:false});
-
-  wrap.addEventListener('touchmove', e=>{
-    if(!adjMode) return;
-    e.preventDefault();
-    const touches = e.touches;
-    if(touches.length === 1 && _t2===null){
-      // Drag 1 jari
-      const dx = touches[0].clientX - _t1.x;
-      const dy = touches[0].clientY - _t1.y;
-      TR.tx = _startTR.tx + dx;
-      TR.ty = _startTR.ty + dy;
-    } else if(touches.length >= 2){
-      // Pinch zoom + rotate 2 jari
-      const cur1 = {x: touches[0].clientX, y: touches[0].clientY};
-      const cur2 = {x: touches[1].clientX, y: touches[1].clientY};
-      const curMid   = midpoint(cur1, cur2);
-      const curDist  = dist(cur1, cur2);
-      const curAngle = angle(cur1, cur2);
-      // Scale
-      if(_startDist > 0)
-        TR.scale = Math.max(0.15, Math.min(6, _startTR.scale * (curDist / _startDist)));
-      // Rotate
-      TR.angle = _startTR.angle + (curAngle - _startAngle);
-      // Pan (tengah pinch)
-      TR.tx = _startTR.tx + (curMid.x - _startMid.x);
-      TR.ty = _startTR.ty + (curMid.y - _startMid.y);
-    }
-    renderAdj();
-    updateInfo();
-  }, {passive:false});
-
-  wrap.addEventListener('touchend', e=>{
-    if(e.touches.length < 2){ _t2=null; _startDist=null; }
-    if(e.touches.length === 0){ _t1=null; _startTR=null; }
-  });
-}
-
-// ── Helper geometri ───────────────────────────────────────────
-function midpoint(a,b){ return {x:(a.x+b.x)/2, y:(a.y+b.y)/2}; }
-function dist(a,b){ return Math.sqrt((a.x-b.x)**2+(a.y-b.y)**2); }
-function angle(a,b){ return Math.atan2(b.y-a.y, b.x-a.x) * 180/Math.PI; }
-
-// ── Toggle mode adjust ────────────────────────────────────────
-function togAdj(){
-  adjMode = !adjMode;
-  const wrap = document.getElementById('adjWrap');
-  const hint = document.getElementById('adjHint');
-  const info = document.getElementById('adjInfo');
-  const bar  = document.getElementById('adjResetBar');
-  const btn  = document.getElementById('bAdj');
-  const cvAdj= document.getElementById('cvAdj');
-  const cvRoi= document.getElementById('cvRoi');
-
-  if(adjMode){
-    // Aktifkan
-    hint.style.display='block';
-    info.style.display='block';
-    bar.classList.add('show');
-    btn.textContent='✅ Selesai Adjust';
-    btn.style.background='var(--gn)';
-    btn.style.color='#0d1117';
-    cvAdj.style.display='block';
-    cvRoi.style.display='block';
-    // Sembunyikan canvas asli, tampilkan canvas transform
-    document.getElementById('cvm').style.opacity='0';
-    renderAdj();
-    toast('✋ 1 jari=geser · 2 jari=zoom+putar · ↺ untuk rotasi presisi');
-  } else {
-    // Selesai adjust
-    hint.style.display='none';
-    info.style.display='none';
-    bar.classList.remove('show');
-    btn.textContent='✋ Adjust';
-    btn.style.background='';
-    btn.style.color='';
-    // Bake transform ke iD (render ke canvas, baca pixel baru)
-    bakeTransform();
-    cvAdj.style.display='none';
-    cvRoi.style.display='none';
-    document.getElementById('cvm').style.opacity='1';
-    toast('✅ Posisi disimpan — siap scan');
-  }
-}
-
-// ── Render foto dengan transform ke cvAdj + grid ke cvRoi ────
-function renderAdj(){
-  if(!iD) return;
-  const wrap  = document.getElementById('adjWrap');
-  const cvAdj = document.getElementById('cvAdj');
-  const cvRoi = document.getElementById('cvRoi');
-  const W = wrap.clientWidth;
-  const H = wrap.clientHeight || Math.round(W * iH/iW);
-  // Set ukuran canvas display sesuai container
-  cvAdj.width = W; cvAdj.height = H;
-  cvRoi.width = W; cvRoi.height = H;
-
-  // ─ Gambar foto dengan transform ─
-  const ctx = cvAdj.getContext('2d');
-  ctx.clearRect(0,0,W,H);
-  ctx.save();
-  // Pivot di tengah canvas
-  ctx.translate(W/2 + TR.tx, H/2 + TR.ty);
-  ctx.rotate(TR.angle * Math.PI/180);
-  ctx.scale(TR.scale, TR.scale);
-  // Gambar foto asli dari iD ke temporary canvas, lalu ke cvAdj
-  const tmp = document.createElement('canvas');
-  tmp.width=iW; tmp.height=iH;
-  tmp.getContext('2d').putImageData(iD,0,0);
-  ctx.drawImage(tmp, -iW/2, -iH/2);
-  ctx.restore();
-
-  // ─ Gambar grid bubble ─
-  const rctx = cvRoi.getContext('2d');
-  rctx.clearRect(0,0,W,H);
-  rctx.save();
-  rctx.translate(W/2 + TR.tx, H/2 + TR.ty);
-  rctx.rotate(TR.angle * Math.PI/180);
-  rctx.scale(TR.scale, TR.scale);
-
-  // Radius bubble dalam pixel gambar asli
-  const bubR_px = BR * iW;
-
-  rctx.strokeStyle = 'rgba(0,255,153,0.75)';
-  rctx.lineWidth   = 1.5 / TR.scale;
-
-  for(let n=1;n<=40;n++){
-    const isL=n<=20, r=(n-1)%20;
-    const relY=RY[r];
-    for(const op of 'ABCDE'){
-      const relX = isL ? CLX[op] : CRX[op];
-      const cx = -iW/2 + relX*iW;
-      const cy = -iH/2 + relY*iH;
-      rctx.beginPath();
-      rctx.arc(cx, cy, bubR_px, 0, Math.PI*2);
-      rctx.stroke();
-    }
-  }
-  rctx.restore();
-
-  updateInfo();
-}
-
-// ── Bake: terapkan transform ke iD sehingga scan pakai gambar baru ─
-function bakeTransform(){
-  if(!iD) return;
-  const wrap  = document.getElementById('adjWrap');
-  const W = wrap.clientWidth;
-  const H = wrap.clientHeight || Math.round(W * iH/iW);
-
-  // Render ke canvas sementara dgn transform
-  const tmp = document.createElement('canvas');
-  tmp.width=iW; tmp.height=iH;
-  const ctx = tmp.getContext('2d');
-
-  // Pivot sama tapi koordinat dikembalikan ke ukuran iW×iH
-  // Scale factor antara display dan gambar asli
-  const dispScale = W / iW;  // berapa pixel display per pixel gambar
-
-  ctx.clearRect(0,0,iW,iH);
-  ctx.save();
-  ctx.translate(iW/2 + TR.tx/dispScale, iH/2 + TR.ty/dispScale);
-  ctx.rotate(TR.angle * Math.PI/180);
-  ctx.scale(TR.scale, TR.scale);
-
-  const src = document.createElement('canvas');
-  src.width=iW; src.height=iH;
-  src.getContext('2d').putImageData(iD,0,0);
-  ctx.drawImage(src, -iW/2, -iH/2);
-  ctx.restore();
-
-  // Baca imageData baru
-  iD = tmp.getContext('2d').getImageData(0,0,iW,iH);
-
-  // Tampilkan di canvas utama (grayscale)
-  shBW(iD, iW, iH);
-
-  // Reset transform (sudah di-bake)
-  TR = {tx:0, ty:0, scale:1, angle:0};
-}
-
-// ── Reset transform ke default ────────────────────────────────
-function adjResetTransform(){
-  TR = {tx:0, ty:0, scale:1, angle:0};
-  renderAdj();
-  toast('↺ Posisi direset');
-}
-
-// ── Rotasi presisi ±1° atau ±90° via tombol ───────────────────
-function adjRotate(deg){
-  TR.angle += deg;
-  renderAdj();
-  toast(`Rotasi: ${TR.angle.toFixed(1)}°`);
-}
-
-// ── Update info display ───────────────────────────────────────
-function updateInfo(){
-  const f = v => (typeof v==='number') ? v.toFixed(1) : v;
-  const el = id => document.getElementById(id);
-  if(el('infoTx'))  el('infoTx').textContent  = f(TR.tx);
-  if(el('infoTy'))  el('infoTy').textContent  = f(TR.ty);
-  if(el('infoSc'))  el('infoSc').textContent  = TR.scale.toFixed(2);
-  if(el('infoRot')) el('infoRot').textContent = TR.angle.toFixed(1);
-}
-
-// ── Override cPx: pakai koordinat gambar asli (sudah di-bake) ─
-// Tidak perlu transform di sini karena bakeTransform() sudah
-// mengubah iD sesuai posisi baru — koordinat tetap pakai BBX auto
-function cPx(nomor,opsi){
-  const isL=nomor<=20;
-  const relX=isL?CLX[opsi]:CRX[opsi];
-  const relY=RY[(nomor-1)%20];
-  // Gunakan bounding box dari deteksi awal (bx0,bx1,by0,by1)
-  // Atau full image kalau hasBB=false
-  const px0 = hasBB ? bx0 : 0;
-  const py0 = hasBB ? by0 : 0;
-  const pw  = hasBB ? (bx1-bx0) : iW;
-  const ph  = hasBB ? (by1-by0) : iH;
-  const r   = BR * pw;
-  return { cx: px0+relX*pw, cy: py0+relY*ph, r };
-}
-
-
-
-// ─── KAMERA ────────────────────────────────────────────────────
-let camStream=null;
-let _vfT=null;
-
-// ─── INIT ──────────────────────────────────────────────────────
+// ════════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded',()=>{
   try{const s=localStorage.getItem('bb_k');if(s)kunci=JSON.parse(s);}catch{}
   try{const s=localStorage.getItem('bb_r');if(s)rekap=JSON.parse(s);}catch{}
   bldK(); rnRk(); upSt();
-  initAdj();
-  // Drag & drop upload
+  // Drag-drop
   const dz=document.getElementById('dz');
   dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag')});
   dz.addEventListener('dragleave',()=>dz.classList.remove('drag'));
   dz.addEventListener('drop',e=>{
     e.preventDefault();dz.classList.remove('drag');
-    if(e.dataTransfer.files[0])prcF(e.dataTransfer.files[0]);
+    const f=e.dataTransfer.files[0];
+    if(f)loadFile(f);
   });
+  // Touch adjust
+  initTouchAdj();
 });
 
-// ─── TAB SWITCH ────────────────────────────────────────────────
+// ════════════════════════════════════════════════════
+// TAB
+// ════════════════════════════════════════════════════
 function T(n){
   document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('on',i===n));
-  document.querySelectorAll('.pg').forEach((p,i)=>p.classList.toggle('on',i===n));
+  document.querySelectorAll('.pg') .forEach((p,i)=>p.classList.toggle('on',i===n));
   if(n===3){rnRk();upSt();}
   if(n===1)upKC();
 }
 
-// ─── TOAST / STATUS ────────────────────────────────────────────
+// ════════════════════════════════════════════════════
+// UI HELPERS
+// ════════════════════════════════════════════════════
 let _tt;
-function toast(m,d=2500){
+function toast(m,d=2800){
   const e=document.getElementById('toast');
-  e.textContent=m; e.classList.add('show');
-  clearTimeout(_tt); _tt=setTimeout(()=>e.classList.remove('show'),d);
+  e.textContent=m;e.classList.add('show');
+  clearTimeout(_tt);_tt=setTimeout(()=>e.classList.remove('show'),d);
 }
-function sb(c,m){
-  document.getElementById('sb').className='sbar '+c;
-  document.getElementById('sbt').textContent=m;
+function sb(cls,msg){
+  const el=document.getElementById('sb');
+  el.className='sbar '+(cls||'');
+  document.getElementById('sbt').textContent=msg;
 }
 function pb(p){
   const w=document.getElementById('pbw');
   w.style.display=(p>=0&&p<100)?'block':'none';
-  document.getElementById('pb').style.width=p+'%';
+  if(p>=0)document.getElementById('pb').style.width=p+'%';
 }
 function sl(ms){return new Promise(r=>setTimeout(r,ms));}
+function shM(msg){
+  document.getElementById('mmsg').textContent=msg;
+  document.getElementById('mod').classList.add('show');
+}
+function closeM(){document.getElementById('mod').classList.remove('show');}
 
-// ─── KAMERA LIVE ───────────────────────────────────────────────
-async function startCam(){
+// ════════════════════════════════════════════════════
+// KAMERA
+// ════════════════════════════════════════════════════
+function startCam(){
   if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
-    document.getElementById('fi').click(); return;
+    pickFile(); return;
   }
-  try{
-    camStream=await navigator.mediaDevices.getUserMedia({
-      video:{facingMode:{ideal:'environment'},width:{ideal:1920},height:{ideal:1080}},
-      audio:false
-    });
-    document.getElementById('camVid').srcObject=camStream;
+  navigator.mediaDevices.getUserMedia({
+    video:{facingMode:{ideal:'environment'},width:{ideal:1920},height:{ideal:1080}},
+    audio:false
+  }).then(stream=>{
+    camStream=stream;
+    const vid=document.getElementById('camVid');
+    vid.srcObject=stream;
     document.getElementById('camWrap').classList.add('show');
     document.getElementById('camBtns').style.display='flex';
     document.getElementById('dz').style.display='none';
-    rotateVfLabel();
-  }catch(e){
-    document.getElementById('fi').click();
-  }
+    vfRotate();
+  }).catch(()=>pickFile());
 }
+
 function stopCam(){
   if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null;}
   document.getElementById('camWrap').classList.remove('show');
   document.getElementById('camBtns').style.display='none';
   document.getElementById('dz').style.display='';
-  clearTimeout(_vfT);
+  clearTimeout(vfTimer);
 }
-async function captureCam(){
+
+function captureCam(){
   const vid=document.getElementById('camVid');
-  if(!vid.videoWidth){toast('⚠️ Kamera belum siap');return;}
+  if(!vid.videoWidth){toast('⚠️ Kamera belum siap, tunggu sebentar');return;}
   const c=document.createElement('canvas');
   c.width=vid.videoWidth; c.height=vid.videoHeight;
   c.getContext('2d').drawImage(vid,0,0);
   stopCam();
-  sb('wrk','⏳ Memproses...');
-  try{await ldImg(c.toDataURL('image/jpeg',.92));}catch(e){sb('err','❌ '+e.message);}
+  processDataURL(c.toDataURL('image/jpeg',.92));
 }
-function rotateVfLabel(){
-  const msgs=['📐 Sejajarkan LJK dalam kotak hijau','✅ Semua sudut LJK harus terlihat',
-              '📏 Jaga HP tetap lurus & stabil','💡 Pastikan pencahayaan cukup'];
+
+function vfRotate(){
+  const msgs=['📐 Sejajarkan LJK dalam kotak hijau',
+              '✅ Pastikan semua sudut LJK terlihat',
+              '📏 HP tegak & stabil, jarak 25–40cm',
+              '💡 Pencahayaan cukup, tidak ada bayangan'];
   let i=0;
   function next(){
     const el=document.getElementById('vfLbl');
     if(el)el.textContent=msgs[i++%msgs.length];
-    _vfT=setTimeout(next,2500);
+    vfTimer=setTimeout(next,2500);
   }
-  clearTimeout(_vfT); next();
+  clearTimeout(vfTimer); next();
 }
 
-// ─── FILE LOAD ─────────────────────────────────────────────────
-function onF(e){const f=e.target.files[0];e.target.value='';if(f)prcF(f);}
-async function prcF(f){
-  clrSt(); sb('wrk','⏳ Memuat...');
-  try{
-    if(f.type==='application/pdf'||f.name.toLowerCase().endsWith('.pdf'))await ldPDF(f);
-    else{const u=URL.createObjectURL(f);await ldImg(u);URL.revokeObjectURL(u);}
-  }catch(e){sb('err','❌ '+e.message);}
+// ════════════════════════════════════════════════════
+// FILE INPUT
+// ════════════════════════════════════════════════════
+function pickFile(){document.getElementById('fi').click();}
+function onFile(e){
+  const f=e.target.files[0];
+  e.target.value='';
+  if(f)loadFile(f);
 }
-async function ldPDF(f){
-  sb('wrk','⏳ Render PDF...');
-  if(!window.pdfjsLib){
-    await new Promise((ok,fail)=>{
-      const s=document.createElement('script');
-      s.src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
-      s.onload=ok; s.onerror=()=>fail(new Error('Gagal load pdf.js'));
-      document.head.appendChild(s);
-    });
-    pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+function loadFile(f){
+  doReset();
+  sb('wrk','⏳ Memuat...');
+  if(f.type==='application/pdf'||f.name.toLowerCase().endsWith('.pdf')){
+    loadPDF(f);
+  } else {
+    const url=URL.createObjectURL(f);
+    processDataURL(url,true);
   }
-  const buf=await f.arrayBuffer();
-  const pdf=await pdfjsLib.getDocument({data:buf}).promise;
-  const pg=await pdf.getPage(1);
-  const vp=pg.getViewport({scale:2.2});
-  const c=document.createElement('canvas');
-  c.width=vp.width; c.height=vp.height;
-  await pg.render({canvasContext:c.getContext('2d'),viewport:vp}).promise;
-  await ldImg(c.toDataURL());
 }
-async function ldImg(src){
-  return new Promise((ok,fail)=>{
-    const img=new Image();
-    img.onload=async()=>{
-      const cv=document.getElementById('cvm');
-      cv.width=img.naturalWidth; cv.height=img.naturalHeight;
-      cv.getContext('2d').drawImage(img,0,0);
-      iD=cv.getContext('2d').getImageData(0,0,cv.width,cv.height);
-      iW=cv.width; iH=cv.height;
-      document.getElementById('cvw').style.display='block';
-      await pipe(); ok();
+function loadPDF(f){
+  sb('wrk','⏳ Render PDF...');
+  const loadLib=()=>{
+    if(window.pdfjsLib){doPDF(f);return;}
+    const s=document.createElement('script');
+    s.src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+    s.onload=()=>{
+      pdfjsLib.GlobalWorkerOptions.workerSrc=
+        'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+      doPDF(f);
     };
-    img.onerror=()=>fail(new Error('Gambar tidak valid'));
-    img.src=src;
+    s.onerror=()=>sb('err','❌ Gagal load PDF library (butuh internet)');
+    document.head.appendChild(s);
+  };
+  loadLib();
+}
+async function doPDF(f){
+  try{
+    const buf=await f.arrayBuffer();
+    const pdf=await pdfjsLib.getDocument({data:buf}).promise;
+    const pg=await pdf.getPage(1);
+    const vp=pg.getViewport({scale:2.2});
+    const c=document.createElement('canvas');
+    c.width=vp.width;c.height=vp.height;
+    await pg.render({canvasContext:c.getContext('2d'),viewport:vp}).promise;
+    processDataURL(c.toDataURL());
+  }catch(e){sb('err','❌ Gagal baca PDF: '+e.message);}
+}
+
+function processDataURL(url, revoke){
+  sb('wrk','⏳ Memuat gambar...');
+  const img=new Image();
+  img.onload=()=>{
+    if(revoke)URL.revokeObjectURL(url);
+    // Simpan ke canvas utama
+    const cv=document.getElementById('cvMain');
+    cv.width=img.naturalWidth; cv.height=img.naturalHeight;
+    cv.getContext('2d').drawImage(img,0,0);
+    imgData=cv.getContext('2d').getImageData(0,0,cv.width,cv.height);
+    imgW=cv.width; imgH=cv.height;
+    // Tampilkan langsung (grayscale via CSS, tidak blocking)
+    document.getElementById('cvMain').style.filter='grayscale(100%)';
+    // Tampilkan
+    document.getElementById('cvWrap').style.display='block';
+    // Reset transform
+    TR={tx:0,ty:0,sc:1,rot:0};
+    // Aktifkan tombol — LANGSUNG, tidak ada proses tambahan
+    document.getElementById('bAdj').disabled=false;
+    document.getElementById('bScan').disabled=false;
+    sb('ok','✅ Foto siap · '+imgW+'×'+imgH+' · Adjust atau langsung Scan');
+    toast('✅ Foto siap!');
+  };
+  img.onerror=()=>sb('err','❌ Gambar tidak valid atau rusak');
+  img.src=url;
+}
+
+// Grayscale in-place ke cvMain
+function applyGrayscale(){
+  // Tampilkan asli dulu (sudah di-drawImage di processDataURL)
+  // Grayscale dilakukan ringan via CSS filter saja
+  document.getElementById('cvMain').style.filter='grayscale(100%)';
+}
+
+// ════════════════════════════════════════════════════
+// TOUCHSCREEN ADJUST
+// 1 jari = geser | 2 jari = zoom+putar
+// ════════════════════════════════════════════════════
+function initTouchAdj(){
+  const cont=document.getElementById('cvCont');
+  if(!cont)return;
+
+  function getXY(e){
+    const r=cont.getBoundingClientRect();
+    const src=e.touches?e.touches[0]:e;
+    return{x:src.clientX-r.left, y:src.clientY-r.top};
+  }
+  function getTwoTouches(e){
+    const r=cont.getBoundingClientRect();
+    return[
+      {x:e.touches[0].clientX-r.left, y:e.touches[0].clientY-r.top},
+      {x:e.touches[1].clientX-r.left, y:e.touches[1].clientY-r.top}
+    ];
+  }
+  function midpt(a,b){return{x:(a.x+b.x)/2,y:(a.y+b.y)/2};}
+  function dst(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}
+  function ang(a,b){return Math.atan2(b.y-a.y,b.x-a.x)*180/Math.PI;}
+
+  // Mouse
+  cont.addEventListener('mousedown',e=>{
+    if(!adjOn)return;
+    e.preventDefault();
+    const p=getXY(e);
+    drag={sx:p.x-TR.tx, sy:p.y-TR.ty};
+    cont.style.cursor='grabbing';
+  });
+  cont.addEventListener('mousemove',e=>{
+    if(!drag||!adjOn)return;
+    e.preventDefault();
+    const p=getXY(e);
+    TR.tx=p.x-drag.sx; TR.ty=p.y-drag.sy;
+    renderAdj();
+  });
+  cont.addEventListener('mouseup',  ()=>{drag=null;cont.style.cursor='grab';});
+  cont.addEventListener('mouseleave',()=>{drag=null;cont.style.cursor='';});
+  cont.addEventListener('wheel',e=>{
+    if(!adjOn)return; e.preventDefault();
+    TR.sc=Math.max(.1,Math.min(8,TR.sc*(e.deltaY>0?.9:1.1)));
+    renderAdj();
+  },{passive:false});
+
+  // Touch
+  cont.addEventListener('touchstart',e=>{
+    if(!adjOn)return; e.preventDefault();
+    if(e.touches.length===1){
+      const p=getXY(e);
+      t1={x:p.x,y:p.y}; t2=null;
+      trStart={...TR};
+    } else if(e.touches.length>=2){
+      const [a,b]=getTwoTouches(e);
+      t1=a; t2=b;
+      trStart={...TR};
+      midStart=midpt(a,b);
+      distStart=dst(a,b);
+      angStart=ang(a,b);
+    }
+  },{passive:false});
+
+  cont.addEventListener('touchmove',e=>{
+    if(!adjOn)return; e.preventDefault();
+    if(e.touches.length===1&&!t2){
+      const p=getXY(e);
+      TR.tx=trStart.tx+(p.x-t1.x);
+      TR.ty=trStart.ty+(p.y-t1.y);
+    } else if(e.touches.length>=2&&distStart){
+      const [a,b]=getTwoTouches(e);
+      const mid=midpt(a,b);
+      const d=dst(a,b);
+      const ag=ang(a,b);
+      TR.sc=Math.max(.1,Math.min(8, trStart.sc*(d/distStart)));
+      TR.rot=trStart.rot+(ag-angStart);
+      TR.tx=trStart.tx+(mid.x-midStart.x);
+      TR.ty=trStart.ty+(mid.y-midStart.y);
+    }
+    renderAdj();
+    updInfo();
+  },{passive:false});
+
+  cont.addEventListener('touchend',e=>{
+    if(e.touches.length<2){t2=null;distStart=null;}
+    if(e.touches.length===0){t1=null;}
   });
 }
 
-// ─── PIPELINE ──────────────────────────────────────────────────
-async async function pipe(){
-  // Tampilkan gambar grayscale langsung
-  shBW(iD,iW,iH);
-  syncAdj();
-  // Aktifkan tombol SEKARANG — tidak ada yang menghalangi
-  document.getElementById('bAdj').disabled=false;
-  document.getElementById('bS').disabled=false;
-  sb('ok','✅ Foto siap · '+iW+'×'+iH);
-  toast('✅ Siap — Adjust jika perlu, lalu Scan');
-  // Deteksi bounding box di background (tidak memblokir)
-  setTimeout(()=>detectBB(),50);
-}
+function togAdj(){
+  adjOn=!adjOn;
+  const bar=document.getElementById('adjBar');
+  const info=document.getElementById('adjInfo');
+  const rotRow=document.getElementById('adjRotRow');
+  const btn=document.getElementById('bAdj');
+  const cvAdj=document.getElementById('cvAdj');
+  const cvRoi=document.getElementById('cvRoi');
+  const cont=document.getElementById('cvCont');
 
-function detectBB(){
-  if(!iD)return;
-  const d=iD.data;
-  const STEP=Math.max(1,Math.floor(Math.min(iW,iH)/80));
-  const gray=new Uint8Array(iW*iH);
-  for(let i=0;i<iW*iH;i++){const p=i*4;gray[i]=Math.round(.299*d[p]+.587*d[p+1]+.114*d[p+2]);}
-  let sum=0;
-  for(let i=0;i<gray.length;i+=STEP)sum+=gray[i];
-  const thr=Math.max(140,(sum/Math.ceil(gray.length/STEP))*.85);
-  const MRG=Math.floor(Math.min(iW,iH)*.03);
-  bx0=scnE(gray,iW,iH,'L',MRG,thr,STEP);
-  bx1=scnE(gray,iW,iH,'R',MRG,thr,STEP);
-  by0=scnE(gray,iW,iH,'T',MRG,thr,STEP);
-  by1=scnE(gray,iW,iH,'B',MRG,thr,STEP);
-  hasBB=(bx0>=0&&bx1>bx0+iW*.3&&by0>=0&&by1>by0+iH*.3);
-  if(!hasBB){bx0=0;bx1=iW;by0=0;by1=iH;}
-}
-
-function scnE(gray,W,H,dir,MRG,thr,STEP){
-  if(dir==='L'){for(let x=MRG;x<W*.5;x+=STEP){let b=0,t=0;for(let y=Math.floor(H*.1);y<Math.floor(H*.9);y+=STEP*2){if(gray[y*W+x]>thr)b++;t++;}if(t&&b/t>.45)return Math.max(0,x-STEP*2);}return -1;}
-  if(dir==='R'){for(let x=W-MRG;x>W*.5;x-=STEP){let b=0,t=0;for(let y=Math.floor(H*.1);y<Math.floor(H*.9);y+=STEP*2){if(gray[y*W+x]>thr)b++;t++;}if(t&&b/t>.45)return Math.min(W,x+STEP*2);}return -1;}
-  if(dir==='T'){for(let y=MRG;y<H*.4;y+=STEP){let b=0,t=0;for(let x=Math.floor(W*.1);x<Math.floor(W*.9);x+=STEP*2){if(gray[y*W+x]>thr)b++;t++;}if(t&&b/t>.45)return Math.max(0,y-STEP*2);}return -1;}
-  for(let y=H-MRG;y>H*.6;y-=STEP){let b=0,t=0;for(let x=Math.floor(W*.1);x<Math.floor(W*.9);x+=STEP*2){if(gray[y*W+x]>thr)b++;t++;}if(t&&b/t>.45)return Math.min(H,y+STEP*2);}return -1;
-}
-
-function vld(d,W,H){
-  if(W/H>1.2){shM('Putar HP — foto harus portrait');return false;}
-  if(W<250||H<350){shM('Resolusi terlalu kecil: '+W+'×'+H);return false;}
-  let dk=0,step=Math.max(1,Math.floor(W*H/3000));
-  for(let i=0;i<W*H;i+=step)if(.299*d[i*4]+.587*d[i*4+1]+.114*d[i*4+2]<130)dk++;
-  if(dk/(W*H/step)<.008){shM('Gambar terlalu terang atau kosong');return false;}
-  return true;
-}
-function shM(msg){document.getElementById('mmsg').textContent=msg;document.getElementById('mod').classList.add('show');sb('err','❌ '+msg);}
-function closeM(){document.getElementById('mod').classList.remove('show');}
-
-// ─── VALIDASI FORMAT LJK (5 check) ────────────────────────────
-function gpx(d,i){return .299*d[i*4]+.587*d[i*4+1]+.114*d[i*4+2];}
-function validateLJK(imgData,W,H){
-  // ── Buat grayscale 1x dengan step besar → cepat ──
-  const d=imgData.data;
-  const S=Math.max(4,Math.floor(Math.min(W,H)/40)); // step besar: ~40 titik per dimensi
-  const G=[];
-  for(let y=0;y<H;y+=S)for(let x=0;x<W;x+=S){
-    const i=(y*W+x)*4;
-    G.push((.299*d[i]+.587*d[i+1]+.114*d[i+2])|0);
-  }
-  const gW=Math.ceil(W/S), gH=Math.ceil(H/S);
-  // Helper: rata-rata dan min dari G dalam zona (koordinat G)
-  function gm(gx0,gy0,gx1,gy1){
-    let s=0,n=0;
-    for(let gy=gy0;gy<gy1;gy++)for(let gx=gx0;gx<gx1;gx++){
-      s+=G[gy*gW+gx]||0;n++;
-    }
-    return n?s/n:128;
-  }
-  function gs(gx0,gy0,gx1,gy1){
-    const m=gm(gx0,gy0,gx1,gy1);let s=0,n=0;
-    for(let gy=gy0;gy<gy1;gy++)for(let gx=gx0;gx<gx1;gx++){
-      const v=(G[gy*gW+gx]||0)-m;s+=v*v;n++;
-    }
-    return n?Math.sqrt(s/n):0;
-  }
-  function gn(gx0,gy0,gx1,gy1){
-    let mn=255;
-    for(let gy=gy0;gy<gy1;gy++)for(let gx=gx0;gx<gx1;gx++){
-      const v=G[gy*gW+gx]||0;if(v<mn)mn=v;
-    }
-    return mn;
-  }
-  // Konversi koordinat % → koordinat G
-  function gx(pct){return Math.floor(pct*gW)|0;}
-  function gy(pct){return Math.floor(pct*gH)|0;}
-
-  let score=0; const checks=[];
-  // C1: rasio portrait
-  const r=W/H,c1=r>=0.55&&r<=0.90;if(c1)score++;
-  checks.push({ok:c1,label:'Orientasi portrait ('+r.toFixed(2)+')'});
-  // C2: tabel lebih bervariasi dari header
-  const sHdr=gs(gx(.04),gy(0),   gx(.96),gy(.17));
-  const sTbl=gs(gx(.04),gy(.20), gx(.96),gy(.95));
-  const c2=sTbl>sHdr*1.05;if(c2)score++;
-  checks.push({ok:c2,label:'Pola grid tabel terdeteksi'});
-  // C3: garis pembatas header tabel (Y≈18-20%)
-  const mn3=gn(gx(.04),gy(.17),gx(.96),gy(.21));
-  const c3=mn3<140;if(c3)score++;
-  checks.push({ok:c3,label:'Garis pembatas header tabel'});
-  // C4: pemisah blok kiri-kanan (X≈44-58%)
-  const dm=gn(gx(.44),gy(.20),gx(.58),gy(.95));
-  const c4=dm<170;if(c4)score++;
-  checks.push({ok:c4,label:'Pemisah blok kiri–kanan'});
-  // Keputusan
-  let valid=score>=3,level=score===4?'ok':score===3?'warn':'err';
-  const msgs={ok:'✅ Format LJK Valid!',warn:'⚠️ LJK Dikenali (kualitas rendah)',err:'❌ Bukan LJK yang Dikenali'};
-  return{valid,score,level,mainMsg:msgs[level],checks};
-}
-
-// ─── MODAL VALIDASI ────────────────────────────────────────────
-let _vmCb=null;
-function showVM(res,cb){
-  _vmCb=cb;
-  document.getElementById('vIcon').textContent=res.level==='ok'?'✅':res.level==='warn'?'⚠️':'❌';
-  const tEl=document.getElementById('vTit');
-  tEl.textContent=res.mainMsg; tEl.className='vtit '+res.level;
-  document.getElementById('vCks').innerHTML=res.checks.map(c=>
-    `<div class="vck"><span>${c.ok?'✅':'❌'}</span><span>${c.label}</span></div>`).join('');
-  document.getElementById('vScore').textContent='Skor: '+res.score+'/4';
-  document.getElementById('vHint').textContent=res.valid
-    ?(res.score<5?'💡 Foto kurang ideal. Adjust posisi bubble jika scan tidak akurat.':'✨ Kualitas foto bagus!')
-    :'💡 Upload foto LJK SMKN 1 Sumarorong yang sesuai format.';
-  document.getElementById('vOk').style.display=res.valid?'':'none';
-  document.getElementById('vmod').classList.add('show');
-}
-function closeVM(proceed){
-  document.getElementById('vmod').classList.remove('show');
-  if(proceed&&_vmCb)_vmCb();
-  _vmCb=null;
-}
-
-// Badge kecil di bawah status bar — tidak memblokir apapun
-function showBadge(vr){
-  let el=document.getElementById('ljkBadge');
-  if(!el){
-    el=document.createElement('div');
-    el.id='ljkBadge';
-    el.style.cssText='font-size:10px;padding:4px 8px;border-radius:6px;margin:3px 0;text-align:center;cursor:pointer';
-    el.onclick=()=>showVM(vr,null);
-    // Masukkan setelah sbar
-    const sb=document.getElementById('sb');
-    if(sb)sb.after(el);
-  }
-  if(vr.score>=3){
-    el.style.background='rgba(63,185,80,.12)';
-    el.style.border='1px solid rgba(63,185,80,.3)';
-    el.style.color='#3fb950';
-    el.textContent='✅ Format LJK dikenali ('+vr.score+'/4) — ketuk untuk detail';
+  if(adjOn){
+    bar.style.display='block';
+    info.style.display='block';
+    rotRow.style.display='flex';
+    btn.textContent='✅ Selesai';
+    btn.className='btn btn-gn';
+    cvAdj.style.display='block';
+    cvRoi.style.display='block';
+    document.getElementById('cvMain').style.opacity='0';
+    cont.style.cursor='grab';
+    renderAdj();
+    toast('✋ Seret foto untuk lurus · 2 jari zoom/putar');
   } else {
-    el.style.background='rgba(210,153,34,.12)';
-    el.style.border='1px solid rgba(210,153,34,.3)';
-    el.style.color='#d29922';
-    el.textContent='⚠️ Format tidak jelas ('+vr.score+'/4) — tetap bisa scan, ketuk detail';
+    // Bake transform ke imgData
+    bakeAdj();
+    bar.style.display='none';
+    info.style.display='none';
+    rotRow.style.display='none';
+    btn.textContent='✋ Adjust';
+    btn.className='btn btn-gh';
+    cvAdj.style.display='none';
+    cvRoi.style.display='none';
+    document.getElementById('cvMain').style.opacity='1';
+  document.getElementById('cvMain').style.filter='';
+    cont.style.cursor='';
+    TR={tx:0,ty:0,sc:1,rot:0};
+    toast('✅ Posisi tersimpan — siap scan');
   }
 }
 
-// ─── TOUCHSCREEN ADJUST ────────────────────────────────────────
-function sh(id,cx,cy){const el=document.getElementById(id);if(el){el.setAttribute('cx',cx.toFixed(2));el.setAttribute('cy',cy.toFixed(2));}}
+function renderAdj(){
+  if(!imgData)return;
+  const cont=document.getElementById('cvCont');
+  const W=cont.clientWidth;
+  const H=cont.clientHeight||Math.round(W*imgH/imgW);
+  const cvAdj=document.getElementById('cvAdj');
+  const cvRoi=document.getElementById('cvRoi');
+  cvAdj.width=W; cvAdj.height=H;
+  cvRoi.width=W; cvRoi.height=H;
 
-// ─── SCAN BUBBLE ───────────────────────────────────────────────
+  // Gambar foto dengan transform
+  const ctx=cvAdj.getContext('2d');
+  ctx.clearRect(0,0,W,H);
+  ctx.save();
+  ctx.translate(W/2+TR.tx, H/2+TR.ty);
+  ctx.rotate(TR.rot*Math.PI/180);
+  ctx.scale(TR.sc,TR.sc);
+  const tmp=document.createElement('canvas');
+  tmp.width=imgW; tmp.height=imgH;
+  tmp.getContext('2d').putImageData(imgData,0,0);
+  ctx.filter='grayscale(100%)';
+  ctx.drawImage(tmp,-imgW/2,-imgH/2);
+  ctx.restore();
+
+  // Gambar lingkaran bubble hijau
+  const rctx=cvRoi.getContext('2d');
+  rctx.clearRect(0,0,W,H);
+  rctx.save();
+  rctx.translate(W/2+TR.tx, H/2+TR.ty);
+  rctx.rotate(TR.rot*Math.PI/180);
+  rctx.scale(TR.sc,TR.sc);
+  const r=BR*imgW;
+  rctx.strokeStyle='rgba(0,255,153,.8)';
+  rctx.lineWidth=1.5/TR.sc;
+  for(let n=1;n<=40;n++){
+    const isL=n<=20,row=(n-1)%20;
+    for(const op of 'ABCDE'){
+      const rx=(isL?CLX[op]:CRX[op])*imgW - imgW/2;
+      const ry=RY[row]*imgH - imgH/2;
+      rctx.beginPath();
+      rctx.arc(rx,ry,r,0,Math.PI*2);
+      rctx.stroke();
+    }
+  }
+  rctx.restore();
+  updInfo();
+}
+
+function bakeAdj(){
+  if(!imgData)return;
+  const tmp=document.createElement('canvas');
+  tmp.width=imgW; tmp.height=imgH;
+  const ctx=tmp.getContext('2d');
+  ctx.save();
+  ctx.translate(imgW/2+TR.tx, imgH/2+TR.ty);
+  ctx.rotate(TR.rot*Math.PI/180);
+  ctx.scale(TR.sc,TR.sc);
+  const src=document.createElement('canvas');
+  src.width=imgW; src.height=imgH;
+  src.getContext('2d').putImageData(imgData,0,0);
+  ctx.drawImage(src,-imgW/2,-imgH/2);
+  ctx.restore();
+  imgData=tmp.getContext('2d').getImageData(0,0,imgW,imgH);
+  // Update cvMain dengan gambar yang sudah di-transform
+  const cv=document.getElementById('cvMain');
+  cv.getContext('2d').putImageData(imgData,0,0);
+  cv.style.filter='grayscale(100%)';
+}
+
+function adjReset(){TR={tx:0,ty:0,sc:1,rot:0};renderAdj();toast('↺ Reset');}
+function adjRot(d){TR.rot+=d;renderAdj();toast('Putar: '+TR.rot.toFixed(1)+'°');}
+function updInfo(){
+  const el=document.getElementById('adjInfo');
+  if(el)el.textContent=
+    `X:${TR.tx.toFixed(0)} Y:${TR.ty.toFixed(0)} Zoom:${TR.sc.toFixed(2)}× Putar:${TR.rot.toFixed(1)}°`;
+}
+
+// ════════════════════════════════════════════════════
+// KOORDINAT BUBBLE → PIKSEL
+// ════════════════════════════════════════════════════
+function cPx(nomor,opsi){
+  const isL=nomor<=20;
+  const relX=isL?CLX[opsi]:CRX[opsi];
+  const relY=RY[(nomor-1)%20];
+  return{
+    cx: relX*imgW,
+    cy: relY*imgH,
+    r : BR*imgW
+  };
+}
+
+// ════════════════════════════════════════════════════
+// SCAN BUBBLE
+// ════════════════════════════════════════════════════
 function gv(d,i){return .299*d[i]+.587*d[i+1]+.114*d[i+2];}
 function sBub(d,W,H,cx,cy,r){
-  const rIn=r*.82,rOut=r*1.65;
+  const rIn=r*.80,rOut=r*1.6;
   const x0=Math.max(0,Math.floor(cx-rOut)),x1=Math.min(W,Math.ceil(cx+rOut)+1);
   const y0=Math.max(0,Math.floor(cy-rOut)),y1=Math.min(H,Math.ceil(cy+rOut)+1);
   let iS=0,iN=0,bS=0,bN=0;
@@ -930,32 +798,37 @@ function sBub(d,W,H,cx,cy,r){
   return(bN?bS/bN:240)-(iN?iS/iN:220);
 }
 function scnN(d,W,H,n){
-  const sc='ABCDE'.split('').map(op=>{const{cx,cy,r}=cPx(n,op);return sBub(d,W,H,cx,cy,r);});
-  const md=10,ms=6;
+  const sc='ABCDE'.split('').map(op=>{
+    const{cx,cy,r}=cPx(n,op);
+    return sBub(d,W,H,cx,cy,r);
+  });
   const mx=Math.max(...sc);
-  if(mx<ms)return{jaw:'',sc,conf:0};
-  const gap=[...sc].sort((a,b)=>b-a);const gp=gap[0]-gap[1];
-  if(gp<md&&sc.filter(s=>s>=mx-md*.5&&s>=ms).length>=2)return{jaw:'?',sc,conf:15};
-  return{jaw:'ABCDE'[sc.indexOf(mx)],sc,conf:Math.min(99,Math.round(20+Math.min(gp,70)+Math.min(mx,20)))};
+  if(mx<6)return{jaw:'',sc,conf:0};
+  const sorted=[...sc].sort((a,b)=>b-a);
+  const gap=sorted[0]-sorted[1];
+  if(gap<10&&sc.filter(s=>s>=mx-5&&s>=6).length>=2)return{jaw:'?',sc,conf:15};
+  return{jaw:'ABCDE'[sc.indexOf(mx)],sc,
+    conf:Math.min(99,Math.round(20+Math.min(gap,70)+Math.min(mx,20)))};
 }
 
-// ─── SCAN PENUH ────────────────────────────────────────────────
 async function doScan(){
-  if(!iD){toast('Upload dulu!');return;}
+  if(!imgData){toast('⚠️ Upload foto dulu!');return;}
   const noK=kunci.every(k=>!k);
-  if(noK&&!confirm('Kunci jawaban kosong. Lanjut quand même?'))return;
-  document.getElementById('bS').disabled=true;
-  sb('wrk','⚡ Scanning...'); pb(0); await sl(15);
-  const d=iD.data,W=iW,H=iH,hs=[];let tc=0;
+  if(noK&&!confirm('Kunci jawaban belum diisi. Lanjut scan tanpa kunci?'))return;
+  document.getElementById('bScan').disabled=true;
+  sb('wrk','⚡ Scanning...'); pb(0); await sl(10);
+  const d=imgData.data,W=imgW,H=imgH,hs=[];
+  let tc=0;
   for(let n=1;n<=40;n++){
     pb(Math.round(n/40*95));
     const res=scnN(d,W,H,n);
     const kj=kunci[n-1]||'';
-    const cor=!kj?null:(res.jaw&&res.jaw!=='?'&&kj.includes(res.jaw));
+    const cor=!kj?null:(res.jaw&&res.jaw!=='?'?kj===res.jaw:null);
     hs.push({nomor:n,jaw:res.jaw,kunci:kj,correct:cor,conf:res.conf});
-    tc+=res.conf; if(n%8===0)await sl(0);
+    tc+=res.conf;
+    if(n%8===0)await sl(0);
   }
-  pb(100); await sl(40); pb(-1);
+  pb(100);await sl(30);pb(-1);
   const bn=hs.filter(h=>h.correct===true).length;
   const sl2=hs.filter(h=>h.correct===false).length;
   const ko=hs.filter(h=>!h.jaw||h.jaw==='?').length;
@@ -969,40 +842,42 @@ async function doScan(){
     hasil:hs,benar:bn,salah:sl2,kosong:ko,nilai:ni,grade:gr,
     avgConf:Math.round(tc/40)
   };
-  document.getElementById('bS').disabled=false;
-  sb('ok','✅ '+bn+'/40 benar'); rnHs(); T(2); toast('✅ Selesai!');
+  document.getElementById('bScan').disabled=false;
+  sb('ok','✅ Selesai · '+bn+'/40 benar');
+  rnHs(); T(2); toast('✅ Scan selesai! '+bn+'/40 benar');
 }
 
-// ─── GRAYSCALE DISPLAY ─────────────────────────────────────────
-function shBW(imgData,W,H){
-  const cv=document.getElementById('cvm');
-  const ctx=cv.getContext('2d');
-  const src=imgData.data,out=ctx.createImageData(W,H);
-  for(let i=0;i<W*H;i++){
-    const p=i*4,g=Math.round(gv(src,p));
-    out.data[p]=out.data[p+1]=out.data[p+2]=g;out.data[p+3]=255;
-  }
-  ctx.putImageData(out,0,0);
-}
-
-// ─── RESET ─────────────────────────────────────────────────────
-function clrSt(){
-  document.getElementById('cvw').style.display='none';
-  hasBB=false; iD=null; iW=0; iH=0;
-  // Matikan adjust
-  adjMode=false;
-  document.getElementById('adjHint').style.display='none';
-  const bAdj=document.getElementById('bAdj');
-  if(bAdj){bAdj.textContent='✋ Adjust';bAdj.style.background='';bAdj.style.color='';bAdj.disabled=true;}
-  document.getElementById('bS').disabled=true;
-}
+// ════════════════════════════════════════════════════
+// RESET
+// ════════════════════════════════════════════════════
 function doReset(){
-  clrSt(); stopCam();
-  document.getElementById('fi').value='';
-  pb(-1); sb('','Upload LJK terlebih dahulu');
+  imgData=null; imgW=0; imgH=0;
+  // Hentikan kamera
+  stopCam();
+  // Reset adjust
+  adjOn=false; TR={tx:0,ty:0,sc:1,rot:0};
+  document.getElementById('adjBar').style.display='none';
+  document.getElementById('adjInfo').style.display='none';
+  document.getElementById('adjRotRow').style.display='none';
+  document.getElementById('bAdj').textContent='✋ Adjust';
+  document.getElementById('bAdj').className='btn btn-gh';
+  document.getElementById('cvAdj').style.display='none';
+  document.getElementById('cvRoi').style.display='none';
+  document.getElementById('cvMain').style.opacity='1';
+  document.getElementById('cvMain').style.filter='';
+  document.getElementById('cvCont').style.cursor='';
+  // Hide canvas
+  document.getElementById('cvWrap').style.display='none';
+  // Disable tombol
+  document.getElementById('bAdj').disabled=true;
+  document.getElementById('bScan').disabled=true;
+  // Reset status
+  pb(-1); sb('','Upload foto LJK');
 }
 
-// ─── RENDER HASIL ──────────────────────────────────────────────
+// ════════════════════════════════════════════════════
+// RENDER HASIL
+// ════════════════════════════════════════════════════
 function rnHs(){
   if(!last)return;
   const h=last;
@@ -1010,84 +885,115 @@ function rnHs(){
   document.getElementById('hC').style.display='block';
   document.getElementById('hN').textContent=h.nilai!==null?h.nilai:'—';
   const ge=document.getElementById('hG');
-  ge.textContent=h.grade||'—'; ge.className='sg'+(h.grade?' g'+h.grade:'');
-  document.getElementById('hD').textContent=`Benar: ${h.benar}  Salah: ${h.salah}  Kosong: ${h.kosong}  /40`;
-  document.getElementById('hI').textContent=`${h.nama} | ${h.kelas} | Conf: ${h.avgConf}% | ${h.waktu}`;
-  const gr=document.getElementById('hgr'); gr.innerHTML='';
+  ge.textContent=h.grade||'—';
+  ge.className='sg'+(h.grade?' g'+h.grade:'');
+  document.getElementById('hD').textContent=
+    `Benar: ${h.benar}  Salah: ${h.salah}  Kosong: ${h.kosong}  /40`;
+  document.getElementById('hI').textContent=
+    `${h.nama} · ${h.kelas} · Conf: ${h.avgConf}% · ${h.waktu}`;
+  const gr=document.getElementById('hgr');gr.innerHTML='';
   h.hasil.forEach(s=>{
-    const cls=s.correct===true?'ok':s.correct===false?'ng':(!s.jaw||s.jaw==='?')?'ko':'';
-    const c=document.createElement('div'); c.className='hc '+cls;
+    const c=document.createElement('div');
+    c.className='hc '+(s.correct===true?'ok':s.correct===false?'ng':
+      (!s.jaw||s.jaw==='?')?'ko':'');
     c.innerHTML=`<div class="hn">${s.nomor}</div><div class="ha">${s.jaw||'—'}</div>`;
     c.title=`Q${s.nomor}: Jawab=${s.jaw||'-'} Kunci=${s.kunci||'-'} Conf=${s.conf}%`;
     gr.appendChild(c);
   });
-  const ib=document.getElementById('ibr'); ib.innerHTML='';
+  const ib=document.getElementById('ibr');ib.innerHTML='';
   h.hasil.forEach(s=>{
-    const sg=document.createElement('div'); sg.className='iseg';
-    sg.style.background=s.correct===true?'#3fb950':s.correct===false?'#f85149':(!s.jaw||s.jaw==='?')?'#d29922':'#484f58';
+    const sg=document.createElement('div');sg.className='iseg';
+    sg.style.background=s.correct===true?'#3fb950':
+      s.correct===false?'#f85149':
+      (!s.jaw||s.jaw==='?')?'#d29922':'#484f58';
     ib.appendChild(sg);
   });
+  const amb=h.hasil.filter(r=>r.jaw==='?').length;
+  const kos=h.hasil.filter(r=>!r.jaw).length;
   document.getElementById('hI2').textContent=
-    `🟢${h.benar}  🔴${h.salah}  🟡${h.kosong-h.hasil.filter(r=>r.jaw==='?').length}  ❓${h.hasil.filter(r=>r.jaw==='?').length}`;
+    `🟢${h.benar}  🔴${h.salah}  🟡${kos}  ❓${amb}`;
 }
 
-// ─── EXPORT HASIL ──────────────────────────────────────────────
+// ════════════════════════════════════════════════════
+// EXPORT
+// ════════════════════════════════════════════════════
+function dlT(txt,fname){
+  const a=document.createElement('a');
+  a.href='data:text/plain;charset=utf-8,'+encodeURIComponent(txt);
+  a.download=fname;document.body.appendChild(a);a.click();document.body.removeChild(a);
+}
+function pop(html){
+  const w=window.open('','_blank');
+  if(w){w.document.write(html);w.document.close();}
+  else toast('⚠️ Aktifkan popup browser');
+}
 function hSv(){
   if(!last){toast('Tidak ada hasil!');return;}
   rekap.push({...last});
   try{localStorage.setItem('bb_r',JSON.stringify(rekap));}catch{}
-  rnRk(); upSt(); toast('✅ Disimpan!'); T(3);
+  rnRk();upSt();toast('✅ Disimpan ke rekap!');T(3);
 }
 function hTX(){
   if(!last){toast('Tidak ada hasil!');return;}
   const h=last,N='\n';
-  let t='HASIL LJK — BB SCANNER v10'+N+'='.repeat(40)+N;
-  t+=`Nama: ${h.nama} | Kelas: ${h.kelas} | ${h.waktu}${N}`;
-  t+=`Nilai: ${h.nilai!==null?h.nilai:'—'} | Grade: ${h.grade||'—'} | Benar: ${h.benar}/40${N+N}`;
-  t+='No  Jawab  Kunci  Status    Conf'+N+'-'.repeat(35)+N;
+  let t='HASIL LJK — BB SCANNER v11\n'+'='.repeat(38)+N;
+  t+=`Nama : ${h.nama}\nKelas: ${h.kelas} | Absen: ${h.absen}\n`;
+  t+=`Waktu: ${h.waktu}\n`;
+  t+=`Nilai: ${h.nilai!==null?h.nilai:'—'} | Grade: ${h.grade||'—'} | Benar: ${h.benar}/40\n\n`;
+  t+='No  Jawab  Kunci  Status    Conf\n'+'-'.repeat(34)+N;
   h.hasil.forEach(s=>{
-    const st=s.correct===true?'BENAR':s.correct===false?'SALAH':!s.jaw?'KOSONG':'AMBIGUS';
-    t+=`${String(s.nomor).padStart(2)}  ${(s.jaw||'-').padEnd(6)} ${(s.kunci||'-').padEnd(6)} ${st.padEnd(9)} ${s.conf}%${N}`;
+    const st=s.correct===true?'BENAR':s.correct===false?'SALAH':
+      !s.jaw?'KOSONG':'AMBIGUS';
+    t+=`${String(s.nomor).padStart(2)}  ${(s.jaw||'-').padEnd(6)} `+
+      `${(s.kunci||'-').padEnd(6)} ${st.padEnd(9)} ${s.conf}%\n`;
   });
   dlT(t,`hasil_${h.nama.replace(/\s+/g,'_')}.txt`);
 }
 function hPD(){
   if(!last){toast('Tidak ada hasil!');return;}
-  const h=last; let rows='';
+  const h=last;
+  let rows='';
   h.hasil.forEach(s=>{
-    const col=s.correct===true?'#1a7f37':s.correct===false?'#cf222e':!s.jaw?'#9a6700':'#888';
+    const col=s.correct===true?'#1a7f37':s.correct===false?'#cf222e':
+      !s.jaw?'#9a6700':'#888';
     const st=s.correct===true?'✓':s.correct===false?'✗':!s.jaw?'—':'?';
-    rows+=`<tr><td>${s.nomor}</td><td style="font-weight:700">${s.jaw||'—'}</td><td>${s.kunci||'—'}</td><td style="color:${col};font-weight:700">${st}</td><td>${s.conf}%</td></tr>`;
+    rows+=`<tr><td>${s.nomor}</td><td><b>${s.jaw||'—'}</b></td>`+
+      `<td>${s.kunci||'—'}</td>`+
+      `<td style="color:${col};font-weight:700">${st}</td>`+
+      `<td>${s.conf}%</td></tr>`;
   });
-  pop(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Hasil</title><style>body{font-family:Arial;padding:16px;font-size:11px}table{border-collapse:collapse;width:100%}th,td{border:1px solid #ccc;padding:3px 6px;text-align:center}th{background:#0d1117;color:#fff}.nb{font-size:40px;font-weight:900}</style></head><body onload="window.print()"><h2>HASIL LJK — BB SCANNER v10</h2><p>Nama: <b>${h.nama}</b> | Kelas: <b>${h.kelas}</b> | ${h.waktu}</p><p><span class="nb">${h.nilai!==null?h.nilai:'—'}</span> <b>${h.grade||''}</b> | Benar: <b>${h.benar}/40</b> | Conf: ${h.avgConf}%</p><table><thead><tr><th>No</th><th>Jawab</th><th>Kunci</th><th>Status</th><th>Conf</th></tr></thead><tbody>${rows}</tbody></table>
-<!-- Modal Validasi LJK -->
-<div class="vmod" id="vmod">
-  <div class="vbox">
-    <div class="vicon" id="vIcon">🔍</div>
-    <div class="vtit" id="vTit">Memeriksa...</div>
-    <div class="vcklist" id="vCks"></div>
-    <div class="vscore" id="vScore"></div>
-    <div class="vhint"  id="vHint"></div>
-    <div class="g2" style="margin-top:10px">
-      <button class="btn btn-gh" onclick="closeVM(false)">✕ Batal</button>
-      <button class="btn btn-cy" id="vOk" style="display:none" onclick="closeVM(true)">✅ Lanjut</button>
-    </div>
-  </div>
-</div>
-</body></html>`);
+  pop(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Hasil</title>
+<style>body{font-family:Arial;padding:16px;font-size:11px}
+table{border-collapse:collapse;width:100%}
+th,td{border:1px solid #ccc;padding:3px 6px;text-align:center}
+th{background:#0d1117;color:#fff}.nb{font-size:40px;font-weight:900}</style>
+</head><body onload="window.print()">
+<h2>HASIL LJK — BB SCANNER v11</h2>
+<p>Nama: <b>${h.nama}</b> | Kelas: <b>${h.kelas}</b> | Absen: ${h.absen}</p>
+<p>${h.waktu}</p>
+<p><span class="nb">${h.nilai!==null?h.nilai:'—'}</span>
+<b>${h.grade||''}</b> | Benar: <b>${h.benar}/40</b> | Conf: ${h.avgConf}%</p>
+<table><thead><tr><th>No</th><th>Jawab</th><th>Kunci</th>
+<th>Status</th><th>Conf</th></tr></thead>
+<tbody>${rows}</tbody></table></body></html>`);
 }
 
-// ─── REKAP ─────────────────────────────────────────────────────
+// ════════════════════════════════════════════════════
+// REKAP
+// ════════════════════════════════════════════════════
 function rnRk(){
-  const tb=document.getElementById('rB'); tb.innerHTML='';
+  const tb=document.getElementById('rB');tb.innerHTML='';
   if(!rekap.length){
-    tb.innerHTML='<tr><td colspan="6" style="color:var(--tx3);padding:12px;text-align:center">Belum ada data</td></tr>';
-    return;
+    tb.innerHTML='<tr><td colspan="6" style="color:var(--tx3);padding:12px;'+
+      'text-align:center">Belum ada data</td></tr>';return;
   }
   rekap.forEach((r,i)=>{
     const tr=document.createElement('tr');
     const gc=r.grade?`<span class="gch cg${r.grade}">${r.grade}</span>`:'—';
-    tr.innerHTML=`<td>${i+1}</td><td class="tnm">${r.nama}</td><td>${r.kelas||'—'}</td><td>${r.benar}/40</td><td style="font-weight:700;color:var(--cy)">${r.nilai!==null?r.nilai:'—'}</td><td>${gc}</td>`;
+    tr.innerHTML=`<td>${i+1}</td><td class="tnm">${r.nama}</td>`+
+      `<td>${r.kelas||'—'}</td><td>${r.benar}/40</td>`+
+      `<td style="font-weight:700;color:var(--cy)">`+
+      `${r.nilai!==null?r.nilai:'—'}</td><td>${gc}</td>`;
     tb.appendChild(tr);
   });
 }
@@ -1097,54 +1003,77 @@ function upSt(){
   if(!vs.length){
     document.getElementById('rR').textContent='—';
     document.getElementById('rL').textContent='0%';
-    document.getElementById('bch').innerHTML='';
-    return;
+    document.getElementById('bch').innerHTML='';return;
   }
-  document.getElementById('rR').textContent=Math.round(vs.reduce((a,b)=>a+b)/vs.length);
-  document.getElementById('rL').textContent=Math.round(rekap.filter(r=>r.nilai>=75).length/rekap.length*100)+'%';
-  const bc=document.getElementById('bch'); bc.innerHTML='';
+  document.getElementById('rR').textContent=
+    Math.round(vs.reduce((a,b)=>a+b)/vs.length);
+  document.getElementById('rL').textContent=
+    Math.round(rekap.filter(r=>r.nilai>=75).length/rekap.length*100)+'%';
+  const bc=document.getElementById('bch');bc.innerHTML='';
   const gc={A:0,B:0,C:0,D:0,E:0};
   rekap.forEach(r=>{if(r.grade)gc[r.grade]++;});
   const mx=Math.max(...Object.values(gc),1);
   const cl={A:'#3fb950',B:'#58a6ff',C:'#d29922',D:'#ffa657',E:'#f85149'};
   Object.entries(gc).forEach(([g,n])=>{
     const h=Math.round(n/mx*44)+3;
-    const c=document.createElement('div'); c.className='bcol';
-    c.innerHTML=`<div class="bnum" style="color:${cl[g]}">${n}</div><div class="bbg" style="height:${h}px;background:${cl[g]}"></div><div class="blbl" style="color:${cl[g]}">${g}</div>`;
+    const c=document.createElement('div');c.className='bcol';
+    c.innerHTML=`<div class="bnum" style="color:${cl[g]}">${n}</div>`+
+      `<div class="bbg" style="height:${h}px;background:${cl[g]}"></div>`+
+      `<div class="blbl" style="color:${cl[g]}">${g}</div>`;
     bc.appendChild(c);
   });
 }
 function rTX(){
   if(!rekap.length){toast('Rekap kosong!');return;}
-  const N='\n';
-  let t='REKAP — BB LJK SCANNER v10'+N+'='.repeat(38)+N;
-  rekap.forEach((r,i)=>t+=`${String(i+1).padStart(2)}  ${r.nama.padEnd(20)} ${(r.kelas||'').padEnd(8)} ${String(r.benar).padEnd(4)} ${String(r.nilai!==null?r.nilai:'—').padEnd(4)} ${r.grade||'—'}${N}`);
+  let t='REKAP — BB LJK SCANNER v11\n'+'='.repeat(36)+'\n';
+  rekap.forEach((r,i)=>
+    t+=`${String(i+1).padStart(2)}  ${r.nama.padEnd(20)} `+
+      `${(r.kelas||'').padEnd(8)} ${String(r.benar).padEnd(4)} `+
+      `${String(r.nilai!==null?r.nilai:'—').padEnd(4)} ${r.grade||'—'}\n`);
   dlT(t,`rekap_${Date.now()}.txt`);
 }
 function rPD(){
   if(!rekap.length){toast('Rekap kosong!');return;}
   let rows='';
-  rekap.forEach((r,i)=>rows+=`<tr><td>${i+1}</td><td>${r.nama}</td><td>${r.kelas||'—'}</td><td>${r.absen||'—'}</td><td>${r.benar}/40</td><td>${r.nilai!==null?r.nilai:'—'}</td><td>${r.grade||'—'}</td></tr>`);
+  rekap.forEach((r,i)=>
+    rows+=`<tr><td>${i+1}</td><td>${r.nama}</td><td>${r.kelas||'—'}</td>`+
+      `<td>${r.absen||'—'}</td><td>${r.benar}/40</td>`+
+      `<td>${r.nilai!==null?r.nilai:'—'}</td><td>${r.grade||'—'}</td></tr>`);
   const vs=rekap.filter(r=>r.nilai!==null).map(r=>r.nilai);
   const rata=vs.length?Math.round(vs.reduce((a,b)=>a+b)/vs.length):'—';
-  pop(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Rekap</title><style>body{font-family:Arial;padding:16px;font-size:11px}table{border-collapse:collapse;width:100%}th,td{border:1px solid #ccc;padding:4px 6px}th{background:#0d1117;color:#fff}</style></head><body onload="window.print()"><h2>REKAP — BB LJK SCANNER v10</h2><p>${new Date().toLocaleString('id-ID')}</p><table><thead><tr><th>#</th><th>Nama</th><th>Kelas</th><th>Absen</th><th>Benar</th><th>Nilai</th><th>Grade</th></tr></thead><tbody>${rows}</tbody></table><p>Total: ${rekap.length} | Rata-rata: ${rata}</p></body></html>`);
+  pop(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Rekap</title>
+<style>body{font-family:Arial;padding:16px;font-size:11px}
+table{border-collapse:collapse;width:100%}
+th,td{border:1px solid #ccc;padding:4px 6px}
+th{background:#0d1117;color:#fff}</style>
+</head><body onload="window.print()">
+<h2>REKAP — BB LJK SCANNER v11</h2>
+<p>${new Date().toLocaleString('id-ID')}</p>
+<table><thead><tr><th>#</th><th>Nama</th><th>Kelas</th>
+<th>Absen</th><th>Benar</th><th>Nilai</th><th>Grade</th></tr></thead>
+<tbody>${rows}</tbody></table>
+<p>Total: ${rekap.length} | Rata-rata: ${rata}</p>
+</body></html>`);
 }
 function rDl(){
-  if(!confirm('Hapus semua rekap?'))return;
+  if(!confirm('Hapus semua data rekap?'))return;
   rekap=[];
   try{localStorage.setItem('bb_r','[]');}catch{}
-  rnRk(); upSt(); toast('🗑 Dihapus');
+  rnRk();upSt();toast('🗑 Rekap dihapus');
 }
 
-// ─── KUNCI JAWABAN ─────────────────────────────────────────────
+// ════════════════════════════════════════════════════
+// KUNCI JAWABAN
+// ════════════════════════════════════════════════════
 function bldK(){
-  const wrap=document.getElementById('kw'); wrap.innerHTML='';
+  const wrap=document.getElementById('kw');wrap.innerHTML='';
   for(let i=0;i<40;i++){
-    const cell=document.createElement('div'); cell.className='kc';
-    const num=document.createElement('div'); num.className='kn'; num.textContent=i+1;
-    const sel=document.createElement('select'); sel.className='ks'; sel.id='ks'+i;
+    const cell=document.createElement('div');cell.className='kc';
+    const num=document.createElement('div');num.className='kn';num.textContent=i+1;
+    const sel=document.createElement('select');sel.className='ks';sel.id='ks'+i;
     ['','A','B','C','D','E'].forEach(v=>{
-      const o=document.createElement('option'); o.value=v; o.textContent=v||'—'; sel.appendChild(o);
+      const o=document.createElement('option');o.value=v;
+      o.textContent=v||'—';sel.appendChild(o);
     });
     sel.value=kunci[i]||'';
     if(kunci[i])sel.classList.add('isi');
@@ -1154,27 +1083,35 @@ function bldK(){
       upKC();
       try{localStorage.setItem('bb_k',JSON.stringify(kunci));}catch{}
     });
-    cell.appendChild(num); cell.appendChild(sel); wrap.appendChild(cell);
+    cell.appendChild(num);cell.appendChild(sel);wrap.appendChild(cell);
   }
   upKC();
 }
-function upKC(){document.getElementById('kCt').textContent=kunci.filter(k=>!!k).length;}
+function upKC(){
+  document.getElementById('kCt').textContent=kunci.filter(k=>!!k).length;
+}
 function kSv(){
-  for(let i=0;i<40;i++){const el=document.getElementById('ks'+i);if(el)kunci[i]=el.value;}
+  for(let i=0;i<40;i++){
+    const el=document.getElementById('ks'+i);
+    if(el)kunci[i]=el.value;
+  }
   try{localStorage.setItem('bb_k',JSON.stringify(kunci));}catch{}
-  upKC(); toast('✅ Tersimpan!');
+  upKC();toast('✅ Kunci tersimpan!');
 }
 function kCl(){
   kunci=new Array(40).fill('');
-  for(let i=0;i<40;i++){const el=document.getElementById('ks'+i);if(el){el.value='';el.classList.remove('isi');}}
+  for(let i=0;i<40;i++){
+    const el=document.getElementById('ks'+i);
+    if(el){el.value='';el.classList.remove('isi');}
+  }
   try{localStorage.setItem('bb_k',JSON.stringify(kunci));}catch{}
-  upKC(); toast('🗑 Dikosongkan');
+  upKC();toast('🗑 Kunci dikosongkan');
 }
 function kIm(){
   const raw=prompt('Paste jawaban A–E (40 soal):');
   if(!raw)return;
   const pts=raw.toUpperCase().match(/[A-E]/g)||[];
-  if(!pts.length){alert('Tidak ada A–E');return;}
+  if(!pts.length){alert('Tidak ada A–E yang ditemukan');return;}
   kunci=new Array(40).fill('');
   pts.slice(0,40).forEach((v,i)=>kunci[i]=v);
   for(let i=0;i<40;i++){
@@ -1182,20 +1119,8 @@ function kIm(){
     if(el){el.value=kunci[i];el.classList.toggle('isi',!!kunci[i]);}
   }
   try{localStorage.setItem('bb_k',JSON.stringify(kunci));}catch{}
-  upKC(); toast('✅ '+Math.min(pts.length,40)+' diimport');
+  upKC();toast('✅ '+Math.min(pts.length,40)+' jawaban diimport');
 }
-
-// ─── UTILS ─────────────────────────────────────────────────────
-function dlT(txt,fname){
-  const a=document.createElement('a');
-  a.href='data:text/plain;charset=utf-8,'+encodeURIComponent(txt);
-  a.download=fname; document.body.appendChild(a); a.click(); document.body.removeChild(a);
-}
-function pop(html){
-  const w=window.open('','_blank');
-  if(w){w.document.write(html);w.document.close();}else toast('⚠️ Aktifkan popup');
-}
-
 </script>
 </body>
 </html>
