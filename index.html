@@ -754,8 +754,21 @@ async function ldImg(src){
 }
 
 // ─── PIPELINE ──────────────────────────────────────────────────
-async function pipe(){
-  sb('wrk','🔍 Memproses foto...'); await sl(15);
+async async function pipe(){
+  // Tampilkan gambar grayscale langsung
+  shBW(iD,iW,iH);
+  syncAdj();
+  // Aktifkan tombol SEKARANG — tidak ada yang menghalangi
+  document.getElementById('bAdj').disabled=false;
+  document.getElementById('bS').disabled=false;
+  sb('ok','✅ Foto siap · '+iW+'×'+iH);
+  toast('✅ Siap — Adjust jika perlu, lalu Scan');
+  // Deteksi bounding box di background (tidak memblokir)
+  setTimeout(()=>detectBB(),50);
+}
+
+function detectBB(){
+  if(!iD)return;
   const d=iD.data;
   const STEP=Math.max(1,Math.floor(Math.min(iW,iH)/80));
   const gray=new Uint8Array(iW*iH);
@@ -770,20 +783,6 @@ async function pipe(){
   by1=scnE(gray,iW,iH,'B',MRG,thr,STEP);
   hasBB=(bx0>=0&&bx1>bx0+iW*.3&&by0>=0&&by1>by0+iH*.3);
   if(!hasBB){bx0=0;bx1=iW;by0=0;by1=iH;}
-  if(!vld(d,iW,iH))return;
-
-  // Tampilkan grayscale
-  shBW(iD,iW,iH);
-  syncAdj();
-
-  // Validasi format — hanya tampilkan badge, TIDAK memblokir scan
-  const vr=validateLJK(iD,iW,iH);
-  showBadge(vr);
-
-  sb('ok','✅ Foto siap · '+iW+'×'+iH+(hasBB?' · Kertas terdeteksi':''));
-  toast('✅ Siap scan'+(vr.score<3?' · ⚠️ Cek format LJK':''));
-  document.getElementById('bAdj').disabled=false;
-  document.getElementById('bS').disabled=false;
 }
 
 function scnE(gray,W,H,dir,MRG,thr,STEP){
