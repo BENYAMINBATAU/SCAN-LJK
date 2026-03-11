@@ -815,38 +815,60 @@ function closeM(){document.getElementById('mod').classList.remove('show');}
 // ─── VALIDASI FORMAT LJK (5 check) ────────────────────────────
 function gpx(d,i){return .299*d[i*4]+.587*d[i*4+1]+.114*d[i*4+2];}
 function validateLJK(imgData,W,H){
-  const d=imgData.data; let score=0; const checks=[];
-  const S=Math.max(1,Math.floor(Math.min(W,H)/120));
-  function zm(x0,y0,x1,y1){let s=0,n=0;for(let y=y0;y<y1;y+=S)for(let x=x0;x<x1;x+=S){s+=gpx(d,y*W+x);n++;}return n?s/n:128;}
-  function zs(x0,y0,x1,y1){const m=zm(x0,y0,x1,y1);let s=0,n=0;for(let y=y0;y<y1;y+=S)for(let x=x0;x<x1;x+=S){const v=gpx(d,y*W+x)-m;s+=v*v;n++;}return n?Math.sqrt(s/n):0;}
-  function zn(x0,y0,x1,y1){let mn=255;for(let y=y0;y<y1;y+=S)for(let x=x0;x<x1;x+=S){const v=gpx(d,y*W+x);if(v<mn)mn=v;}return mn;}
-  const TX0=Math.floor(W*.04),TX1=Math.floor(W*.96);
+  // ── Buat grayscale 1x dengan step besar → cepat ──
+  const d=imgData.data;
+  const S=Math.max(4,Math.floor(Math.min(W,H)/40)); // step besar: ~40 titik per dimensi
+  const G=[];
+  for(let y=0;y<H;y+=S)for(let x=0;x<W;x+=S){
+    const i=(y*W+x)*4;
+    G.push((.299*d[i]+.587*d[i+1]+.114*d[i+2])|0);
+  }
+  const gW=Math.ceil(W/S), gH=Math.ceil(H/S);
+  // Helper: rata-rata dan min dari G dalam zona (koordinat G)
+  function gm(gx0,gy0,gx1,gy1){
+    let s=0,n=0;
+    for(let gy=gy0;gy<gy1;gy++)for(let gx=gx0;gx<gx1;gx++){
+      s+=G[gy*gW+gx]||0;n++;
+    }
+    return n?s/n:128;
+  }
+  function gs(gx0,gy0,gx1,gy1){
+    const m=gm(gx0,gy0,gx1,gy1);let s=0,n=0;
+    for(let gy=gy0;gy<gy1;gy++)for(let gx=gx0;gx<gx1;gx++){
+      const v=(G[gy*gW+gx]||0)-m;s+=v*v;n++;
+    }
+    return n?Math.sqrt(s/n):0;
+  }
+  function gn(gx0,gy0,gx1,gy1){
+    let mn=255;
+    for(let gy=gy0;gy<gy1;gy++)for(let gx=gx0;gx<gx1;gx++){
+      const v=G[gy*gW+gx]||0;if(v<mn)mn=v;
+    }
+    return mn;
+  }
+  // Konversi koordinat % → koordinat G
+  function gx(pct){return Math.floor(pct*gW)|0;}
+  function gy(pct){return Math.floor(pct*gH)|0;}
+
+  let score=0; const checks=[];
   // C1: rasio portrait
   const r=W/H,c1=r>=0.55&&r<=0.90;if(c1)score++;
   checks.push({ok:c1,label:'Orientasi portrait ('+r.toFixed(2)+')'});
-  // C2: grid tabel lebih bervariasi dari header
-  const sHdr=zs(TX0,0,TX1,Math.floor(H*.17));
-  const sTbl=zs(TX0,Math.floor(H*.20),TX1,Math.floor(H*.95));
-  const c2=sTbl>sHdr*1.1;if(c2)score++;
+  // C2: tabel lebih bervariasi dari header
+  const sHdr=gs(gx(.04),gy(0),   gx(.96),gy(.17));
+  const sTbl=gs(gx(.04),gy(.20), gx(.96),gy(.95));
+  const c2=sTbl>sHdr*1.05;if(c2)score++;
   checks.push({ok:c2,label:'Pola grid tabel terdeteksi'});
-  // C3: garis header tabel (Y≈18-20%)
-  const mn3=zn(TX0,Math.floor(H*.180),TX1,Math.floor(H*.200));
-  const sd3=zs(TX0,Math.floor(H*.180),TX1,Math.floor(H*.200));
-  const c3=mn3<130||sd3>12;if(c3)score++;
+  // C3: garis pembatas header tabel (Y≈18-20%)
+  const mn3=gn(gx(.04),gy(.17),gx(.96),gy(.21));
+  const c3=mn3<140;if(c3)score++;
   checks.push({ok:c3,label:'Garis pembatas header tabel'});
-  // C4: border pemisah blok (X≈46-57%)
-  const dm=zn(Math.floor(W*.44),Math.floor(H*.22),Math.floor(W*.57),Math.floor(H*.95));
-  const c4=dm<160;if(c4)score++;
+  // C4: pemisah blok kiri-kanan (X≈44-58%)
+  const dm=gn(gx(.44),gy(.20),gx(.58),gy(.95));
+  const c4=dm<170;if(c4)score++;
   checks.push({ok:c4,label:'Pemisah blok kiri–kanan'});
-  // C5: banyak garis vertikal di tabel
-  let csum=0,cn=0;
-  for(let x=Math.floor(W*.05);x<Math.floor(W*.95);x+=S*2){
-    csum+=zs(x,Math.floor(H*.22),x+S*2,Math.floor(H*.95));cn++;
-  }
-  const c5=(cn?csum/cn:0)>14;if(c5)score++;
-  checks.push({ok:c5,label:'Kolom A–E terdeteksi'});
   // Keputusan
-  let valid=score>=3,level=score>=4?'ok':score===3?'warn':'err';
+  let valid=score>=3,level=score===4?'ok':score===3?'warn':'err';
   const msgs={ok:'✅ Format LJK Valid!',warn:'⚠️ LJK Dikenali (kualitas rendah)',err:'❌ Bukan LJK yang Dikenali'};
   return{valid,score,level,mainMsg:msgs[level],checks};
 }
@@ -860,7 +882,7 @@ function showVM(res,cb){
   tEl.textContent=res.mainMsg; tEl.className='vtit '+res.level;
   document.getElementById('vCks').innerHTML=res.checks.map(c=>
     `<div class="vck"><span>${c.ok?'✅':'❌'}</span><span>${c.label}</span></div>`).join('');
-  document.getElementById('vScore').textContent='Skor: '+res.score+'/5';
+  document.getElementById('vScore').textContent='Skor: '+res.score+'/4';
   document.getElementById('vHint').textContent=res.valid
     ?(res.score<5?'💡 Foto kurang ideal. Adjust posisi bubble jika scan tidak akurat.':'✨ Kualitas foto bagus!')
     :'💡 Upload foto LJK SMKN 1 Sumarorong yang sesuai format.';
