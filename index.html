@@ -251,7 +251,7 @@ body{background:var(--bg);color:var(--tx1);font-family:system-ui,sans-serif;
   <div id="cvWrap">
     <div id="adjBar">
       <b>✋ Mode Adjust Aktif</b><br>
-      1 jari = geser &nbsp;·&nbsp; 2 jari = zoom &amp; putar
+      🟢 Patron TETAP sebagai patokan<br>Geser/zoom/putar FOTO hingga bubble pas di lingkaran hijau
     </div>
     <div class="cvCont" id="cvCont">
       <canvas id="cvMain"></canvas>
@@ -699,7 +699,7 @@ function renderAdj(){
   cvAdj.width=W; cvAdj.height=H;
   cvRoi.width=W; cvRoi.height=H;
 
-  // Gambar foto dengan transform
+  // ── FOTO: bergerak mengikuti TR ──
   const ctx=cvAdj.getContext('2d');
   ctx.clearRect(0,0,W,H);
   ctx.save();
@@ -713,27 +713,28 @@ function renderAdj(){
   ctx.drawImage(tmp,-imgW/2,-imgH/2);
   ctx.restore();
 
-  // Gambar lingkaran bubble hijau
+  // ── PATRON (grid bubble): SELALU TETAP, tidak ikut transform ──
+  // Patron mengisi canvas penuh W×H sebagai patokan posisi
   const rctx=cvRoi.getContext('2d');
   rctx.clearRect(0,0,W,H);
-  rctx.save();
-  rctx.translate(W/2+TR.tx, H/2+TR.ty);
-  rctx.rotate(TR.rot*Math.PI/180);
-  rctx.scale(TR.sc,TR.sc);
-  const r=BR*imgW;
-  rctx.strokeStyle='rgba(0,255,153,.8)';
-  rctx.lineWidth=1.5/TR.sc;
+  // Radius bubble: proporsional terhadap lebar canvas (patron selalu fullscreen)
+  const bubR=BR*W;
+  rctx.strokeStyle='rgba(0,255,153,.9)';
+  rctx.lineWidth=1.8;
   for(let n=1;n<=40;n++){
     const isL=n<=20,row=(n-1)%20;
     for(const op of 'ABCDE'){
-      const rx=(isL?CLX[op]:CRX[op])*imgW - imgW/2;
-      const ry=RY[row]*imgH - imgH/2;
+      const px=(isL?CLX[op]:CRX[op])*W;
+      const py=RY[row]*H;
       rctx.beginPath();
-      rctx.arc(rx,ry,r,0,Math.PI*2);
+      rctx.arc(px,py,bubR,0,Math.PI*2);
       rctx.stroke();
     }
   }
-  rctx.restore();
+  // Label pojok kiri atas
+  rctx.fillStyle='rgba(0,255,153,.7)';
+  rctx.font='bold 10px system-ui';
+  rctx.fillText('PATRON',4,12);
   updInfo();
 }
 
