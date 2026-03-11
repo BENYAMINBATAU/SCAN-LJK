@@ -98,7 +98,7 @@ body{background:var(--bg);color:var(--tx1);font-family:system-ui,sans-serif;
 #cvWrap{display:none;margin:8px 0}
 .cvCont{position:relative;border-radius:10px;overflow:hidden;background:#111;
   touch-action:none;user-select:none;-webkit-user-select:none}
-#cvMain{width:100%;display:block}
+#cvMain{width:100%;height:auto;display:block}
 #cvAdj{position:absolute;top:0;left:0;width:100%;height:100%;display:none}
 #cvRoi{position:absolute;top:0;left:0;width:100%;height:100%;
   pointer-events:none;display:none}
@@ -691,72 +691,96 @@ function togAdj(){
 
 function renderAdj(){
   if(!imgData)return;
-  const cont=document.getElementById('cvCont');
-  const W=cont.clientWidth;
-  const H=cont.clientHeight||Math.round(W*imgH/imgW);
+  const cvMain=document.getElementById('cvMain');
+  // Ukuran display cvMain (setelah CSS width:100%, height:auto)
+  const W=cvMain.clientWidth;
+  const H=cvMain.clientHeight;
+  if(!W||!H)return;
+
   const cvAdj=document.getElementById('cvAdj');
   const cvRoi=document.getElementById('cvRoi');
   cvAdj.width=W; cvAdj.height=H;
   cvRoi.width=W; cvRoi.height=H;
 
-  // ── FOTO: bergerak mengikuti TR ──
+  // ── FOTO: fit ke canvas W×H, lalu transform di atasnya ──
+  // Scale dasar agar foto pas di canvas (fit contain)
+  const fitSc=Math.min(W/imgW, H/imgH);
+  const dispW=imgW*fitSc, dispH=imgH*fitSc;
+
   const ctx=cvAdj.getContext('2d');
   ctx.clearRect(0,0,W,H);
   ctx.save();
+  // Pivot = tengah canvas + offset drag
   ctx.translate(W/2+TR.tx, H/2+TR.ty);
   ctx.rotate(TR.rot*Math.PI/180);
-  ctx.scale(TR.sc,TR.sc);
+  ctx.scale(TR.sc, TR.sc);
   const tmp=document.createElement('canvas');
   tmp.width=imgW; tmp.height=imgH;
   tmp.getContext('2d').putImageData(imgData,0,0);
   ctx.filter='grayscale(100%)';
-  ctx.drawImage(tmp,-imgW/2,-imgH/2);
+  // Gambar foto pada ukuran fit, pivot di tengah
+  ctx.drawImage(tmp,-dispW/2,-dispH/2,dispW,dispH);
   ctx.restore();
 
-  // ── PATRON (grid bubble): SELALU TETAP, tidak ikut transform ──
-  // Patron mengisi canvas penuh W×H sebagai patokan posisi
+  // ── PATRON: tetap di posisi fit-foto default (tidak bergerak) ──
+  // Koordinat patron = posisi foto SEBELUM di-drag
+  // yaitu foto fit di tengah canvas: offset=(W-dispW)/2, (H-dispH)/2
+  const ox=(W-dispW)/2, oy=(H-dispH)/2;
+  const bubR=BR*dispW;   // radius proporsional terhadap lebar foto yang di-fit
+
   const rctx=cvRoi.getContext('2d');
   rctx.clearRect(0,0,W,H);
-  // Radius bubble: proporsional terhadap lebar canvas (patron selalu fullscreen)
-  const bubR=BR*W;
   rctx.strokeStyle='rgba(0,255,153,.9)';
   rctx.lineWidth=1.8;
   for(let n=1;n<=40;n++){
     const isL=n<=20,row=(n-1)%20;
     for(const op of 'ABCDE'){
-      const px=(isL?CLX[op]:CRX[op])*W;
-      const py=RY[row]*H;
+      const px=ox+(isL?CLX[op]:CRX[op])*dispW;
+      const py=oy+RY[row]*dispH;
       rctx.beginPath();
       rctx.arc(px,py,bubR,0,Math.PI*2);
       rctx.stroke();
     }
   }
-  // Label pojok kiri atas
-  rctx.fillStyle='rgba(0,255,153,.7)';
+  // Outline kotak patron
+  rctx.strokeStyle='rgba(0,255,153,.3)';
+  rctx.lineWidth=1;
+  rctx.strokeRect(ox,oy,dispW,dispH);
+  rctx.fillStyle='rgba(0,255,153,.65)';
   rctx.font='bold 10px system-ui';
-  rctx.fillText('PATRON',4,12);
+  rctx.fillText('● PATRON',ox+4,oy+13);
   updInfo();
 }
 
 function bakeAdj(){
   if(!imgData)return;
+  const cvMain=document.getElementById('cvMain');
+  const W=cvMain.clientWidth, H=cvMain.clientHeight;
+  // fitSc = scale default foto ke canvas (sama dengan renderAdj)
+  const fitSc=Math.min(W/imgW, H/imgH);
+  // Transform di canvas pakai fitSc*TR.sc pada gambar asli
+  // kita perlu mapping: posisi pixel di foto asli → posisi di canvas setelah transform
+  // Inverse: canvas coord → img coord
+  // Untuk bake: render foto dengan transform ke canvas berukuran imgW×imgH
+  // Scale efektif dari img → img (bukan img → display):
+  // tx_img = TR.tx / fitSc,  ty_img = TR.ty / fitSc,  sc_img = TR.sc
+
   const tmp=document.createElement('canvas');
   tmp.width=imgW; tmp.height=imgH;
   const ctx=tmp.getContext('2d');
   ctx.save();
-  ctx.translate(imgW/2+TR.tx, imgH/2+TR.ty);
+  ctx.translate(imgW/2 + TR.tx/fitSc, imgH/2 + TR.ty/fitSc);
   ctx.rotate(TR.rot*Math.PI/180);
-  ctx.scale(TR.sc,TR.sc);
-  const src=document.createElement('canvas');
-  src.width=imgW; src.height=imgH;
-  src.getContext('2d').putImageData(imgData,0,0);
-  ctx.drawImage(src,-imgW/2,-imgH/2);
+  ctx.scale(TR.sc, TR.sc);
+  const srcC=document.createElement('canvas');
+  srcC.width=imgW; srcC.height=imgH;
+  srcC.getContext('2d').putImageData(imgData,0,0);
+  ctx.drawImage(srcC,-imgW/2,-imgH/2);
   ctx.restore();
   imgData=tmp.getContext('2d').getImageData(0,0,imgW,imgH);
-  // Update cvMain dengan gambar yang sudah di-transform
-  const cv=document.getElementById('cvMain');
-  cv.getContext('2d').putImageData(imgData,0,0);
-  cv.style.filter='grayscale(100%)';
+  // Update cvMain
+  cvMain.getContext('2d').putImageData(imgData,0,0);
+  cvMain.style.filter='grayscale(100%)';
 }
 
 function adjReset(){TR={tx:0,ty:0,sc:1,rot:0};renderAdj();toast('↺ Reset');}
