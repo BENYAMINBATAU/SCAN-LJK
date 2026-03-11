@@ -254,14 +254,16 @@ body{background:var(--bg);color:var(--tx1);font-family:system-ui,sans-serif;
   <!-- Preview canvas -->
   <div id="cvWrap">
     <div id="adjBar" style="display:none;background:rgba(0,255,153,.08);
-      border:1px solid rgba(0,255,153,.3);border-radius:8px;padding:8px 10px;margin-bottom:6px">
-      <b style="color:#00ff99">✏️ Mode Gambar Kotak</b><br>
-      <div id="adjPhaseInfo" style="font-size:11px;margin:4px 0"></div>
-      <span style="font-size:10px;color:#8b949e">
-        Seret jari dari sudut ke sudut blok LJK · kotak otomatis lurus
+      border:1px solid rgba(0,255,153,.3);border-radius:8px;
+      padding:8px 10px;margin-bottom:6px;font-size:11px">
+      <b style="color:#00ff99">✏️ Gambar Kotak LJK</b><br>
+      <span style="color:#8b949e">
+        Seret dari sudut soal <b style="color:#3fb950">No.1</b> ke sudut soal
+        <b style="color:#58a6ff">No.40</b> · kotak otomatis lurus<br>
+        Lalu seret <b style="color:#ffcc00">↖↗↙↘</b> untuk fine-tune sudut
       </span>
     </div>
-    <div id="anchorPanel" style="display:none;flex-wrap:wrap;gap:5px;margin-bottom:6px"></div>
+    <div id="anchorPanel" style="display:none"></div>
     <div class="cvCont" id="cvCont">
       <canvas id="cvMain"></canvas>
       <canvas id="cvAdj"></canvas>
@@ -280,10 +282,8 @@ body{background:var(--bg);color:var(--tx1);font-family:system-ui,sans-serif;
     <button class="btn btn-cy" id="bScan" onclick="doScan()" disabled style="flex:2">⚡ Scan</button>
     <button class="btn btn-gh" onclick="doReset()" style="flex:1">🔄 Reset</button>
   </div>
-  <div id="adjRotRow" style="display:none;gap:5px;margin-top:4px;flex-wrap:wrap">
-    <button class="btn btn-gh" onclick="setPhase('L')" style="flex:1;font-size:11px">◀ Blok 1-20</button>
-    <button class="btn btn-gh" onclick="setPhase('R')" style="flex:1;font-size:11px">▶ Blok 21-40</button>
-    <button class="btn btn-rd" onclick="resetPatron()" style="flex:1;font-size:11px">🗑 Reset</button>
+  <div id="adjRotRow" style="display:none;gap:6px;margin-top:4px">
+    <button class="btn btn-rd" onclick="resetPatron()" style="flex:1;font-size:12px">🗑 Gambar Ulang</button>
   </div>
 </div>
 
@@ -654,9 +654,9 @@ function doReset(){
   // Hentikan kamera
   stopCam();
   // Reset adjust
-  adjMode=false; boxes={L:null,R:null}; drawPhase="L"; drawing=null;
+  adjMode=false; box=null; drawing=null; dragH=null; window._lastDraw=null;
   document.getElementById('adjBar').style.display='none';
-  document.getElementById('anchorPanel').style.display='none';
+  
   document.getElementById('adjInfo').style.display='none';
   document.getElementById('adjRotRow').style.display='none';
   document.getElementById('bAdj').textContent='✋ Adjust';
@@ -692,262 +692,279 @@ let boxes     = {L:null, R:null}; // {x,y,w,h} dalam koordinat display pixel
 let drawing   = null;         // {x0,y0} titik awal drag saat ini
 
 // ── Toggle adjust ─────────────────────────────────────────────
+// ════════════════════════════════════════════════════════
+// ONE-BOX PATRON ADJUST
+//
+// Satu kotak mencakup SEMUA 40 soal:
+//   Sudut TL = bubble soal 1  kolom A  (CLX.A, RY[0])
+//   Sudut TR = bubble soal 20 kolom E  (CRX.E, RY[0])  ← kanan atas
+//   Sudut BL = bubble soal 21 kolom A  (CLX.A, RY[19]) ← kiri bawah
+//   Sudut BR = bubble soal 40 kolom E  (CRX.E, RY[19])
+//
+// Alur:
+//   1. User seret untuk gambar kotak awal
+//   2. Kotak lurus otomatis + 4 handle sudut muncul
+//   3. User bisa drag tiap sudut untuk fine-tune
+//   4. Tekan Selesai → scan pakai koordinat kotak
+// ════════════════════════════════════════════════════════
+
+let adjMode  = false;
+let box      = null;    // {x,y,w,h} koordinat display pixel
+let drawing  = null;    // saat drag awal: {x0,y0}
+let dragH    = null;    // handle yang sedang di-drag: 'TL'/'TR'/'BL'/'BR'/null
+const HRAD   = 18;      // radius sentuh handle (px)
+
+// ── Toggle ────────────────────────────────────────────────────
 function togAdj(){
   adjMode = !adjMode;
   const bar   = document.getElementById('adjBar');
-  const panel = document.getElementById('anchorPanel');
+  const rrow  = document.getElementById('adjRotRow');
   const btn   = document.getElementById('bAdj');
   const cvRoi = document.getElementById('cvRoi');
-  const rrow  = document.getElementById('adjRotRow');
 
   if(adjMode){
-    bar.style.display   = 'block';
-    panel.style.display = 'flex';
-    rrow.style.display  = 'flex';
-    cvRoi.style.display = 'block';
-    btn.textContent     = '✅ Selesai Adjust';
-    btn.className       = 'btn btn-gn';
-    drawPhase = boxes.L ? 'R' : 'L';  // lanjut ke kotak yang belum
-    renderBoxes();
-    updatePhaseUI();
-    toast('✏️ Gambar kotak blok '+drawPhase+' — seret dari sudut ke sudut');
+    bar.style.display  = 'block';
+    rrow.style.display = 'flex';
+    cvRoi.style.display= 'block';
+    btn.textContent    = '✅ Selesai Adjust';
+    btn.className      = 'btn btn-gn';
+    renderBox();
+    if(box) toast('↔ Seret sudut biru untuk fine-tune kotak');
+    else    toast('✏️ Seret jari dari sudut kiri-atas ke kanan-bawah LJK');
   } else {
-    bar.style.display   = 'none';
-    panel.style.display = 'none';
-    rrow.style.display  = 'none';
-    cvRoi.style.display = 'none';
-    btn.textContent     = '✋ Adjust';
-    btn.className       = 'btn btn-gh';
-    drawing             = null;
-    toast('✅ Patron disesuaikan · siap scan');
+    bar.style.display  = 'none';
+    rrow.style.display = 'none';
+    cvRoi.style.display= 'none';
+    btn.textContent    = '✋ Adjust';
+    btn.className      = 'btn btn-gh';
+    drawing = null; dragH = null;
+    renderBox(); // biarkan patron tetap kelihatan saat scan
+    toast('✅ Kotak disimpan · siap scan');
   }
 }
 
-// ── Phase UI ──────────────────────────────────────────────────
-function updatePhaseUI(){
-  const el = document.getElementById('adjPhaseInfo');
-  if(!el) return;
-  const doneL = boxes.L ? '✅' : '⬜';
-  const doneR = boxes.R ? '✅' : '⬜';
-  el.innerHTML =
-    `${doneL} <b onclick="setPhase('L')" style="cursor:pointer;color:${drawPhase==='L'?'#ffcc00':'#00ff99'}">Blok Kiri 1–20</b>` +
-    ` &nbsp;|&nbsp; ` +
-    `${doneR} <b onclick="setPhase('R')" style="cursor:pointer;color:${drawPhase==='R'?'#ffcc00':'#00ff99'}">Blok Kanan 21–40</b>`;
-}
-function setPhase(p){
-  drawPhase = p;
-  updatePhaseUI();
-  toast('✏️ Gambar kotak blok '+p+' — seret dari sudut ke sudut');
-}
-
-// ── Draw handlers ─────────────────────────────────────────────
+// ── Input handlers ────────────────────────────────────────────
 function initBoxDraw(){
   const cont = document.getElementById('cvCont');
   if(!cont) return;
 
-  function getPos(e){
+  function pos(e){
     const r = cont.getBoundingClientRect();
     const s = e.touches ? e.touches[0] : e;
     return { x: s.clientX - r.left, y: s.clientY - r.top };
   }
 
+  // Cek apakah p dekat handle h
+  function nearHandle(p, h){
+    const hx = h.includes('L') ? box.x : box.x+box.w;
+    const hy = h.includes('T') ? box.y : box.y+box.h;
+    return Math.hypot(p.x-hx, p.y-hy) < HRAD;
+  }
+
   function onStart(e){
     if(!adjMode) return;
     e.preventDefault();
-    const p = getPos(e);
+    const p = pos(e);
+    // Cek apakah kena handle
+    if(box){
+      for(const h of ['TL','TR','BL','BR']){
+        if(nearHandle(p, h)){ dragH = h; return; }
+      }
+    }
+    // Mulai gambar kotak baru
     drawing = { x0: p.x, y0: p.y };
+    dragH   = null;
   }
 
   function onMove(e){
-    if(!adjMode || !drawing) return;
+    if(!adjMode) return;
     e.preventDefault();
-    const p = getPos(e);
-    // Preview kotak sementara
-    const cont = document.getElementById('cvCont');
-    const W = cont.clientWidth, H = cont.clientHeight;
-    const cvRoi = document.getElementById('cvRoi');
-    cvRoi.width = W; cvRoi.height = H;
-    renderBoxes(drawing.x0, drawing.y0, p.x, p.y);
+    const p = pos(e);
+
+    if(dragH && box){
+      // Drag handle: update sudut kotak
+      let {x,y,w,h} = box;
+      let x2=x+w, y2=y+h;
+      if(dragH[1]==='L') x  = Math.min(p.x, x2-20);
+      else               x2 = Math.max(p.x, x +20);
+      if(dragH[0]==='T') y  = Math.min(p.y, y2-20);
+      else               y2 = Math.max(p.y, y +20);
+      box = { x, y, w: x2-x, h: y2-y };
+      renderBox();
+    } else if(drawing){
+      // Preview kotak sementara
+      renderBox(drawing.x0, drawing.y0, p.x, p.y);
+    }
   }
 
   function onEnd(e){
-    if(!adjMode || !drawing) return;
+    if(!adjMode) return;
     e.preventDefault();
-    const r = cont.getBoundingClientRect();
-    const s = e.changedTouches ? e.changedTouches[0] : e;
-    const x1 = s.clientX - r.left;
-    const y1 = s.clientY - r.top;
-    const x0 = drawing.x0, y0 = drawing.y0;
-    drawing = null;
-
-    // Minimum size 20px
-    if(Math.abs(x1-x0) < 20 || Math.abs(y1-y0) < 20) return;
-
-    // Snap: luruskan → simpan sebagai persegi sempurna (x,y,w,h)
-    const box = snapBox(x0, y0, x1, y1);
-    boxes[drawPhase] = box;
-
-    // Auto-advance ke fase berikutnya
-    if(drawPhase === 'L' && !boxes.R) drawPhase = 'R';
-    else if(drawPhase === 'R' && !boxes.L) drawPhase = 'L';
-
-    updatePhaseUI();
-    renderBoxes();
-    if(boxes.L && boxes.R) toast('✅ Kedua kotak selesai! Patron akurat.');
-    else toast('✅ Kotak '+drawPhase+' selesai · sekarang gambar kotak '+(drawPhase==='L'?'R':'L'));
+    if(dragH){ dragH=null; renderBox(); return; }
+    const lx=window._lastDraw;
+    if(!lx) return;
+    const r=cont.getBoundingClientRect();
+    const s=e.changedTouches?e.changedTouches[0]:e;
+    const ex=s.clientX-r.left, ey=s.clientY-r.top;
+    const dx=Math.abs(ex-lx.x0), dy=Math.abs(ey-lx.y0);
+    window._lastDraw=null;
+    if(dx<20||dy<20) return;
+    const cv=document.getElementById('cvMain');
+    const W=cv.clientWidth, H=cv.clientHeight;
+    box={
+      x: Math.max(0,Math.min(lx.x0,ex)),
+      y: Math.max(0,Math.min(lx.y0,ey)),
+      w: Math.min(Math.abs(ex-lx.x0), W),
+      h: Math.min(Math.abs(ey-lx.y0), H)
+    };
+    box.w=Math.min(box.w, W-box.x);
+    box.h=Math.min(box.h, H-box.y);
+    renderBox();
+    toast('✅ Kotak terbentuk · seret ↖↗↙↘ untuk fine-tune');
   }
 
-  cont.addEventListener('mousedown',  onStart);
+  // Simpan startpoint di window untuk akses di onEnd
+  const origStart = onStart;
+  cont.addEventListener('mousedown', e=>{
+    if(!adjMode) return;
+    const r = cont.getBoundingClientRect();
+    window._lastDraw = { x0: e.clientX-r.left, y0: e.clientY-r.top };
+    origStart(e);
+  });
   cont.addEventListener('mousemove',  onMove);
   cont.addEventListener('mouseup',    onEnd);
-  cont.addEventListener('touchstart', onStart, {passive:false});
-  cont.addEventListener('touchmove',  onMove,  {passive:false});
-  cont.addEventListener('touchend',   onEnd,   {passive:false});
+  cont.addEventListener('touchstart', e=>{
+    if(!adjMode) return;
+    const r = cont.getBoundingClientRect();
+    window._lastDraw={ x0:e.touches[0].clientX-r.left, y0:e.touches[0].clientY-r.top };
+    origStart(e);
+  },{passive:false});
+  cont.addEventListener('touchmove', onMove, {passive:false});
+  cont.addEventListener('touchend',  onEnd,  {passive:false});
 }
 
-// ── Snap: luruskan sisi-sisi kotak jadi tegak lurus sempurna ──
-function snapBox(x0,y0,x1,y1){
-  const cv = document.getElementById('cvMain');
-  const W  = cv.clientWidth, H = cv.clientHeight;
-  // Pastikan x,y = sudut kiri atas, w,h = positif
-  const x = Math.max(0, Math.min(x0,x1));
-  const y = Math.max(0, Math.min(y0,y1));
-  const w = Math.min(Math.abs(x1-x0), W-x);
-  const h = Math.min(Math.abs(y1-y0), H-y);
-  return {x, y, w, h};
-}
-
-// ── Render: gambar patron di dalam kotak ─────────────────────
-function renderBoxes(px0, py0, px1, py1){
+// ── Render ────────────────────────────────────────────────────
+function renderBox(px0, py0, px1, py1){
   const cvMain = document.getElementById('cvMain');
   const cvRoi  = document.getElementById('cvRoi');
+  if(!cvMain||!cvRoi) return;
   const W = cvMain.clientWidth, H = cvMain.clientHeight;
   cvRoi.width = W; cvRoi.height = H;
   const ctx = cvRoi.getContext('2d');
   ctx.clearRect(0,0,W,H);
 
-  // ── Gambar kotak yang sudah tersimpan ──
-  ['L','R'].forEach(side => {
-    const b = boxes[side];
-    if(!b) return;
-    const isDone = true;
-    ctx.strokeStyle = side === drawPhase
-      ? 'rgba(255,204,0,.9)' : 'rgba(0,255,153,.85)';
-    ctx.lineWidth   = 2.5;
-    ctx.setLineDash([]);
-    ctx.strokeRect(b.x, b.y, b.w, b.h);
-
-    // Sudut kotak
-    const corners = [[b.x,b.y],[b.x+b.w,b.y],[b.x,b.y+b.h],[b.x+b.w,b.y+b.h]];
-    corners.forEach(([cx,cy]) => {
-      ctx.beginPath(); ctx.arc(cx,cy,5,0,Math.PI*2);
-      ctx.fillStyle = ctx.strokeStyle; ctx.fill();
-    });
-
-    // Label
-    ctx.fillStyle = ctx.strokeStyle;
-    ctx.font = 'bold 11px system-ui';
-    ctx.fillText(side==='L'?'◀ Blok 1-20':'Blok 21-40 ▶', b.x+4, b.y+14);
-
-    // Gambar patron bubble di dalam kotak
-    drawPatronInBox(ctx, b, side);
-  });
-
-  // ── Preview kotak yang sedang digambar ──
+  // Preview kotak sementara saat drag awal
   if(px0 !== undefined){
-    const x = Math.min(px0,px1), y = Math.min(py0,py1);
-    const w = Math.abs(px1-px0), h = Math.abs(py1-py0);
-    ctx.strokeStyle = 'rgba(255,204,0,.6)';
-    ctx.lineWidth   = 1.5;
-    ctx.setLineDash([6,4]);
+    const x=Math.min(px0,px1), y=Math.min(py0,py1);
+    const w=Math.abs(px1-px0), h=Math.abs(py1-py0);
+    ctx.strokeStyle='rgba(255,204,0,.7)';
+    ctx.lineWidth=1.5; ctx.setLineDash([6,4]);
     ctx.strokeRect(x,y,w,h);
     ctx.setLineDash([]);
+    return;
   }
 
-  updatePhaseUI();
-}
+  if(!box) return;
 
-function drawPatronInBox(ctx, box, side){
-  // Gambar 5 kolom × 20 baris bubble di dalam box
-  // CLX/CRX sudah relatif 0-1 terhadap SELURUH foto
-  // Kita perlu normalisasi ke dalam box saja
-  // Untuk blok L: X berkisar CLX.A–CLX.E, untuk R: CRX.A–CRX.E
-  const OPS = 'ABCDE';
+  // ── Garis kotak ──
+  ctx.strokeStyle='rgba(0,255,153,.85)';
+  ctx.lineWidth=2; ctx.setLineDash([]);
+  ctx.strokeRect(box.x, box.y, box.w, box.h);
 
-  // Batas relatif kolom dalam foto
-  const xKeys = side === 'L'
-    ? OPS.map(o => CLX[o])
-    : OPS.map(o => CRX[o]);
-  const xMin = xKeys[0], xMax = xKeys[4];
-  const yMin = RY[0], yMax = RY[19];
+  // ── Grid patron di dalam kotak ──
+  // Semua 40 soal: blok L (soal 1-20) di kiri, blok R (soal 21-40) di kanan
+  // Koordinat relatif dari ujung terluar:
+  //   X: CLX.A sampai CRX.E  (full width)
+  //   Y: RY[0] sampai RY[19] (full height)
+  const xL = CLX.A, xR = CRX.E;
+  const yT = RY[0],  yB = RY[19];
+  const xRange = xR - xL, yRange = yB - yT;
 
-  // Bubble radius proporsional terhadap lebar kotak
-  const r = box.w * (BR / (xMax - xMin)) * 0.9;
+  // Radius bubble
+  const r = Math.max(2, box.w * (BR / xRange) * 0.85);
 
-  ctx.strokeStyle = 'rgba(0,255,153,.75)';
-  ctx.lineWidth   = 1.2;
+  ctx.lineWidth = 1.3;
 
-  for(let row=0; row<20; row++){
-    // Normalisasi Y: RY[row] dari rentang [yMin,yMax] → [box.y, box.y+box.h]
-    const relY = (RY[row] - yMin) / (yMax - yMin);
-    const py   = box.y + relY * box.h;
-
-    for(let col=0; col<5; col++){
-      const relX = (xKeys[col] - xMin) / (xMax - xMin);
+  for(let n=1; n<=40; n++){
+    const isL = n<=20, row=(n-1)%20;
+    for(const op of 'ABCDE'){
+      const relX = ((isL ? CLX[op] : CRX[op]) - xL) / xRange;
+      const relY = (RY[row] - yT) / yRange;
       const px   = box.x + relX * box.w;
-      ctx.beginPath(); ctx.arc(px, py, r, 0, Math.PI*2);
-      ctx.stroke();
+      const py   = box.y + relY * box.h;
+
+      // Warna beda untuk dua blok
+      ctx.strokeStyle = isL
+        ? 'rgba(0,255,153,.8)'
+        : 'rgba(88,166,255,.8)';
+      ctx.beginPath(); ctx.arc(px,py,r,0,Math.PI*2); ctx.stroke();
     }
   }
+
+  // Label blok
+  ctx.font='bold 10px system-ui'; ctx.fillStyle='rgba(0,255,153,.8)';
+  ctx.fillText('1–20', box.x+3, box.y-3);
+  ctx.fillStyle='rgba(88,166,255,.8)';
+  ctx.fillText('21–40', box.x+box.w/2+3, box.y-3);
+
+  // ── Handle sudut (hanya saat adjMode) ──
+  if(adjMode){
+    const handles = {
+      TL:[box.x,       box.y      ],
+      TR:[box.x+box.w, box.y      ],
+      BL:[box.x,       box.y+box.h],
+      BR:[box.x+box.w, box.y+box.h]
+    };
+    Object.entries(handles).forEach(([id,[hx,hy]])=>{
+      // Lingkaran handle
+      ctx.beginPath(); ctx.arc(hx,hy,10,0,Math.PI*2);
+      ctx.fillStyle='rgba(255,204,0,.25)'; ctx.fill();
+      ctx.strokeStyle='#ffcc00'; ctx.lineWidth=2; ctx.stroke();
+      // Ikon arah
+      ctx.fillStyle='#ffcc00'; ctx.font='bold 11px system-ui';
+      const lbl={TL:'↖',TR:'↗',BL:'↙',BR:'↘'}[id];
+      ctx.fillText(lbl, hx-7, hy+5);
+    });
+  }
 }
 
-// ── cPx: hitung koordinat bubble dari kotak ──────────────────
+// ── cPx: koordinat bubble dari kotak ─────────────────────────
 function cPx(nomor, opsi){
-  const isL  = nomor <= 20;
-  const side = isL ? 'L' : 'R';
-  const box  = boxes[side];
-  const row  = (nomor-1) % 20;
-  const OPS  = 'ABCDE';
+  const row   = (nomor-1)%20;
+  const isL   = nomor<=20;
+  const xL    = CLX.A, xR = CRX.E;
+  const yT    = RY[0], yB = RY[19];
+  const xRange= xR-xL, yRange= yB-yT;
 
   if(box){
-    // Pakai transformasi kotak → koordinat foto asli
-    const cvMain = document.getElementById('cvMain');
-    const dispW  = cvMain.clientWidth;
-    const dispH  = cvMain.clientHeight;
-    const scX    = imgW / dispW;
-    const scY    = imgH / dispH;
-
-    const xKeys  = isL ? OPS.map(o=>CLX[o]) : OPS.map(o=>CRX[o]);
-    const xMin   = xKeys[0], xMax = xKeys[4];
-    const yMin   = RY[0],    yMax = RY[19];
-    const idx    = OPS.indexOf(opsi);
-    const relX   = (xKeys[idx] - xMin) / (xMax - xMin);
-    const relY   = (RY[row]    - yMin) / (yMax - yMin);
-
-    const px     = (box.x + relX * box.w) * scX;
-    const py     = (box.y + relY * box.h) * scY;
-    const r      = box.w * scX * (BR / (xMax - xMin)) * 0.9;
-    return { cx: px, cy: py, r };
+    const cv   = document.getElementById('cvMain');
+    const scX  = imgW / cv.clientWidth;
+    const scY  = imgH / cv.clientHeight;
+    const relX = ((isL ? CLX[opsi] : CRX[opsi]) - xL) / xRange;
+    const relY = (RY[row] - yT) / yRange;
+    return {
+      cx: (box.x + relX * box.w) * scX,
+      cy: (box.y + relY * box.h) * scY,
+      r : box.w * scX * (BR / xRange) * 0.85
+    };
   }
-
-  // Fallback: koordinat default
-  const relX = isL ? CLX[opsi] : CRX[opsi];
-  return { cx: relX*imgW, cy: RY[row]*imgH, r: BR*imgW };
+  // Fallback koordinat default
+  return { cx:(isL?CLX[opsi]:CRX[opsi])*imgW, cy:RY[row]*imgH, r:BR*imgW };
 }
 
-// ── Reset kotak ───────────────────────────────────────────────
+// ── Reset ─────────────────────────────────────────────────────
 function resetPatron(){
-  boxes     = {L:null, R:null};
-  drawPhase = 'L';
-  drawing   = null;
-  renderBoxes();
-  updatePhaseUI();
-  toast('↺ Kotak direset — gambar ulang');
+  box=null; drawing=null; dragH=null;
+  window._lastDraw=null;
+  const cvRoi=document.getElementById('cvRoi');
+  if(cvRoi){const c=cvRoi.getContext('2d');c.clearRect(0,0,cvRoi.width,cvRoi.height);}
+  toast('↺ Kotak dihapus · gambar ulang');
 }
 
-// ── Alias initAnchorUI & initTapHandler (dipakai DOMContentLoaded) ──
-function initAnchorUI(){ /* tidak dipakai lagi */ }
+// ── Alias ─────────────────────────────────────────────────────
+function initAnchorUI(){}
 function initTapHandler(){ initBoxDraw(); }
+function setPhase(){}
 
 // ════════════════════════════════════════════════════
 // RENDER HASIL
