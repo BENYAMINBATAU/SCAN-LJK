@@ -170,6 +170,14 @@ body{background:var(--bg);color:var(--tx1);font-family:system-ui,sans-serif;
 .mtit{font-weight:700;font-size:14px;color:var(--rd);margin-bottom:6px}
 /* ─ Sep ─ */
 .sep{border-top:1px solid var(--bd);margin:10px 0}
+
+/* ─── ANCHOR PANEL ─── */
+.aBtn{padding:5px 8px;border:1px solid var(--bd);border-radius:6px;
+  background:var(--bg3);color:var(--tx2);font-size:10px;cursor:pointer;
+  touch-action:manipulation;white-space:nowrap}
+.aBtn.active{border-color:#ffcc00;color:#ffcc00;background:rgba(255,204,0,.1)}
+.aBtn.set{border-color:var(--gn);color:var(--gn);background:rgba(63,185,80,.1)}
+.aBtn.active.set{border-color:#ffcc00;color:#ffcc00}
 </style>
 </head>
 <body>
@@ -249,10 +257,12 @@ body{background:var(--bg);color:var(--tx1);font-family:system-ui,sans-serif;
 
   <!-- Preview canvas -->
   <div id="cvWrap">
-    <div id="adjBar">
-      <b>✋ Mode Adjust Aktif</b><br>
-      🟢 Patron TETAP sebagai patokan<br>Geser/zoom/putar FOTO hingga bubble pas di lingkaran hijau
+    <div id="adjBar" style="display:none">
+      <b style="color:#00ff99">✋ Mode Adjust Patron</b><br>
+      <span style="font-size:10px">Tap tombol titik → tap posisinya di foto · makin banyak titik makin akurat</span>
     </div>
+    <!-- Panel tombol anchor -->
+    <div id="anchorPanel" style="display:none;flex-wrap:wrap;gap:4px;margin-bottom:6px"></div>
     <div class="cvCont" id="cvCont">
       <canvas id="cvMain"></canvas>
       <canvas id="cvAdj"></canvas>
@@ -271,11 +281,8 @@ body{background:var(--bg);color:var(--tx1);font-family:system-ui,sans-serif;
     <button class="btn btn-cy" id="bScan" onclick="doScan()" disabled style="flex:2">⚡ Scan</button>
     <button class="btn btn-gh" onclick="doReset()" style="flex:1">🔄 Reset</button>
   </div>
-  <div id="adjRotRow">
-    <button class="btn btn-gh" onclick="adjReset()" style="flex:1;font-size:11px">↺ Reset</button>
-    <button class="btn btn-gh" onclick="adjRot(-1)"  style="flex:1;font-size:11px">◀ -1°</button>
-    <button class="btn btn-gh" onclick="adjRot(1)"   style="flex:1;font-size:11px">▶ +1°</button>
-    <button class="btn btn-gh" onclick="adjRot(-90)" style="flex:1;font-size:11px">↺ 90°</button>
+  <div id="adjRotRow" style="display:none;gap:5px;margin-top:4px">
+    <button class="btn btn-rd" onclick="resetPatron()" style="flex:1;font-size:11px">🗑 Reset Titik</button>
   </div>
 </div>
 
@@ -362,11 +369,8 @@ let kunci=new Array(40).fill('');
 let rekap=[];
 let last=null;
 let camStream=null, vfTimer=null;
-// Transform untuk adjust
-let TR={tx:0,ty:0,sc:1,rot:0};
-let adjOn=false;
-let drag=null;
-let t1=null,t2=null,trStart=null,midStart=null,distStart=null,angStart=null;
+// Adjust berbasis titik kontrol
+// (state adjMode, ctrlPts, activeAnchor didefinisikan di blok adj)
 
 // ════════════════════════════════════════════════════
 // INIT
@@ -374,7 +378,7 @@ let t1=null,t2=null,trStart=null,midStart=null,distStart=null,angStart=null;
 document.addEventListener('DOMContentLoaded',()=>{
   try{const s=localStorage.getItem('bb_k');if(s)kunci=JSON.parse(s);}catch{}
   try{const s=localStorage.getItem('bb_r');if(s)rekap=JSON.parse(s);}catch{}
-  bldK(); rnRk(); upSt();
+  bldK(); rnRk(); upSt(); initAnchorUI(); initTapHandler();
   // Drag-drop
   const dz=document.getElementById('dz');
   dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag')});
@@ -537,7 +541,7 @@ function processDataURL(url, revoke){
     imgData=cv.getContext('2d').getImageData(0,0,cv.width,cv.height);
     imgW=cv.width; imgH=cv.height;
     // Tampilkan langsung (grayscale via CSS, tidak blocking)
-    document.getElementById('cvMain').style.filter='grayscale(100%)';
+    document.getElementById('cvMain').style.filter='grayscale(1)';
     // Tampilkan
     document.getElementById('cvWrap').style.display='block';
     // Reset transform
@@ -556,254 +560,23 @@ function processDataURL(url, revoke){
 function applyGrayscale(){
   // Tampilkan asli dulu (sudah di-drawImage di processDataURL)
   // Grayscale dilakukan ringan via CSS filter saja
-  document.getElementById('cvMain').style.filter='grayscale(100%)';
+  document.getElementById('cvMain').style.filter='grayscale(1)';
 }
 
 // ════════════════════════════════════════════════════
 // TOUCHSCREEN ADJUST
 // 1 jari = geser | 2 jari = zoom+putar
 // ════════════════════════════════════════════════════
-function initTouchAdj(){
-  const cont=document.getElementById('cvCont');
-  if(!cont)return;
 
-  function getXY(e){
-    const r=cont.getBoundingClientRect();
-    const src=e.touches?e.touches[0]:e;
-    return{x:src.clientX-r.left, y:src.clientY-r.top};
-  }
-  function getTwoTouches(e){
-    const r=cont.getBoundingClientRect();
-    return[
-      {x:e.touches[0].clientX-r.left, y:e.touches[0].clientY-r.top},
-      {x:e.touches[1].clientX-r.left, y:e.touches[1].clientY-r.top}
-    ];
-  }
-  function midpt(a,b){return{x:(a.x+b.x)/2,y:(a.y+b.y)/2};}
-  function dst(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}
-  function ang(a,b){return Math.atan2(b.y-a.y,b.x-a.x)*180/Math.PI;}
 
-  // Mouse
-  cont.addEventListener('mousedown',e=>{
-    if(!adjOn)return;
-    e.preventDefault();
-    const p=getXY(e);
-    drag={sx:p.x-TR.tx, sy:p.y-TR.ty};
-    cont.style.cursor='grabbing';
-  });
-  cont.addEventListener('mousemove',e=>{
-    if(!drag||!adjOn)return;
-    e.preventDefault();
-    const p=getXY(e);
-    TR.tx=p.x-drag.sx; TR.ty=p.y-drag.sy;
-    renderAdj();
-  });
-  cont.addEventListener('mouseup',  ()=>{drag=null;cont.style.cursor='grab';});
-  cont.addEventListener('mouseleave',()=>{drag=null;cont.style.cursor='';});
-  cont.addEventListener('wheel',e=>{
-    if(!adjOn)return; e.preventDefault();
-    TR.sc=Math.max(.1,Math.min(8,TR.sc*(e.deltaY>0?.9:1.1)));
-    renderAdj();
-  },{passive:false});
 
-  // Touch
-  cont.addEventListener('touchstart',e=>{
-    if(!adjOn)return; e.preventDefault();
-    if(e.touches.length===1){
-      const p=getXY(e);
-      t1={x:p.x,y:p.y}; t2=null;
-      trStart={...TR};
-    } else if(e.touches.length>=2){
-      const [a,b]=getTwoTouches(e);
-      t1=a; t2=b;
-      trStart={...TR};
-      midStart=midpt(a,b);
-      distStart=dst(a,b);
-      angStart=ang(a,b);
-    }
-  },{passive:false});
 
-  cont.addEventListener('touchmove',e=>{
-    if(!adjOn)return; e.preventDefault();
-    if(e.touches.length===1&&!t2){
-      const p=getXY(e);
-      TR.tx=trStart.tx+(p.x-t1.x);
-      TR.ty=trStart.ty+(p.y-t1.y);
-    } else if(e.touches.length>=2&&distStart){
-      const [a,b]=getTwoTouches(e);
-      const mid=midpt(a,b);
-      const d=dst(a,b);
-      const ag=ang(a,b);
-      TR.sc=Math.max(.1,Math.min(8, trStart.sc*(d/distStart)));
-      TR.rot=trStart.rot+(ag-angStart);
-      TR.tx=trStart.tx+(mid.x-midStart.x);
-      TR.ty=trStart.ty+(mid.y-midStart.y);
-    }
-    renderAdj();
-    updInfo();
-  },{passive:false});
 
-  cont.addEventListener('touchend',e=>{
-    if(e.touches.length<2){t2=null;distStart=null;}
-    if(e.touches.length===0){t1=null;}
-  });
-}
 
-function togAdj(){
-  adjOn=!adjOn;
-  const bar=document.getElementById('adjBar');
-  const info=document.getElementById('adjInfo');
-  const rotRow=document.getElementById('adjRotRow');
-  const btn=document.getElementById('bAdj');
-  const cvAdj=document.getElementById('cvAdj');
-  const cvRoi=document.getElementById('cvRoi');
-  const cont=document.getElementById('cvCont');
-
-  if(adjOn){
-    bar.style.display='block';
-    info.style.display='block';
-    rotRow.style.display='flex';
-    btn.textContent='✅ Selesai';
-    btn.className='btn btn-gn';
-    cvAdj.style.display='block';
-    cvRoi.style.display='block';
-    document.getElementById('cvMain').style.opacity='0';
-    cont.style.cursor='grab';
-    renderAdj();
-    toast('✋ Seret foto untuk lurus · 2 jari zoom/putar');
-  } else {
-    // Bake transform ke imgData
-    bakeAdj();
-    bar.style.display='none';
-    info.style.display='none';
-    rotRow.style.display='none';
-    btn.textContent='✋ Adjust';
-    btn.className='btn btn-gh';
-    cvAdj.style.display='none';
-    cvRoi.style.display='none';
-    document.getElementById('cvMain').style.opacity='1';
-  document.getElementById('cvMain').style.filter='';
-    cont.style.cursor='';
-    TR={tx:0,ty:0,sc:1,rot:0};
-    toast('✅ Posisi tersimpan — siap scan');
-  }
-}
-
-function renderAdj(){
-  if(!imgData)return;
-  const cvMain=document.getElementById('cvMain');
-  // Ukuran display cvMain (setelah CSS width:100%, height:auto)
-  const W=cvMain.clientWidth;
-  const H=cvMain.clientHeight;
-  if(!W||!H)return;
-
-  const cvAdj=document.getElementById('cvAdj');
-  const cvRoi=document.getElementById('cvRoi');
-  cvAdj.width=W; cvAdj.height=H;
-  cvRoi.width=W; cvRoi.height=H;
-
-  // ── FOTO: fit ke canvas W×H, lalu transform di atasnya ──
-  // Scale dasar agar foto pas di canvas (fit contain)
-  const fitSc=Math.min(W/imgW, H/imgH);
-  const dispW=imgW*fitSc, dispH=imgH*fitSc;
-
-  const ctx=cvAdj.getContext('2d');
-  ctx.clearRect(0,0,W,H);
-  ctx.save();
-  // Pivot = tengah canvas + offset drag
-  ctx.translate(W/2+TR.tx, H/2+TR.ty);
-  ctx.rotate(TR.rot*Math.PI/180);
-  ctx.scale(TR.sc, TR.sc);
-  const tmp=document.createElement('canvas');
-  tmp.width=imgW; tmp.height=imgH;
-  tmp.getContext('2d').putImageData(imgData,0,0);
-  ctx.filter='grayscale(100%)';
-  // Gambar foto pada ukuran fit, pivot di tengah
-  ctx.drawImage(tmp,-dispW/2,-dispH/2,dispW,dispH);
-  ctx.restore();
-
-  // ── PATRON: tetap di posisi fit-foto default (tidak bergerak) ──
-  // Koordinat patron = posisi foto SEBELUM di-drag
-  // yaitu foto fit di tengah canvas: offset=(W-dispW)/2, (H-dispH)/2
-  const ox=(W-dispW)/2, oy=(H-dispH)/2;
-  const bubR=BR*dispW;   // radius proporsional terhadap lebar foto yang di-fit
-
-  const rctx=cvRoi.getContext('2d');
-  rctx.clearRect(0,0,W,H);
-  rctx.strokeStyle='rgba(0,255,153,.9)';
-  rctx.lineWidth=1.8;
-  for(let n=1;n<=40;n++){
-    const isL=n<=20,row=(n-1)%20;
-    for(const op of 'ABCDE'){
-      const px=ox+(isL?CLX[op]:CRX[op])*dispW;
-      const py=oy+RY[row]*dispH;
-      rctx.beginPath();
-      rctx.arc(px,py,bubR,0,Math.PI*2);
-      rctx.stroke();
-    }
-  }
-  // Outline kotak patron
-  rctx.strokeStyle='rgba(0,255,153,.3)';
-  rctx.lineWidth=1;
-  rctx.strokeRect(ox,oy,dispW,dispH);
-  rctx.fillStyle='rgba(0,255,153,.65)';
-  rctx.font='bold 10px system-ui';
-  rctx.fillText('● PATRON',ox+4,oy+13);
-  updInfo();
-}
-
-function bakeAdj(){
-  if(!imgData)return;
-  const cvMain=document.getElementById('cvMain');
-  const W=cvMain.clientWidth, H=cvMain.clientHeight;
-  // fitSc = scale default foto ke canvas (sama dengan renderAdj)
-  const fitSc=Math.min(W/imgW, H/imgH);
-  // Transform di canvas pakai fitSc*TR.sc pada gambar asli
-  // kita perlu mapping: posisi pixel di foto asli → posisi di canvas setelah transform
-  // Inverse: canvas coord → img coord
-  // Untuk bake: render foto dengan transform ke canvas berukuran imgW×imgH
-  // Scale efektif dari img → img (bukan img → display):
-  // tx_img = TR.tx / fitSc,  ty_img = TR.ty / fitSc,  sc_img = TR.sc
-
-  const tmp=document.createElement('canvas');
-  tmp.width=imgW; tmp.height=imgH;
-  const ctx=tmp.getContext('2d');
-  ctx.save();
-  ctx.translate(imgW/2 + TR.tx/fitSc, imgH/2 + TR.ty/fitSc);
-  ctx.rotate(TR.rot*Math.PI/180);
-  ctx.scale(TR.sc, TR.sc);
-  const srcC=document.createElement('canvas');
-  srcC.width=imgW; srcC.height=imgH;
-  srcC.getContext('2d').putImageData(imgData,0,0);
-  ctx.drawImage(srcC,-imgW/2,-imgH/2);
-  ctx.restore();
-  imgData=tmp.getContext('2d').getImageData(0,0,imgW,imgH);
-  // Update cvMain
-  cvMain.getContext('2d').putImageData(imgData,0,0);
-  cvMain.style.filter='grayscale(100%)';
-}
-
-function adjReset(){TR={tx:0,ty:0,sc:1,rot:0};renderAdj();toast('↺ Reset');}
-function adjRot(d){TR.rot+=d;renderAdj();toast('Putar: '+TR.rot.toFixed(1)+'°');}
-function updInfo(){
-  const el=document.getElementById('adjInfo');
-  if(el)el.textContent=
-    `X:${TR.tx.toFixed(0)} Y:${TR.ty.toFixed(0)} Zoom:${TR.sc.toFixed(2)}× Putar:${TR.rot.toFixed(1)}°`;
-}
 
 // ════════════════════════════════════════════════════
 // KOORDINAT BUBBLE → PIKSEL
 // ════════════════════════════════════════════════════
-function cPx(nomor,opsi){
-  const isL=nomor<=20;
-  const relX=isL?CLX[opsi]:CRX[opsi];
-  const relY=RY[(nomor-1)%20];
-  return{
-    cx: relX*imgW,
-    cy: relY*imgH,
-    r : BR*imgW
-  };
-}
 
 // ════════════════════════════════════════════════════
 // SCAN BUBBLE
@@ -880,17 +653,18 @@ function doReset(){
   // Hentikan kamera
   stopCam();
   // Reset adjust
-  adjOn=false; TR={tx:0,ty:0,sc:1,rot:0};
+  adjMode=false; ctrlPts={}; activeAnchor=null;
   document.getElementById('adjBar').style.display='none';
+  document.getElementById('anchorPanel').style.display='none';
   document.getElementById('adjInfo').style.display='none';
   document.getElementById('adjRotRow').style.display='none';
   document.getElementById('bAdj').textContent='✋ Adjust';
   document.getElementById('bAdj').className='btn btn-gh';
-  document.getElementById('cvAdj').style.display='none';
+  
   document.getElementById('cvRoi').style.display='none';
-  document.getElementById('cvMain').style.opacity='1';
-  document.getElementById('cvMain').style.filter='';
-  document.getElementById('cvCont').style.cursor='';
+  
+  
+  
   // Hide canvas
   document.getElementById('cvWrap').style.display='none';
   // Disable tombol
@@ -898,6 +672,340 @@ function doReset(){
   document.getElementById('bScan').disabled=true;
   // Reset status
   pb(-1); sb('','Upload foto LJK');
+}
+
+
+// ════════════════════════════════════════════════════
+// POINT-BASED PATRON ADJUST
+// User tap titik di foto → patron menyesuaikan diri
+//
+// Titik kontrol yang bisa di-tap (urutan prioritas):
+//  GRUP KIRI  (soal 1-20):  TL, TR, BL, BR, ML (tengah kiri)
+//  GRUP KANAN (soal 21-40): TL, TR, BL, BR, MR (tengah kanan)
+//
+// Dengan 2 titik → scale+translate
+// Dengan 4 titik → homography penuh (perspektif)
+// ════════════════════════════════════════════════════
+
+// Titik anchor di koordinat PATRON (relatif 0-1 terhadap foto asli)
+// Berdasarkan koordinat LJK: kelompok kiri X=0.04-0.50, kanan X=0.54-1.00
+const ANCHORS = [
+  // ID         label       x (rel LJK)            y (rel LJK)     grup
+  {id:'L_TL',  lbl:'↖ Kiri Atas',   x: CLX.A - BR*2,   y: RY[0]  - BR*2,  g:'L'},
+  {id:'L_TR',  lbl:'↗ Kiri Atas-K', x: CLX.E + BR*2,   y: RY[0]  - BR*2,  g:'L'},
+  {id:'L_BL',  lbl:'↙ Kiri Bawah',  x: CLX.A - BR*2,   y: RY[19] + BR*2,  g:'L'},
+  {id:'L_BR',  lbl:'↘ Kiri Bawah-K',x: CLX.E + BR*2,   y: RY[19] + BR*2,  g:'L'},
+  {id:'L_ML',  lbl:'✛ Tengah Kiri', x:(CLX.A+CLX.E)/2, y:(RY[0]+RY[19])/2,g:'L'},
+  {id:'R_TL',  lbl:'↖ Kanan Atas',  x: CRX.A - BR*2,   y: RY[0]  - BR*2,  g:'R'},
+  {id:'R_TR',  lbl:'↗ Kanan Atas-K',x: CRX.E + BR*2,   y: RY[0]  - BR*2,  g:'R'},
+  {id:'R_BL',  lbl:'↙ Kanan Bawah', x: CRX.A - BR*2,   y: RY[19] + BR*2,  g:'R'},
+  {id:'R_BR',  lbl:'↘ Kanan Bawah-K',x:CRX.E + BR*2,   y: RY[19] + BR*2,  g:'R'},
+  {id:'R_MR',  lbl:'✛ Tengah Kanan',x:(CRX.A+CRX.E)/2, y:(RY[0]+RY[19])/2,g:'R'},
+];
+
+// controlPoints: {id → {px, py}} — koordinat di foto (pixel)
+let ctrlPts = {};
+let activeAnchor = null;   // anchor yang sedang dipilih untuk di-tap
+let adjMode = false;
+
+// ── Init UI panel anchor ──────────────────────────────────────
+function initAnchorUI(){
+  const panel = document.getElementById('anchorPanel');
+  if(!panel) return;
+  panel.innerHTML = '';
+
+  // Buat tombol per anchor
+  ANCHORS.forEach(a => {
+    const btn = document.createElement('button');
+    btn.id   = 'ab_'+a.id;
+    btn.className = 'aBtn';
+    btn.textContent = a.lbl;
+    btn.onclick = () => selectAnchor(a.id);
+    panel.appendChild(btn);
+  });
+}
+
+function selectAnchor(id){
+  activeAnchor = id;
+  // Highlight tombol aktif
+  document.querySelectorAll('.aBtn').forEach(b => b.classList.remove('active'));
+  const btn = document.getElementById('ab_'+id);
+  if(btn) btn.classList.add('active');
+  // Info
+  const set = ctrlPts[id] ? '✅ sudah ditap' : '👆 tap di foto';
+  toast('👆 Tap posisi "'+ANCHORS.find(a=>a.id===id).lbl+'" di foto → '+set);
+  renderPatron();
+}
+
+// ── Tap handler di canvas foto ────────────────────────────────
+function initTapHandler(){
+  const cont = document.getElementById('cvCont');
+  if(!cont) return;
+
+  function handleTap(x, y){
+    if(!adjMode || !activeAnchor) return;
+    // x,y = koordinat pixel di canvas display
+    // konversi ke koordinat gambar asli
+    const cv = document.getElementById('cvMain');
+    const scX = imgW / cv.clientWidth;
+    const scY = imgH / cv.clientHeight;
+    ctrlPts[activeAnchor] = { px: x*scX, py: y*scY };
+
+    // Auto-advance ke anchor berikutnya yang belum diisi
+    const ids = ANCHORS.map(a=>a.id);
+    const cur = ids.indexOf(activeAnchor);
+    const next = ids.slice(cur+1).find(id => !ctrlPts[id]);
+    if(next) selectAnchor(next);
+    else { activeAnchor = null; toast('✅ Semua titik diisi! Patron disesuaikan.'); }
+
+    renderPatron();
+    updateAnchorUI();
+  }
+
+  // Touch
+  cont.addEventListener('touchend', e => {
+    if(!adjMode || !activeAnchor) return;
+    e.preventDefault();
+    const r = cont.getBoundingClientRect();
+    const t = e.changedTouches[0];
+    handleTap(t.clientX - r.left, t.clientY - r.top);
+  }, {passive:false});
+
+  // Mouse (desktop)
+  cont.addEventListener('click', e => {
+    if(!adjMode || !activeAnchor) return;
+    const r = cont.getBoundingClientRect();
+    handleTap(e.clientX - r.left, e.clientY - r.top);
+  });
+}
+
+function updateAnchorUI(){
+  ANCHORS.forEach(a => {
+    const btn = document.getElementById('ab_'+a.id);
+    if(!btn) return;
+    if(ctrlPts[a.id]){
+      btn.classList.add('set');
+      btn.textContent = '✅ '+a.lbl;
+    } else {
+      btn.classList.remove('set');
+      btn.textContent = a.lbl;
+    }
+  });
+}
+
+// ── Hitung transform patron dari ctrlPts ─────────────────────
+// Dengan titik kontrol yang ada, interpolasi posisi semua bubble
+// menggunakan affine transform (untuk 3+ titik) atau bilinear warp
+
+function computePatronTransform(){
+  const pts = Object.keys(ctrlPts);
+  if(pts.length < 2) return null;
+
+  // Kumpulkan pasangan: anchor canonical (rel) → foto (pixel)
+  const pairs = pts.map(id => {
+    const a = ANCHORS.find(a=>a.id===id);
+    return {
+      sx: a.x * imgW, sy: a.y * imgH,   // posisi canonical di imgW×imgH
+      dx: ctrlPts[id].px, dy: ctrlPts[id].py  // posisi di foto asli
+    };
+  });
+
+  if(pairs.length >= 4){
+    // Hitung affine transform 6-param (least squares)
+    return computeAffine(pairs);
+  } else if(pairs.length >= 2){
+    // Scale + translate sederhana dari 2 titik pertama
+    return computeScaleTranslate(pairs);
+  }
+  return null;
+}
+
+function computeScaleTranslate(pairs){
+  // Dari 2 titik: hitung scale dan translate
+  if(pairs.length < 2) return {a:1,b:0,c:0,d:0,e:1,f:0};
+  const p1 = pairs[0], p2 = pairs[1];
+  const dsx = p2.sx - p1.sx, dsy = p2.sy - p1.sy;
+  const ddx = p2.dx - p1.dx, ddy = p2.dy - p1.dy;
+  const srcD = Math.sqrt(dsx*dsx+dsy*dsy);
+  const dstD = Math.sqrt(ddx*ddx+ddy*ddy);
+  const sc = srcD > 0 ? dstD/srcD : 1;
+  const ang = Math.atan2(ddy,ddx) - Math.atan2(dsy,dsx);
+  const cos = Math.cos(ang)*sc, sin = Math.sin(ang)*sc;
+  // Transform: dst = [cos,-sin; sin,cos] * src + t
+  const tx = p1.dx - cos*p1.sx + sin*p1.sy;
+  const ty = p1.dy - sin*p1.sx - cos*p1.sy;
+  return {a:cos, b:-sin, c:tx, d:sin, e:cos, f:ty};
+}
+
+function computeAffine(pairs){
+  // Least-squares affine: [x',y'] = [a,b,c; d,e,f] * [x,y,1]
+  // Selesaikan dengan normal equations
+  const n = pairs.length;
+  // Untuk x': a*sx + b*sy + c = dx  → least squares
+  // Untuk y': d*sx + e*sy + f = dy
+
+  function lsq3(pts, useX){
+    // Solve [sx,sy,1] * [p1,p2,p3]' = target
+    let A = [[0,0,0],[0,0,0],[0,0,0]];
+    let B = [0,0,0];
+    pts.forEach(p => {
+      const r = [p.sx, p.sy, 1];
+      const t = useX ? p.dx : p.dy;
+      for(let i=0;i<3;i++) for(let j=0;j<3;j++) A[i][j]+=r[i]*r[j];
+      for(let i=0;i<3;i++) B[i]+=r[i]*t;
+    });
+    return solve3(A,B);
+  }
+
+  const [a,b,c] = lsq3(pairs, true);
+  const [d,e,f] = lsq3(pairs, false);
+  return {a,b,c,d,e,f};
+}
+
+function solve3(A,B){
+  // Gauss elimination 3×3
+  const M = A.map((r,i)=>[...r,B[i]]);
+  for(let col=0;col<3;col++){
+    let maxR=col;
+    for(let r=col+1;r<3;r++) if(Math.abs(M[r][col])>Math.abs(M[maxR][col]))maxR=r;
+    [M[col],M[maxR]]=[M[maxR],M[col]];
+    if(Math.abs(M[col][col])<1e-10) continue;
+    for(let r=0;r<3;r++) if(r!==col){
+      const f=M[r][col]/M[col][col];
+      for(let c=col;c<=3;c++) M[r][c]-=f*M[col][c];
+    }
+  }
+  return [M[0][3]/M[0][0], M[1][3]/M[1][1], M[2][3]/M[2][2]];
+}
+
+// Terapkan transform affine ke satu titik
+function applyAffine(T, x, y){
+  return {
+    x: T.a*x + T.b*y + T.c,
+    y: T.d*x + T.e*y + T.f
+  };
+}
+
+// ── Render patron di atas foto ────────────────────────────────
+function renderPatron(){
+  const cv = document.getElementById('cvMain');
+  const cvRoi = document.getElementById('cvRoi');
+  if(!cv||!cvRoi) return;
+  const W = cv.clientWidth, H = cv.clientHeight;
+  cvRoi.width=W; cvRoi.height=H;
+  const ctx = cvRoi.getContext('2d');
+  ctx.clearRect(0,0,W,H);
+
+  // Scale dari koordinat gambar → display
+  const scX = W/imgW, scY = H/imgH;
+
+  const T = computePatronTransform();
+
+  // Gambar tiap bubble
+  for(let n=1;n<=40;n++){
+    const isL=n<=20, row=(n-1)%20;
+    for(const op of 'ABCDE'){
+      const relX = isL ? CLX[op] : CRX[op];
+      const relY = RY[row];
+      // Koordinat canonical di gambar asli
+      let cx = relX*imgW, cy = relY*imgH;
+      // Terapkan transform jika ada
+      if(T){ const p=applyAffine(T,cx,cy); cx=p.x; cy=p.y; }
+      // Konversi ke display
+      const px=cx*scX, py=cy*scY;
+      const r=(BR*imgW)*scX*(T?Math.sqrt(T.a*T.a+T.d*T.d):1);
+
+      ctx.beginPath();
+      ctx.arc(px,py,Math.max(r,4),0,Math.PI*2);
+      ctx.strokeStyle = T ? 'rgba(0,255,153,.9)' : 'rgba(255,200,0,.6)';
+      ctx.lineWidth=1.5;
+      ctx.stroke();
+    }
+  }
+
+  // Gambar titik kontrol yang sudah di-tap
+  ANCHORS.forEach(a => {
+    const cp = ctrlPts[a.id];
+    if(!cp) return;
+    const px=cp.px*scX, py=cp.py*scY;
+    // Lingkaran titik
+    ctx.beginPath(); ctx.arc(px,py,7,0,Math.PI*2);
+    ctx.fillStyle='rgba(255,80,80,.8)'; ctx.fill();
+    ctx.strokeStyle='#fff'; ctx.lineWidth=1.5; ctx.stroke();
+    // Label
+    ctx.fillStyle='#fff'; ctx.font='bold 9px system-ui';
+    ctx.fillText(a.id.replace('_',' '),px+9,py+4);
+  });
+
+  // Gambar crosshair untuk anchor aktif (petunjuk tap)
+  if(activeAnchor){
+    const a = ANCHORS.find(x=>x.id===activeAnchor);
+    if(a){
+      let cx=a.x*imgW*scX, cy=a.y*imgH*scY;
+      if(T){ const p=applyAffine(T,a.x*imgW,a.y*imgH); cx=p.x*scX; cy=p.y*scY; }
+      ctx.strokeStyle='rgba(255,255,0,.8)'; ctx.lineWidth=1.5;
+      ctx.setLineDash([4,3]);
+      ctx.beginPath(); ctx.moveTo(cx-12,cy); ctx.lineTo(cx+12,cy); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(cx,cy-12); ctx.lineTo(cx,cy+12); ctx.stroke();
+      ctx.setLineDash([]);
+    }
+  }
+}
+
+// ── Toggle mode adjust ────────────────────────────────────────
+function togAdj(){
+  adjMode = !adjMode;
+  const bar    = document.getElementById('adjBar');
+  const info   = document.getElementById('adjInfo');
+  const rotRow = document.getElementById('adjRotRow');
+  const btn    = document.getElementById('bAdj');
+  const cvRoi  = document.getElementById('cvRoi');
+  const cvAdj  = document.getElementById('cvAdj');
+  const panel  = document.getElementById('anchorPanel');
+
+  if(adjMode){
+    bar.style.display    = 'block';
+    info.style.display   = 'none';
+    rotRow.style.display = 'none';
+    cvRoi.style.display  = 'block';
+    cvAdj.style.display  = 'none';  // foto tidak bergerak
+    panel.style.display  = 'flex';
+    btn.textContent = '✅ Selesai Adjust';
+    btn.className   = 'btn btn-gn';
+    // Pilih anchor pertama yang belum diisi
+    const first = ANCHORS.find(a=>!ctrlPts[a.id]);
+    if(first) selectAnchor(first.id);
+    renderPatron();
+    toast('👆 Tap titik-titik kunci di foto sesuai urutan');
+  } else {
+    bar.style.display    = 'none';
+    panel.style.display  = 'none';
+    cvRoi.style.display  = 'none';
+    btn.textContent = '✋ Adjust';
+    btn.className   = 'btn btn-gh';
+    activeAnchor    = null;
+    toast('✅ Patron disesuaikan · siap scan');
+  }
+}
+
+// ── doReset: bersihkan ctrlPts ────────────────────────────────
+function resetPatron(){
+  ctrlPts = {}; activeAnchor = null;
+  updateAnchorUI();
+  renderPatron();
+  toast('↺ Titik kontrol direset');
+}
+
+// ── Override cPx: pakai transform dari ctrlPts ────────────────
+function cPx(nomor, opsi){
+  const isL=nomor<=20;
+  const relX = isL ? CLX[opsi] : CRX[opsi];
+  const relY  = RY[(nomor-1)%20];
+  let cx = relX*imgW, cy = relY*imgH;
+  const T = computePatronTransform();
+  if(T){ const p=applyAffine(T,cx,cy); cx=p.x; cy=p.y; }
+  const rScale = T ? Math.sqrt(T.a*T.a+T.d*T.d) : 1;
+  return { cx, cy, r: BR*imgW*rScale };
 }
 
 // ════════════════════════════════════════════════════
